@@ -1,0 +1,27 @@
+.headerContainer {
+	background-color: var(--background);
+}
+
+.header {
+	display: flex;
+	align-items: center;
+}
+
+.headerLogo {
+	padding-left: 8.75%;
+}
+
+.headerUser {
+	margin-left: auto;
+}
+
+.user {
+	text-decoration: none;
+	display: flex;
+	align-items: center;
+	border-radius: var(--common-border-radius-s);
+	color: var(--text-primary-color);
+	border: none;
+	background: transparent;
+	cursor: pointer;
+}
