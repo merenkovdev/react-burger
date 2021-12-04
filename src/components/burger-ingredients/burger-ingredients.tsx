@@ -32,10 +32,10 @@ const TabIngredients = (props: { data: Item[] }) => {
 		<>
 			<div className={ styles.tabs }>
 				{ tabsData.map(item => (
-					<Tab value={item.type}
-						key={item.type}
-						active={current === item.type}
-						onClick={setCurrent}
+					<Tab value={ item.type }
+						key={ item.type }
+						active={ current === item.type }
+						onClick={ setCurrent }
 					>{item.name}</Tab>
 				)) }
 			</div>

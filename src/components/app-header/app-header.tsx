@@ -10,15 +10,15 @@ import Nav from './nav';
 
 const AppHeader = () => {
 	return (
-		<header className={styles.headerContainer}>
-			<div className={cn(styles.header, 'container')}>
+		<header className={ styles.headerContainer }>
+			<div className={ cn(styles.header, 'container') }>
 				<Nav />
-				<div className={styles.headerLogo}>
+				<div className={ styles.headerLogo }>
 					<Logo />
 				</div>
 
-				<div className={styles.headerUser}>
-					<button type="button" className={cn('text text_type_main-default text_color_inactive pt-4 pb-4 pl-5 pr-5', styles.user)}>
+				<div className={ styles.headerUser }>
+					<button type="button" className={ cn('text text_type_main-default text_color_inactive pt-4 pb-4 pl-5 pr-5', styles.user) }>
 						<ProfileIcon type="secondary" />
 						<span className="pl-2">Личный кабинет</span>
 					</button>

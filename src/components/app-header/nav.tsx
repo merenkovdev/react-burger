@@ -10,7 +10,7 @@ const defaultClassesLink = 'text text_type_main-default pt-4 pb-4 pl-5 pr-5';
 
 const Nav = () => (
 	<nav>
-		<ul className={styles.list}>
+		<ul className={ styles.list }>
 			<li>
 				<a className={ cn(defaultClassesLink, styles.link)} href="#">
 					<BurgerIcon type="primary" />
