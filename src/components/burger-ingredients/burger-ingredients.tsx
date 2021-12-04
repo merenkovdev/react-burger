@@ -1,6 +1,9 @@
+import styles from './burger-ingredients.module.css';
+
 import React from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import Ingredient from './ingredient';
+import cn from 'classnames';
 
 interface Item {
 	type: string,
@@ -14,7 +17,7 @@ interface Tab {
 
 const tabsData: Tab[] = [
 	{ type: 'bun', name: 'Булки' },
-	{ type: 'sauces', name: 'Соусы' },
+	{ type: 'sauce', name: 'Соусы' },
 	{ type: 'main', name: 'Начинки' },
 ];
 
@@ -27,22 +30,26 @@ const TabIngredients = (props: { data: Item[] }) => {
 
 	return (
 		<>
-			<div style={{ display: 'flex' }}>
+			<div className={ styles.tabs }>
 				{ tabsData.map(item => (
-					<Tab value={item.type} active={current === item.type} onClick={setCurrent}>
-						{item.name}
-					</Tab>
+					<Tab value={item.type}
+						key={item.type}
+						active={current === item.type}
+						onClick={setCurrent}
+					>{item.name}</Tab>
 				)) }
 			</div>
 
-			<div className="pt-10">
-				<h2 className="text text_type_main-medium">{ getTabName(current) }</h2>
-				<div className="row">
+			<div className={ cn('pt-10 custom-scroll', styles.tabsContainer) }>
+				<h2 className="text text_type_main-medium">
+					{ getTabName(current) }
+				</h2>
+				<div className={ styles.ingredients }>
 					{ props.data
 						.filter(item => item.type === current)
 						.map(item => (
-							<div className="col-6">
-								<Ingredient {...item} />
+							<div className={ cn(styles.ingredient, 'p-3') } key={item._id}>
+								<Ingredient { ...item } />
 							</div>
 						))
 					}
@@ -50,12 +57,12 @@ const TabIngredients = (props: { data: Item[] }) => {
 			</div>
 		</>
 	)
-  }
+}
 
 const BurgerIngredients = (props: { data: Item[]}) => {
 	return (
 		<section className="col-6">
-			<TabIngredients data={props.data} />
+			<TabIngredients data={ props.data } />
 		</section>
 	);
 };

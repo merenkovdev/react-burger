@@ -1,3 +1,18 @@
 .tabs {
+	display: flex;
+}
 
+.tabsContainer {
+	max-height: 67vh;
+	overflow-y: auto;
+}
+
+.ingredients {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.ingredient {
+	flex: 0 0 auto;
+	width: 50%;
 }
