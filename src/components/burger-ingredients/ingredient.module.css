@@ -2,6 +2,14 @@
 	text-align: center;
 }
 
+.imageContainer {
+	position: relative;
+}
+
+.image {
+	max-width: 100%;
+}
+
 .price {
 	display: flex;
 	align-items: center;
