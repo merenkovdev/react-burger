@@ -2,6 +2,10 @@
 	display: flex;
 }
 
+.tabs > div {
+	flex: auto;
+}
+
 .tabsContainer {
 	max-height: 67vh;
 	overflow-y: auto;

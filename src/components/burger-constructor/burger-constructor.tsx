@@ -78,27 +78,35 @@ const Ingredient = (props: { item: Item, type?: TypeElem }) => {
 
 const BurgerConstructor = (props: { data: Item[] }) => {
 	const totalPrice = props.data.reduce((acum, current) => acum + current.price, 0);
+	const bun = props.data.find(item => item.type === 'bun');
 
 	return (
 		<section className="col-6">
 			<ul className={ styles.list }>
-				<li className={ styles.item }>
-					<Ingredient item={ props.data[0] } type="top" />
-				</li>
+				{ bun &&
+					<li className={ styles.item }>
+						<Ingredient item={ bun } type="top" />
+					</li>
+				}
 				<li className={ cn(styles.listContainer, 'custom-scroll') }>
 					<ul className={ cn(styles.list) }>
-						{ props.data.map(item => {
-							return (
-								<li className={ styles.item } key={ item._id }>
-									<Ingredient item={ item } />
-								</li>
-							);
-						}) }
+						{ props.data
+							.filter(item => item.type !== 'bun')
+							.map(item => {
+								return (
+									<li className={ styles.item } key={ item._id }>
+										<Ingredient item={ item } />
+									</li>
+								);
+							})
+						}
 					</ul>
 				</ li>
-				<li className={ styles.item }>
-					<Ingredient item={ props.data[props.data.length - 1] } type="bottom" />
-				</li>
+				{ bun &&
+					<li className={ styles.item }>
+						<Ingredient item={ bun } type="bottom" />
+					</li>
+				}
 			</ul>
 			<Total price={ totalPrice} />
 		</section>

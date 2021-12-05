@@ -6,6 +6,9 @@ import Ingredient from './ingredient';
 import cn from 'classnames';
 
 interface Item {
+	name: string,
+	price: number,
+	image: string,
 	type: string,
 	_id: string,
 }
@@ -40,7 +43,7 @@ const TabIngredients = (props: { data: Item[] }) => {
 				)) }
 			</div>
 
-			<div className={ cn('pt-10 custom-scroll', styles.tabsContainer) }>
+			<div className={ cn('mt-10 custom-scroll', styles.tabsContainer) }>
 				<h2 className="text text_type_main-medium">
 					{ getTabName(current) }
 				</h2>
@@ -49,7 +52,7 @@ const TabIngredients = (props: { data: Item[] }) => {
 						.filter(item => item.type === current)
 						.map(item => (
 							<div className={ cn(styles.ingredient, 'p-3') } key={item._id}>
-								<Ingredient { ...item } />
+								<Ingredient {...item} />
 							</div>
 						))
 					}

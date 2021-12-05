@@ -3,9 +3,14 @@ import styles from './ingredient.module.css';
 import { CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import cn from 'classnames';
 
-const Ingredient = (props) => (
+const Ingredient = (
+	props: {
+		image: string,
+		price: number,
+		name: string
+	}
+) => (
 	<div className={ styles.item }>
-		{ console.log(props) }
 		<div className={ cn(styles.imageContainer, 'text text_type_main-default') }>
 			<img className={ styles.image } src={ props.image } alt="" />
 			<Counter count={1} size="default" />
