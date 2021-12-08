@@ -18,19 +18,6 @@ interface Item {
 	_id: string,
 }
 
-const getType = (index: number | undefined, max: number) => {
-	switch (index) {
-		case 0:
-			return 'top';
-
-		case max:
-			return 'bottom';
-
-		default:
-			return undefined;
-	}
-};
-
 const formattingName = (name: string, type?: TypeElem) => {
 	switch (type) {
 		case 'top':
@@ -56,7 +43,7 @@ const Total = (props: { price: number }) => (
 );
 
 const Ingredient = (props: { item: Item, type?: TypeElem }) => {
-	const { item, type } = props;
+	const { item, type } = props
 
 	return (
 		<>
