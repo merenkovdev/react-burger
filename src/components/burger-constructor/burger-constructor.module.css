@@ -1,0 +1,36 @@
+.list {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.listContainer {
+	max-height: 35vh;
+	padding-right: 10px;
+	overflow-y: auto;
+}
+
+.item {
+	position: relative;
+	display: flex;
+	padding-left: 32px;
+	align-items: center;
+}
+
+.drag {
+	top: 50%;
+	left: 0;
+	position: absolute;
+	cursor: pointer;
+	transform: translateY(-50%);
+}
+
+.total {
+	display: flex;
+	align-items: center;
+	margin-left: auto;
+    justify-content: flex-end;
+}
