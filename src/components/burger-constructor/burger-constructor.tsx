@@ -1,11 +1,15 @@
 import styles from './burger-constructor.module.css';
 
+import React from 'react';
+
 import {
 	Button,
 	DragIcon,
 	CurrencyIcon,
 	ConstructorElement,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+import Modal from '../modal/modal';
+import OrderDetails from '../order-details/order-details';
 import cn from 'classnames';
 
 type TypeElem = 'top' | 'bottom' | undefined;
@@ -31,12 +35,12 @@ const formattingName = (name: string, type?: TypeElem) => {
 	}
 };
 
-const Total = (props: { price: number }) => (
+const Total = (props: { price: number, onOrder: () => void }) => (
 	<div className={ cn(styles.total, 'pt-10') }>
 		<span className="text text_type_digits-medium pr-10">
 			{ props.price } <CurrencyIcon type="primary" />
 		</span>
-		<Button type="primary" size="large">
+		<Button type="primary" size="large" onClick={ props.onOrder }>
 			Оформить заказ
 		</Button>
 	</div>
@@ -64,6 +68,16 @@ const Ingredient = (props: { item: Item, type?: TypeElem }) => {
 };
 
 const BurgerConstructor = (props: { data: Item[] }) => {
+	const [ modalIsOpen, setModal ] = React.useState(false);
+
+	const closeModal= () => {
+		setModal(false);
+	}
+
+	const openModal= () => {
+		setModal(true);
+	}
+
 	const totalPrice = props.data.reduce((acum, current) => acum + current.price, 0);
 	const bun = props.data.find(item => item.type === 'bun');
 
@@ -95,7 +109,15 @@ const BurgerConstructor = (props: { data: Item[] }) => {
 					</li>
 				}
 			</ul>
-			<Total price={ totalPrice} />
+			<Total price={ totalPrice} onOrder={ openModal } />
+
+			{ modalIsOpen &&
+				<Modal open={ modalIsOpen }
+					onClose={ closeModal }
+				>
+					<OrderDetails />
+				</Modal>
+			}
 		</section>
 	);
 };
