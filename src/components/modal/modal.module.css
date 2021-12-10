@@ -1,0 +1,43 @@
+.dialog {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	padding-right: 16px;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.modal {
+	position: relative;
+	margin: auto;
+	width: 100%;
+	max-width: var(--max-width-modal);
+	background: var(--background);
+	border: 1px solid var(--border-modal);
+	border-radius: var(--common-border-radius-s);
+	z-index: var(--z-index-modal);
+}
+
+.modalContainer {
+	height: 100%;
+	padding: 20px 0;
+	display: flex;
+	align-items: flex-start;
+}
+
+.close {
+	position: absolute;
+	top: 60px;
+	right: 40px;
+	cursor: pointer;
+}
+
+.title {
+	padding: .34em 0;
+}
+
+.header {
+	min-height: 64px;
+}
