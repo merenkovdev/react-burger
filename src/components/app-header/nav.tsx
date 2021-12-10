@@ -12,13 +12,13 @@ const Nav = () => (
 	<nav>
 		<ul className={ styles.list }>
 			<li>
-				<a className={ cn(defaultClassesLink, styles.link)} href="#">
+				<a className={ cn(defaultClassesLink, styles.link) } href="/">
 					<BurgerIcon type="primary" />
 					<span className="pl-2">Конструктор</span>
 				</a>
 			</li>
 			<li>
-				<a className={ cn(defaultClassesLink, styles.link, 'text_color_inactive')} href="#">
+				<a className={ cn(defaultClassesLink, styles.link, 'text_color_inactive') } href="">
 					<ListIcon type="secondary" />
 					<span className="pl-2">Лента новостей</span>
 				</a>
