@@ -7,6 +7,7 @@
 }
 
 .tabsContainer {
+	position: relative;
 	max-height: 67vh;
 	overflow-y: auto;
 }
@@ -14,6 +15,9 @@
 .ingredients {
 	display: flex;
 	flex-wrap: wrap;
+	padding-left: 0;
+	margin: 0;
+	list-style: none;
 }
 
 .ingredient {

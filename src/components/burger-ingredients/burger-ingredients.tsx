@@ -20,80 +20,94 @@ interface IItem {
 	proteins: number,
 	carbohydrates: number,
 }
-
-interface ITab {
-	type: string,
-	name: string,
+interface ITabContent {
+	activeTab: string,
+	data: Record<string, IItem[]>,
+	onClickCard: (id: string) => void,
 }
 
-const tabsData: ITab[] = [
-	{ type: 'bun', name: 'Булки' },
-	{ type: 'sauce', name: 'Соусы' },
-	{ type: 'main', name: 'Начинки' },
-];
-
-const getTabName = (type: string) => (
-	tabsData.find(tab => tab.type === type) || {}
-).name;
+const tabNames: Record<string, string> = {
+	bun: 'Булки',
+	sauce: 'Соусы',
+	main: 'Начинки',
+};
 
 const TabHeader = (props: {
 	activeTab: string,
-	setCurrent: (activeTab: string) => void
+	tabs: string[],
+	setTab: (activeTab: string) => void
 }) => {
-	const { activeTab, setCurrent } = props;
+	const {
+		activeTab,
+		tabs,
+		setTab,
+	} = props;
 
 	return (
 		<>
 			<div className={ styles.tabs }>
-				{ tabsData.map(item => (
-					<Tab value={ item.type }
-						key={ item.type }
-						active={ activeTab === item.type }
-						onClick={ setCurrent }
-					>{item.name}</Tab>
+				{ tabs.map(key => (
+					<Tab value={ key }
+						key={ key }
+						active={ activeTab === key }
+						onClick={ setTab }
+					>{ tabNames[key] }</Tab>
 				)) }
 			</div>
 		</>
 	)
 }
 
-const TabContent = (props: {
-	activeTab: string,
-	data: IItem[],
-	onClickCard: (id: string) => void,
-}) => {
+const TabContent = React.forwardRef<HTMLDivElement, ITabContent>((props, ref) => {
 	const {
-		activeTab,
 		data,
 		onClickCard,
 	} = props;
 
 	return (
-		<div className={ cn('mt-10 custom-scroll', styles.tabsContainer) }>
-			<h2 className="text text_type_main-medium">
-				{ getTabName(activeTab) }
-			</h2>
-			<div className={ styles.ingredients }>
-				{ data
-					.filter(item => item.type === activeTab)
-					.map(item => (
-						<div className={ cn(styles.ingredient, 'p-3') } key={item._id}>
-							<Ingredient { ...item } count={1} onClickCard={ onClickCard } />
-						</div>
-					))
-				}
-			</div>
+		<div ref={ ref } className={ cn('mt-10 custom-scroll', styles.tabsContainer) }>
+			{ console.log('Рендер') }
+			{ Object.keys(data)
+				.map(type => (
+					<React.Fragment key={ type }>
+						<h2 className="text text_type_main-medium pb-6" id={ type }>
+							{ tabNames[type] }
+						</h2>
+						<ul className={ cn(styles.ingredients, ' pb-10') }>
+							{ data[type].map(item => (
+								<li className={ cn(styles.ingredient, 'p-3') } key={ item._id } >
+									<Ingredient { ...item } count={1} onClickCard={ onClickCard } />
+								</li>
+							)) }
+						</ul>
+					</React.Fragment >
+				))
+			}
 		</div>
 	);
-};
+});
 
 const BurgerIngredients = (props: { data: IItem[]}) => {
-	const [ activeTab, setCurrent ] = React.useState('bun');
+	const [ activeTab, setTab ] = React.useState('bun');
 	const [ state, setState ] = React.useState({
-		activeTab: 'bun',
 		itemDetails: {} as IItem,
 		modalIsOpen: false,
 	});
+	const tabContentRef = React.useRef<HTMLDivElement>(null);
+
+	const sortedData = React.useMemo(() => {
+		return props.data.reduce((acum, current: IItem) => {
+			if (current.type && !acum[current.type]) {
+				acum[current.type] = [];
+			}
+
+			if (acum[current.type]) {
+				acum[current.type].push(current);
+			}
+
+			return acum;
+		}, {} as Record<string, IItem[]>)
+	}, [ props.data ]);
 
 	const closeModal= () => {
 		setState({
@@ -101,7 +115,7 @@ const BurgerIngredients = (props: { data: IItem[]}) => {
 			itemDetails: {} as IItem,
 			modalIsOpen: false,
 		})
-	}
+	};
 
 	const openModalIngredient = (id: string) => {
 		const item = props.data.find(item => item._id === id) || {} as IItem;
@@ -111,12 +125,28 @@ const BurgerIngredients = (props: { data: IItem[]}) => {
 			itemDetails: item,
 			modalIsOpen: true,
 		});
-	}
+	};
+
+	React.useEffect(() => {
+		const title = document.getElementById(activeTab);
+		const container = title?.offsetParent;
+
+		if (container && container === tabContentRef.current) {
+			tabContentRef.current.scroll(0, title?.offsetTop);
+		}
+	}, [activeTab])
 
 	return (
 		<section className="col-6">
-			<TabHeader activeTab={ activeTab } setCurrent={ setCurrent } />
-			<TabContent activeTab={ activeTab } data={ props.data } onClickCard={ openModalIngredient } />
+			<TabHeader tabs={ Object.keys(sortedData) }
+				activeTab={ activeTab }
+				setTab={ setTab }
+			/>
+			<TabContent ref={ tabContentRef }
+				activeTab={ activeTab }
+				data={ sortedData }
+				onClickCard={ openModalIngredient }
+			/>
 			{ state.modalIsOpen &&
 				state.itemDetails &&
 				<Modal open={ state.modalIsOpen }
