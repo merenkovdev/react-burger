@@ -24,22 +24,21 @@ const App = () => {
 		}));
 
 		fetch(API_URL)
-			.then(response => {
-				return response.json();
-			})
+			.then(response => response.json())
 			.then(response => {
 				setState((prevState) => ({
 					...prevState,
 					isLoaded: false,
 					data: response.data,
-				}))
+				}));
 			})
 			.catch(err => {
+				console.warm(err);
 				setState(prevState => ({
 					...prevState,
 					isLoaded: false,
 					hasError: true
-				}))
+				}));
 			});
 	};
 
@@ -66,7 +65,7 @@ const App = () => {
 			}
 			{ !isLoading &&
 				!hasError &&
-				data.length &&
+				Boolean(data.length) &&
 				<main className={ cn(styles.main, 'container pl-5 pr-5') }>
 					<h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
 					<div className="row">
