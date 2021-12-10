@@ -48,7 +48,7 @@ const СalorieСontent = (props: IСalorieСontent) => {
 
 const IngredientDetails = (props: IIngredientDetails) => {
 	const {
-		price, // Цена не нужна в деталях ингредиента
+		price,
 		fat,
 		calories,
 		proteins,

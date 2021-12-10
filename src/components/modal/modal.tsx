@@ -57,7 +57,6 @@ const Modal = (props: {
 		};
 	}, [open]);
 
-
 	React.useEffect(() => {
 		const onKeyPress = (e: { key: string }) => {
 			if (open && e.key === 'Escape') {
