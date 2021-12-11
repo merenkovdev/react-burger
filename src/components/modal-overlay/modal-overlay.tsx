@@ -1,4 +1,5 @@
 import styles from './modal-overlay.module.css';
+import PropTypes from 'prop-types';
 
 const ModalOverlay = (props: { onClose: () => void }) => {
 	return (
@@ -7,3 +8,7 @@ const ModalOverlay = (props: { onClose: () => void }) => {
 };
 
 export default ModalOverlay;
+
+ModalOverlay.propTypes = {
+	onClose: PropTypes.func,
+};

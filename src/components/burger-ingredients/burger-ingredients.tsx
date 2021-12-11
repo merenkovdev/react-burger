@@ -1,6 +1,7 @@
 import styles from './burger-ingredients.module.css';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import Ingredient from '../ingredient/ingredient';
 import IngredientDetails from '../ingredient-details/ingredient-details';
@@ -20,11 +21,24 @@ interface IItem {
 	proteins: number,
 	carbohydrates: number,
 }
+
 interface ITabContent {
-	activeTab: string,
 	data: Record<string, IItem[]>,
 	onClickCard: (id: string) => void,
 }
+
+const itemPropTypes = PropTypes.shape({
+	_id: PropTypes.string,
+	name: PropTypes.string,
+	price: PropTypes.number,
+	image: PropTypes.string,
+	image_large: PropTypes.string,
+	type: PropTypes.string,
+	fat: PropTypes.number,
+	calories: PropTypes.number,
+	proteins: PropTypes.number,
+	carbohydrates: PropTypes.number,
+});
 
 const tabNames: Record<string, string> = {
 	bun: 'Булки',
@@ -66,7 +80,6 @@ const TabContent = React.forwardRef<HTMLDivElement, ITabContent>((props, ref) =>
 
 	return (
 		<div ref={ ref } className={ cn('mt-10 custom-scroll', styles.tabsContainer) }>
-			{ console.log('Рендер') }
 			{ Object.keys(data)
 				.map(type => (
 					<React.Fragment key={ type }>
@@ -143,7 +156,6 @@ const BurgerIngredients = (props: { data: IItem[]}) => {
 				setTab={ setTab }
 			/>
 			<TabContent ref={ tabContentRef }
-				activeTab={ activeTab }
 				data={ sortedData }
 				onClickCard={ openModalIngredient }
 			/>
@@ -161,3 +173,22 @@ const BurgerIngredients = (props: { data: IItem[]}) => {
 };
 
 export default BurgerIngredients;
+
+TabHeader.propTypes = {
+	activeTab: PropTypes.string.isRequired,
+	tabs: PropTypes.arrayOf(PropTypes.string).isRequired,
+	setTab: PropTypes.func.isRequired,
+};
+
+TabContent.propTypes = {
+	// TODO: Убрать комментарий. Разобраться в чем ошибка, после прохождения темы Typescript
+	// @ts-ignore: Unreachable code error
+	data: PropTypes.objectOf(
+		PropTypes.arrayOf(itemPropTypes)
+	).isRequired,
+	onClickCard: PropTypes.func.isRequired,
+};
+
+BurgerIngredients.propTypes = {
+	data: PropTypes.arrayOf(itemPropTypes).isRequired
+};

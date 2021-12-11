@@ -1,11 +1,12 @@
+import styles from './modal.module.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
-import styles from './modal.module.css';
+import PropTypes from 'prop-types';
+import cn from 'classnames';
 
 import ModalOverlay from '../modal-overlay/modal-overlay';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-
-import cn from 'classnames';
 
 const toogleBodyClass = (toggle: boolean) => {
 	document.body.classList.toggle('has-modal', toggle);
@@ -39,7 +40,6 @@ const Modal = (props: {
 	onClose: () => void,
 	open: boolean,
 	header?: React.ReactNode,
-	close?: boolean,
 }) => {
 	const {
 		children,
@@ -89,3 +89,15 @@ const Modal = (props: {
 }
 
 export default Modal;
+
+ModalHeader.propTypes = {
+	onClose: PropTypes.func.isRequired,
+	children: PropTypes.node,
+};
+
+Modal.propTypes = {
+	onClose: PropTypes.func.isRequired,
+	open: PropTypes.bool.isRequired,
+	children: PropTypes.node,
+	header: PropTypes.node,
+};

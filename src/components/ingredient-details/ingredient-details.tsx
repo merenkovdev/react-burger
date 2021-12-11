@@ -1,4 +1,5 @@
 import styles from './ingredient-details.module.css';
+import PropTypes from 'prop-types';
 
 import Ingredient from '../ingredient/ingredient';
 import cn from 'classnames';
@@ -70,3 +71,23 @@ const IngredientDetails = (props: IIngredientDetails) => {
 };
 
 export default IngredientDetails;
+
+СalorieСontent.propTypes = {
+	fat: PropTypes.number.isRequired,
+	calories: PropTypes.number.isRequired,
+	proteins: PropTypes.number.isRequired,
+	carbohydrates: PropTypes.number.isRequired,
+};
+
+IngredientDetails.propTypes = {
+	_id: PropTypes.string.isRequired,
+	image: PropTypes.string.isRequired,
+	image_large: PropTypes.string.isRequired,
+	name: PropTypes.string.isRequired,
+	fat: PropTypes.number.isRequired,
+	calories: PropTypes.number.isRequired,
+	proteins: PropTypes.number.isRequired,
+	carbohydrates: PropTypes.number.isRequired,
+	price: PropTypes.number,
+	onClickCard: PropTypes.func,
+};

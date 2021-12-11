@@ -1,5 +1,7 @@
 import styles from './ingredient.module.css';
 
+import PropTypes from 'prop-types';
+
 import { CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import cn from 'classnames';
 
@@ -57,3 +59,14 @@ const Ingredient = (props: IIngredient) => {
 };
 
 export default Ingredient;
+
+Ingredient.propTypes = {
+	_id: PropTypes.string.isRequired,
+	image: PropTypes.string.isRequired,
+	image_large: PropTypes.string.isRequired,
+	name: PropTypes.string.isRequired,
+	price: PropTypes.number,
+	count: PropTypes.number,
+	onClickCard: PropTypes.func,
+	size: PropTypes.string,
+};
