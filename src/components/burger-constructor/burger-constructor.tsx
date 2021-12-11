@@ -1,18 +1,16 @@
 import styles from './burger-constructor.module.css';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import {
 	Button,
-	DragIcon,
 	CurrencyIcon,
-	ConstructorElement,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
+import IngredientConstructor from '../ingredient-constructor/ingredient-constructor';
 import cn from 'classnames';
-
-type TypeElem = 'top' | 'bottom' | undefined;
 
 interface Item {
 	name: string,
@@ -21,19 +19,6 @@ interface Item {
 	type: string,
 	_id: string,
 }
-
-const formattingName = (name: string, type?: TypeElem) => {
-	switch (type) {
-		case 'top':
-			return name + ' (верх)';
-
-		case 'bottom':
-			return name + ' (низ)';
-
-		default:
-			return name;
-	}
-};
 
 const Total = (props: { price: number, onOrder: () => void }) => (
 	<div className={ cn(styles.total, 'pt-10') }>
@@ -45,27 +30,6 @@ const Total = (props: { price: number, onOrder: () => void }) => (
 		</Button>
 	</div>
 );
-
-const Ingredient = (props: { item: Item, type?: TypeElem }) => {
-	const { item, type } = props
-
-	return (
-		<>
-			{ !type &&
-				<div className={ styles.drag }>
-					<DragIcon type="primary" />
-				</div>
-			}
-			<ConstructorElement
-				type={ type }
-				isLocked={ Boolean(type) }
-				text={ formattingName(item.name, type) }
-				price={ item.price }
-				thumbnail={ item.image }
-			/>
-		</>
-	)
-};
 
 const BurgerConstructor = (props: { data: Item[] }) => {
 	const [ modalIsOpen, setModal ] = React.useState(false);
@@ -86,7 +50,7 @@ const BurgerConstructor = (props: { data: Item[] }) => {
 			<ul className={ styles.list }>
 				{ bun &&
 					<li className={ styles.item }>
-						<Ingredient item={ bun } type="top" />
+						<IngredientConstructor item={ bun } type="top" />
 					</li>
 				}
 				<li className={ cn(styles.listContainer, 'custom-scroll') }>
@@ -96,7 +60,7 @@ const BurgerConstructor = (props: { data: Item[] }) => {
 							.map(item => {
 								return (
 									<li className={ styles.item } key={ item._id }>
-										<Ingredient item={ item } />
+										<IngredientConstructor item={ item } />
 									</li>
 								);
 							})
@@ -105,7 +69,7 @@ const BurgerConstructor = (props: { data: Item[] }) => {
 				</ li>
 				{ bun &&
 					<li className={ styles.item }>
-						<Ingredient item={ bun } type="bottom" />
+						<IngredientConstructor item={ bun } type="bottom" />
 					</li>
 				}
 			</ul>
@@ -123,3 +87,18 @@ const BurgerConstructor = (props: { data: Item[] }) => {
 };
 
 export default BurgerConstructor;
+
+Total.propTypes = {
+	price: PropTypes.number,
+	onOrder: PropTypes.func,
+};
+
+BurgerConstructor.propTypes = {
+	data: PropTypes.arrayOf(PropTypes.shape({
+		_id: PropTypes.string,
+		type: PropTypes.string,
+		name: PropTypes.string,
+		price: PropTypes.number,
+		image: PropTypes.string,
+	})),
+};

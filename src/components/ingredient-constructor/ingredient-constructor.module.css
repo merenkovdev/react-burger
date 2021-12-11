@@ -1,0 +1,7 @@
+.drag {
+	top: 50%;
+	left: 0;
+	position: absolute;
+	cursor: pointer;
+	transform: translateY(-50%);
+}
