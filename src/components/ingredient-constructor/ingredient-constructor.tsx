@@ -5,7 +5,7 @@ import { DragIcon, ConstructorElement } from '@ya.praktikum/react-developer-burg
 
 type TypeElem = 'top' | 'bottom' | undefined;
 
-interface Item {
+interface IItem {
 	name: string,
 	price: number,
 	image: string,
@@ -26,7 +26,7 @@ const formattingName = (name: string, type?: TypeElem) => {
 	}
 };
 
-const Ingredient = (props: { item: Item, type?: TypeElem }) => {
+const Ingredient = (props: { item: IItem, type?: TypeElem }) => {
 	const { item, type } = props;
 
 	return (

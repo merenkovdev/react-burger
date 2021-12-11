@@ -12,7 +12,7 @@ import OrderDetails from '../order-details/order-details';
 import IngredientConstructor from '../ingredient-constructor/ingredient-constructor';
 import cn from 'classnames';
 
-interface Item {
+interface IItem {
 	name: string,
 	price: number,
 	image: string,
@@ -31,7 +31,7 @@ const Total = (props: { price: number, onOrder: () => void }) => (
 	</div>
 );
 
-const BurgerConstructor = (props: { data: Item[] }) => {
+const BurgerConstructor = (props: { data: IItem[] }) => {
 	const [ modalIsOpen, setModal ] = React.useState(false);
 
 	const closeModal= () => {
