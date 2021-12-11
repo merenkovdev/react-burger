@@ -16,12 +16,40 @@ const App = () => {
 		data: [],
 	});
 
+	const handleError = (error) => {
+		console.warn(error);
+		setState(prevState => ({
+			...prevState,
+			isLoaded: false,
+			hasError: true
+		}));
+	};
+
 	const getIngredients = () => {
 		setState(prevState => ({
 			...prevState,
 			isLoaded: true,
 			hasError: false,
 		}));
+
+		try {
+			fetch(API_URL)
+				.then(response => response.json())
+				.then(response => {
+					if (!response.success) {
+						throw new Error('Данные не получены');
+					}
+
+					setState((prevState) => ({
+						...prevState,
+						isLoaded: false,
+						data: response.data,
+					}));
+				})
+				.catch(handleError);
+		} catch (error) {
+			handleError(error);
+		}
 
 		fetch(API_URL)
 			.then(response => response.json())
@@ -33,7 +61,7 @@ const App = () => {
 				}));
 			})
 			.catch(err => {
-				console.warm(err);
+				console.warn(err);
 				setState(prevState => ({
 					...prevState,
 					isLoaded: false,
