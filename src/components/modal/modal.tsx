@@ -8,10 +8,6 @@ import cn from 'classnames';
 import ModalOverlay from '../modal-overlay/modal-overlay';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 
-const toogleBodyClass = (toggle: boolean) => {
-	document.body.classList.toggle('has-modal', toggle);
-}
-
 interface IModalHeader {
 	children: React.ReactNode,
 	onClose: () => void,
@@ -48,14 +44,6 @@ const Modal = (props: {
 		open
 	} = props;
 	const modalRoot = document.getElementById('modals');
-
-	React.useEffect(() => {
-		toogleBodyClass(open);
-
-		return () => {
-			toogleBodyClass(false);
-		};
-	}, [open]);
 
 	React.useEffect(() => {
 		const onKeyPress = (e: { key: string }) => {

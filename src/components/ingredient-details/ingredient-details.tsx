@@ -31,16 +31,16 @@ const keysCaloriesContent: [key: string, name: string][] = [
 	[ 'carbohydrates', 'Углеводы, г'],
 ];
 
-const classesTxt = 'text text_type_main-default text_color_inactive';
-const classesTxtNum = 'text text_type_digits-default text_color_inactive';
+const classesText = 'text text_type_main-default text_color_inactive';
+const classesTextDigits = 'text text_type_digits-default text_color_inactive';
 
 const СalorieСontent = (props: IСalorieСontent) => {
 	return (
 		<ul className={ cn(styles.list, 'pt-4') }>
 			{ keysCaloriesContent.map(([ key, name ]) => (
 				<li className={ styles.item } key={ key }>
-					<div className={ classesTxt }>{ name }</div>
-					<div className={ cn(classesTxtNum, 'mt-2') }>{ props[key] }</div>
+					<div className={ classesText }>{ name }</div>
+					<div className={ cn(classesTextDigits, 'mt-2') }>{ props[key] }</div>
 				</li>
 			)) }
 		</ul>
