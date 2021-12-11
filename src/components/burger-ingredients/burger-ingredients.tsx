@@ -4,8 +4,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import Ingredient from '../ingredient/ingredient';
-import IngredientDetails from '../ingredient-details/ingredient-details';
-import Modal from '../modal/modal';
 
 import cn from 'classnames';
 
@@ -100,12 +98,11 @@ const TabContent = React.forwardRef<HTMLDivElement, ITabContent>((props, ref) =>
 	);
 });
 
-const BurgerIngredients = (props: { data: IItem[]}) => {
+const BurgerIngredients = (props: {
+	data: IItem[],
+	openModal: (data: { itemDetails: IItem }) => void
+}) => {
 	const [ activeTab, setTab ] = React.useState('bun');
-	const [ state, setState ] = React.useState({
-		itemDetails: {} as IItem,
-		modalIsOpen: false,
-	});
 	const tabContentRef = React.useRef<HTMLDivElement>(null);
 
 	const sortedData = React.useMemo(() => {
@@ -122,22 +119,14 @@ const BurgerIngredients = (props: { data: IItem[]}) => {
 		}, {} as Record<string, IItem[]>)
 	}, [ props.data ]);
 
-	const closeModal= () => {
-		setState({
-			...state,
-			itemDetails: {} as IItem,
-			modalIsOpen: false,
-		})
-	};
-
 	const openModalIngredient = (id: string) => {
-		const item = props.data.find(item => item._id === id) || {} as IItem;
+		const itemDetails = props.data.find(item => item._id === id) || {} as IItem;
 
-		setState({
-			...state,
-			itemDetails: item,
-			modalIsOpen: true,
-		});
+		if (itemDetails) {
+			props.openModal({
+				itemDetails,
+			});
+		}
 	};
 
 	React.useEffect(() => {
@@ -159,15 +148,6 @@ const BurgerIngredients = (props: { data: IItem[]}) => {
 				data={ sortedData }
 				onClickCard={ openModalIngredient }
 			/>
-			{ state.modalIsOpen &&
-				state.itemDetails &&
-				<Modal open={ state.modalIsOpen }
-					onClose={ closeModal }
-					header='Детали ингредиента'
-				>
-					<IngredientDetails {...state.itemDetails} />
-				</Modal>
-			}
 		</section>
 	);
 };
@@ -190,5 +170,6 @@ TabContent.propTypes = {
 };
 
 BurgerIngredients.propTypes = {
-	data: PropTypes.arrayOf(itemPropTypes).isRequired
+	data: PropTypes.arrayOf(itemPropTypes).isRequired,
+	openModal: PropTypes.func.isRequired,
 };

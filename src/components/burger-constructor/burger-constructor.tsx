@@ -7,8 +7,6 @@ import {
 	Button,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import Modal from '../modal/modal';
-import OrderDetails from '../order-details/order-details';
 import IngredientConstructor from '../ingredient-constructor/ingredient-constructor';
 import cn from 'classnames';
 
@@ -31,19 +29,26 @@ const Total = (props: { price: number, onOrder: () => void }) => (
 	</div>
 );
 
-const BurgerConstructor = (props: { data: IItem[] }) => {
-	const [ modalIsOpen, setModal ] = React.useState(false);
-
-	const closeModal= () => {
-		setModal(false);
-	}
-
-	const openModal= () => {
-		setModal(true);
-	}
-
-	const totalPrice = props.data.reduce((acum, current) => acum + current.price, 0);
-	const bun = props.data.find(item => item.type === 'bun');
+const BurgerConstructor = (props: {
+	data: IItem[],
+	openModal: () => void,
+}) => {
+	const {
+		data,
+		openModal,
+	} = props;
+	const totalPrice = React.useMemo(() =>
+		data.reduce((acum, current) => acum + current.price, 0),
+		[data]
+	);
+	const bun = React.useMemo(() =>
+		data.find(item => item.type === 'bun'),
+		[ data ]
+	);
+	const ingredientsWitoutBun = React.useMemo(() =>
+		data.filter(item => item.type !== 'bun'),
+		[ data ]
+	);
 
 	return (
 		<section className="col-6">
@@ -55,8 +60,7 @@ const BurgerConstructor = (props: { data: IItem[] }) => {
 				}
 				<li className={ cn(styles.listContainer, 'custom-scroll') }>
 					<ul className={ cn(styles.list) }>
-						{ props.data
-							.filter(item => item.type !== 'bun')
+						{ ingredientsWitoutBun
 							.map(item => {
 								return (
 									<li className={ styles.item } key={ item._id }>
@@ -74,14 +78,6 @@ const BurgerConstructor = (props: { data: IItem[] }) => {
 				}
 			</ul>
 			<Total price={ totalPrice} onOrder={ openModal } />
-
-			{ modalIsOpen &&
-				<Modal open={ modalIsOpen }
-					onClose={ closeModal }
-				>
-					<OrderDetails />
-				</Modal>
-			}
 		</section>
 	);
 };
@@ -101,4 +97,5 @@ BurgerConstructor.propTypes = {
 		price: PropTypes.number,
 		image: PropTypes.string,
 	})).isRequired,
+	openModal: PropTypes.func.isRequired,
 };

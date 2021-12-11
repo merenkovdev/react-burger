@@ -4,16 +4,24 @@ import React from 'react';
 import AppHeader from '../app-header/app-header';
 import BurgerConstructor from '../burger-constructor/burger-constructor';
 import BurgerIngredients from '../burger-ingredients/burger-ingredients';
+import OrderDetails from '../order-details/order-details';
+import IngredientDetails from '../ingredient-details/ingredient-details';
+import Modal from '../modal/modal';
 
+import {
+	API_URL,
+	MODAL_DETAILS,
+	MODAL_ORDER,
+ } from '../../utils/constants';
 import cn from 'classnames';
-
-const API_URL = 'https://norma.nomoreparties.space/api/ingredients';
 
 const App = () => {
 	const [ state, setState ] = React.useState({
 		isLoading: false,
 		hasError: false,
 		data: [],
+		modal: '',
+		itemDetails: null,
 	});
 
 	const handleError = (error) => {
@@ -24,6 +32,26 @@ const App = () => {
 			hasError: true
 		}));
 	};
+
+	const closeModal= React.useCallback(() => {
+		setState({
+			...state,
+			modal: '',
+		});
+	}, [ state ]);
+
+	const openModal = React.useCallback(
+		(name) => (dataProp) =>
+			setState({
+				...state,
+				...dataProp,
+				modal: name,
+			}),
+		[ state ]
+	);
+
+	const openModalDetails = openModal(MODAL_DETAILS);
+	const openModalOrder = openModal(MODAL_ORDER);
 
 	const getIngredients = () => {
 		setState(prevState => ({
@@ -75,7 +103,9 @@ const App = () => {
 	const {
 		isLoading,
 		hasError,
+		modal,
 		data,
+		itemDetails,
 	} = state;
 
 	return (
@@ -97,10 +127,32 @@ const App = () => {
 				<main className={ cn(styles.main, 'container pl-5 pr-5') }>
 					<h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
 					<div className="row">
-						<BurgerIngredients data={ data } />
-						<BurgerConstructor data={ data } />
+						<BurgerIngredients data={ data }
+							modal={ modal }
+							openModal={ openModalDetails }
+							closeModal={ closeModal }
+						/>
+						<BurgerConstructor data={ data } openModal={ openModalOrder } />
 					</div>
 				</main>
+			}
+
+			{ modal === MODAL_ORDER &&
+				<Modal open={ true }
+					onClose={ closeModal }
+				>
+					<OrderDetails />
+				</Modal>
+			}
+
+			{ modal === MODAL_DETAILS &&
+				itemDetails &&
+				<Modal open={ true }
+					onClose={ closeModal }
+					header='Детали ингредиента'
+				>
+					<IngredientDetails {...itemDetails} />
+				</Modal>
 			}
 		</div>
 	)
