@@ -10,15 +10,7 @@ import {
 import IngredientConstructor from '../ingredient-constructor/ingredient-constructor';
 import cn from 'classnames';
 
-interface IItem {
-	name: string,
-	price: number,
-	image: string,
-	type: string,
-	_id: string,
-}
-
-const Total = (props: { price: number, onOrder: () => void }) => (
+const Total = (props) => (
 	<div className={ cn(styles.total, 'pt-10') }>
 		<span className="text text_type_digits-medium pr-10">
 			{ props.price } <CurrencyIcon type="primary" />
@@ -29,10 +21,7 @@ const Total = (props: { price: number, onOrder: () => void }) => (
 	</div>
 );
 
-const BurgerConstructor = (props: {
-	data: IItem[],
-	openModal: () => void,
-}) => {
+const BurgerConstructor = (props) => {
 	const {
 		data,
 		openModal,

@@ -8,12 +8,9 @@ import cn from 'classnames';
 import ModalOverlay from '../modal-overlay/modal-overlay';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 
-interface IModalHeader {
-	children: React.ReactNode,
-	onClose: () => void,
-}
+const modalRoot = document.getElementById('modals');
 
-const ModalHeader = (props: IModalHeader) => {
+const ModalHeader = (props) => {
 	const {
 		children,
 		onClose,
@@ -31,22 +28,16 @@ const ModalHeader = (props: IModalHeader) => {
 	);
 };
 
-const Modal = (props: {
-	children: React.ReactNode,
-	onClose: () => void,
-	open: boolean,
-	header?: React.ReactNode,
-}) => {
+const Modal = (props) => {
 	const {
 		children,
 		header,
 		onClose,
 		open
 	} = props;
-	const modalRoot = document.getElementById('modals');
 
 	React.useEffect(() => {
-		const onKeyPress = (e: { key: string }) => {
+		const onKeyPress = (e) => {
 			if (open && e.key === 'Escape') {
 				onClose();
 			}
