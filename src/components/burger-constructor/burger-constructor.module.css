@@ -20,14 +20,6 @@
 	align-items: center;
 }
 
-.drag {
-	top: 50%;
-	left: 0;
-	position: absolute;
-	cursor: pointer;
-	transform: translateY(-50%);
-}
-
 .total {
 	display: flex;
 	align-items: center;
