@@ -7,24 +7,6 @@ import Ingredient from '../ingredient/ingredient';
 
 import cn from 'classnames';
 
-interface IItem {
-	_id: string,
-	name: string,
-	price: number,
-	image: string,
-	image_large: string,
-	type: string,
-	fat: number,
-	calories: number,
-	proteins: number,
-	carbohydrates: number,
-}
-
-interface ITabContent {
-	data: Record<string, IItem[]>,
-	onClickCard: (id: string) => void,
-}
-
 const itemPropTypes = PropTypes.shape({
 	_id: PropTypes.string,
 	name: PropTypes.string,
@@ -38,17 +20,13 @@ const itemPropTypes = PropTypes.shape({
 	carbohydrates: PropTypes.number,
 });
 
-const tabNames: Record<string, string> = {
+const tabNames = {
 	bun: 'Булки',
 	sauce: 'Соусы',
 	main: 'Начинки',
 };
 
-const TabHeader = (props: {
-	activeTab: string,
-	tabs: string[],
-	setTab: (activeTab: string) => void
-}) => {
+const TabHeader = (props) => {
 	const {
 		activeTab,
 		tabs,
@@ -70,7 +48,7 @@ const TabHeader = (props: {
 	)
 }
 
-const TabContent = React.forwardRef<HTMLDivElement, ITabContent>((props, ref) => {
+const TabContent = React.forwardRef((props, ref) => {
 	const {
 		data,
 		onClickCard,
@@ -98,15 +76,12 @@ const TabContent = React.forwardRef<HTMLDivElement, ITabContent>((props, ref) =>
 	);
 });
 
-const BurgerIngredients = (props: {
-	data: IItem[],
-	openModal: (data: { itemDetails: IItem }) => void
-}) => {
+const BurgerIngredients = (props) => {
 	const [ activeTab, setTab ] = React.useState('bun');
-	const tabContentRef = React.useRef<HTMLDivElement>(null);
+	const tabContentRef = React.useRef(null);
 
 	const sortedData = React.useMemo(() => {
-		return props.data.reduce((acum, current: IItem) => {
+		return props.data.reduce((acum, current) => {
 			if (current.type && !acum[current.type]) {
 				acum[current.type] = [];
 			}
@@ -116,11 +91,11 @@ const BurgerIngredients = (props: {
 			}
 
 			return acum;
-		}, {} as Record<string, IItem[]>)
+		}, {})
 	}, [ props.data ]);
 
-	const openModalIngredient = (id: string) => {
-		const itemDetails = props.data.find(item => item._id === id) || {} as IItem;
+	const openModalIngredient = (id) => {
+		const itemDetails = props.data.find(item => item._id === id);
 
 		if (itemDetails) {
 			props.openModal({
