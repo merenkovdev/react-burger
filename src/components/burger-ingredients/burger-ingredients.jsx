@@ -87,7 +87,7 @@ const TabContent = React.forwardRef((props, ref) => {
 	);
 });
 
-const BurgerIngredients = (props) => {
+const BurgerIngredients = () => {
 	const { data } = React.useContext(DataContext);
 	const [ activeTab, setTab ] = React.useState('bun');
 	const tabContentRef = React.useRef(null);
@@ -142,9 +142,4 @@ TabContent.propTypes = {
 	data: PropTypes.objectOf(
 		PropTypes.arrayOf(itemPropTypes)
 	).isRequired,
-};
-
-BurgerIngredients.propTypes = {
-	data: PropTypes.arrayOf(itemPropTypes).isRequired,
-	openModal: PropTypes.func.isRequired,
 };

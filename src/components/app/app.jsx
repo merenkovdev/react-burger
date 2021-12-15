@@ -111,10 +111,8 @@ const App = () => {
 						<main className={ cn(styles.main, 'container pl-5 pr-5') }>
 							<h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
 							<div className="row">
-								<BurgerIngredients data={ data }
-									openModal={ openModalDetails }
-								/>
-								<BurgerConstructor openModal={ openModalOrder } />
+								<BurgerIngredients />
+								<BurgerConstructor />
 							</div>
 						</main>
 					</DataContext.Provider>
