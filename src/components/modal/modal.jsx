@@ -8,6 +8,8 @@ import cn from 'classnames';
 import ModalOverlay from '../modal-overlay/modal-overlay';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 
+import ModalContext from '../../services/modal-context';
+
 const modalRoot = document.getElementById('modals');
 
 const ModalHeader = (props) => {
@@ -29,17 +31,17 @@ const ModalHeader = (props) => {
 };
 
 const Modal = (props) => {
+	const { closeModal } = React.useContext(ModalContext);
 	const {
 		children,
 		header,
-		onClose,
 		open
 	} = props;
 
 	React.useEffect(() => {
 		const onKeyPress = (e) => {
 			if (open && e.key === 'Escape') {
-				onClose();
+				closeModal();
 			}
 		}
 
@@ -48,16 +50,16 @@ const Modal = (props) => {
 		return () => {
 			document.removeEventListener('keydown', onKeyPress);
 		};
-	}, [onClose, open]);
+	}, [closeModal, open]);
 
 	return (modalRoot &&
 		ReactDOM.createPortal(
 		<>
 			<div className={ styles.dialog }>
-				<ModalOverlay onClose={ onClose } />
+				<ModalOverlay onClose={ closeModal } />
 				<div className={ styles.modalContainer }>
 					<div className={ cn(styles.modal, 'p-10') }>
-						<ModalHeader onClose={ onClose }>{ header }</ModalHeader>
+						<ModalHeader onClose={ closeModal }>{ header }</ModalHeader>
 						{ children }
 					</div>
 				</div>
@@ -75,7 +77,6 @@ ModalHeader.propTypes = {
 };
 
 Modal.propTypes = {
-	onClose: PropTypes.func.isRequired,
 	open: PropTypes.bool.isRequired,
 	children: PropTypes.node,
 	header: PropTypes.node,

@@ -9,26 +9,30 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import IngredientConstructor from '../ingredient-constructor/ingredient-constructor';
 import cn from 'classnames';
+import DataContext from '../../services/data-context';
+import ModalContext from '../../services/modal-context';
 
-const Total = (props) => (
-	<div className={ cn(styles.total, 'pt-10') }>
-		<span className="text text_type_digits-medium pr-10">
-			{ props.price } <CurrencyIcon type="primary" />
-		</span>
-		<Button type="primary" size="large" onClick={ props.onOrder }>
-			Оформить заказ
-		</Button>
-	</div>
-);
+const Total = (props) => {
+	// const { data } = React.useContext(DataContext);
 
-const BurgerConstructor = (props) => {
-	const {
-		data,
-		openModal,
-	} = props;
+	return(
+		<div className={ cn(styles.total, 'pt-10') }>
+			<span className="text text_type_digits-medium pr-10">
+				{ props.price } <CurrencyIcon type="primary" />
+			</span>
+			<Button type="primary" size="large" onClick={ props.onOrder }>
+				Оформить заказ
+			</Button>
+		</div>
+	);
+};
+
+const BurgerConstructor = () => {
+	const { data } = React.useContext(DataContext);
+	const { openModalOrder } = React.useContext(ModalContext);
 	const totalPrice = React.useMemo(() =>
 		data.reduce((acum, current) => acum + current.price, 0),
-		[data]
+		[ data ]
 	);
 	const bun = React.useMemo(() =>
 		data.find(item => item.type === 'bun'),
@@ -66,7 +70,7 @@ const BurgerConstructor = (props) => {
 					</li>
 				}
 			</ul>
-			<Total price={ totalPrice} onOrder={ openModal } />
+			<Total price={ totalPrice} onOrder={ openModalOrder } />
 		</section>
 	);
 };
@@ -76,15 +80,4 @@ export default BurgerConstructor;
 Total.propTypes = {
 	price: PropTypes.number,
 	onOrder: PropTypes.func,
-};
-
-BurgerConstructor.propTypes = {
-	data: PropTypes.arrayOf(PropTypes.shape({
-		_id: PropTypes.string,
-		type: PropTypes.string,
-		name: PropTypes.string,
-		price: PropTypes.number,
-		image: PropTypes.string,
-	})).isRequired,
-	openModal: PropTypes.func.isRequired,
 };

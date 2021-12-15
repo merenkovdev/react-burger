@@ -2,10 +2,12 @@ import styles from './burger-ingredients.module.css';
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import cn from 'classnames';
+
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import Ingredient from '../ingredient/ingredient';
-
-import cn from 'classnames';
+import ModalContext from '../../services/modal-context';
+import DataContext from '../../services/data-context';
 
 const itemPropTypes = PropTypes.shape({
 	_id: PropTypes.string,
@@ -49,10 +51,19 @@ const TabHeader = (props) => {
 }
 
 const TabContent = React.forwardRef((props, ref) => {
+	const { dataDispatch } = React.useContext(DataContext);
+	const { openModalDetails } = React.useContext(ModalContext);
 	const {
 		data,
-		onClickCard,
 	} = props;
+
+	const onClickCard = React.useCallback((id) => {
+		dataDispatch({
+			type: 'item-details',
+			payload: id,
+		});
+		openModalDetails();
+	}, [ dataDispatch, openModalDetails ]);
 
 	return (
 		<div ref={ ref } className={ cn('mt-10 custom-scroll', styles.tabsContainer) }>
@@ -77,11 +88,12 @@ const TabContent = React.forwardRef((props, ref) => {
 });
 
 const BurgerIngredients = (props) => {
+	const { data } = React.useContext(DataContext);
 	const [ activeTab, setTab ] = React.useState('bun');
 	const tabContentRef = React.useRef(null);
 
 	const sortedData = React.useMemo(() => {
-		return props.data.reduce((acum, current) => {
+		return data.reduce((acum, current) => {
 			if (current.type && !acum[current.type]) {
 				acum[current.type] = [];
 			}
@@ -92,17 +104,7 @@ const BurgerIngredients = (props) => {
 
 			return acum;
 		}, {})
-	}, [ props.data ]);
-
-	const openModalIngredient = (id) => {
-		const itemDetails = props.data.find(item => item._id === id);
-
-		if (itemDetails) {
-			props.openModal({
-				itemDetails,
-			});
-		}
-	};
+	}, [ data ]);
 
 	React.useEffect(() => {
 		const title = document.getElementById(activeTab);
@@ -121,7 +123,6 @@ const BurgerIngredients = (props) => {
 			/>
 			<TabContent ref={ tabContentRef }
 				data={ sortedData }
-				onClickCard={ openModalIngredient }
 			/>
 		</section>
 	);
@@ -141,7 +142,6 @@ TabContent.propTypes = {
 	data: PropTypes.objectOf(
 		PropTypes.arrayOf(itemPropTypes)
 	).isRequired,
-	onClickCard: PropTypes.func.isRequired,
 };
 
 BurgerIngredients.propTypes = {
