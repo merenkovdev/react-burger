@@ -54,7 +54,7 @@ const TabContent = React.forwardRef((props, ref) => {
 	const { dataDispatch } = React.useContext(DataContext);
 	const { openModalDetails } = React.useContext(ModalContext);
 	const {
-		data,
+		ingredients,
 	} = props;
 
 	const onClickCard = React.useCallback((id) => {
@@ -67,14 +67,14 @@ const TabContent = React.forwardRef((props, ref) => {
 
 	return (
 		<div ref={ ref } className={ cn('mt-10 custom-scroll', styles.tabsContainer) }>
-			{ Object.keys(data)
+			{ Object.keys(ingredients)
 				.map(type => (
 					<React.Fragment key={ type }>
 						<h2 className="text text_type_main-medium pb-6" id={ type }>
 							{ tabNames[type] }
 						</h2>
 						<ul className={ cn(styles.ingredients, ' pb-10') }>
-							{ data[type].map(item => (
+							{ ingredients[type].map(item => (
 								<li className={ cn(styles.ingredient, 'p-3') } key={ item._id } >
 									<Ingredient { ...item } count={1} onClickCard={ onClickCard } />
 								</li>
@@ -88,12 +88,12 @@ const TabContent = React.forwardRef((props, ref) => {
 });
 
 const BurgerIngredients = () => {
-	const { data } = React.useContext(DataContext);
+	const { ingredients } = React.useContext(DataContext);
 	const [ activeTab, setTab ] = React.useState('bun');
 	const tabContentRef = React.useRef(null);
 
 	const sortedData = React.useMemo(() => {
-		return data.reduce((acum, current) => {
+		return ingredients.reduce((acum, current) => {
 			if (current.type && !acum[current.type]) {
 				acum[current.type] = [];
 			}
@@ -104,7 +104,7 @@ const BurgerIngredients = () => {
 
 			return acum;
 		}, {})
-	}, [ data ]);
+	}, [ ingredients ]);
 
 	React.useEffect(() => {
 		const title = document.getElementById(activeTab);
@@ -122,7 +122,7 @@ const BurgerIngredients = () => {
 				setTab={ setTab }
 			/>
 			<TabContent ref={ tabContentRef }
-				data={ sortedData }
+				ingredients={ sortedData }
 			/>
 		</section>
 	);
@@ -139,7 +139,7 @@ TabHeader.propTypes = {
 TabContent.propTypes = {
 	// TODO: Убрать комментарий. Разобраться в чем ошибка, после прохождения темы Typescript
 	// @ts-ignore: Unreachable code error
-	data: PropTypes.objectOf(
+	ingredients: PropTypes.objectOf(
 		PropTypes.arrayOf(itemPropTypes)
 	).isRequired,
 };

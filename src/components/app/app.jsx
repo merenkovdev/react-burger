@@ -30,7 +30,7 @@ const modalInitialState = {
 const dataInitialState = {
 	isLoading: false,
 	hasError: false,
-	data: [],
+	ingredients: [],
 	itemDetails: null,
 };
 
@@ -79,7 +79,7 @@ const App = () => {
 	React.useEffect(getIngredients, []);
 
 	const {
-		data,
+		ingredients,
 		isLoading,
 		hasError,
 		itemDetails,
@@ -106,8 +106,8 @@ const App = () => {
 				}
 				{ !isLoading &&
 					!hasError &&
-					Boolean(data.length) &&
-					<DataContext.Provider value={{ data, dataDispatch }}>
+					Boolean(ingredients.length) &&
+					<DataContext.Provider value={{ ingredients, dataDispatch }}>
 						<main className={ cn(styles.main, 'container pl-5 pr-5') }>
 							<h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
 							<div className="row">

@@ -25,7 +25,7 @@ const modalReducer = (state, action) => {
 const dataReducer = (state, action) => {
 	switch (action.type) {
 		case 'item-details':
-			const itemDetails = state.data.find(item => item._id === action.payload);
+			const itemDetails = state.ingredients.find(item => item._id === action.payload);
 
 			return {
 				...state,
@@ -44,7 +44,7 @@ const dataReducer = (state, action) => {
 				...state,
 				isLoading: false,
 				hasError: false,
-				data: action.payload,
+				ingredients: action.payload,
 			};
 
 

@@ -28,19 +28,21 @@ const Total = (props) => {
 };
 
 const BurgerConstructor = () => {
-	const { data } = React.useContext(DataContext);
+	const { ingredients } = React.useContext(DataContext);
 	const { openModalOrder } = React.useContext(ModalContext);
+
 	const totalPrice = React.useMemo(() =>
-		data.reduce((acum, current) => acum + current.price, 0),
-		[ data ]
+		ingredients.reduce((acum, current) => acum + current.price, 0),
+		[ ingredients ]
 	);
+
 	const bun = React.useMemo(() =>
-		data.find(item => item.type === 'bun'),
-		[ data ]
+		ingredients.find(item => item.type === 'bun'),
+		[ ingredients ]
 	);
 	const ingredientsWitoutBun = React.useMemo(() =>
-		data.filter(item => item.type !== 'bun'),
-		[ data ]
+		ingredients.filter(item => item.type !== 'bun'),
+		[ ingredients ]
 	);
 
 	return (
