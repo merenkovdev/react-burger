@@ -60,7 +60,61 @@ const dataReducer = (state, action) => {
 	}
 };
 
+const burgerReducer = (state, action) => {
+	const getTotalPrice = () => (
+		state.toppings.reduce(
+			(acum, current) => acum + current.price,
+			0
+		) + (state.bun?.price*2 || 0)
+	);
+
+	switch (action.type) {
+		case 'calc-total-price':
+			return {
+				...state,
+				totalPrice: getTotalPrice(),
+			};
+		case 'add-bun':
+			return {
+				...state,
+				bun: action.payload,
+			};
+
+		case 'add-toppings':
+			return {
+				...state,
+				toppings: [ ...state.toppings, ...action.payload ],
+			};
+
+		default:
+			return state;
+	}
+};
+
+const orderReducer = (state, action) => {
+	switch (action.type) {
+		case 'create-order':
+			const { number, name } = action.payload;
+			return {
+				...state,
+				number,
+				name,
+			};
+
+		case 'create-order-error':
+			return {
+				...state,
+				error: true,
+			};
+
+		default:
+			return state;
+	}
+};
+
 export {
 	modalReducer,
 	dataReducer,
+	burgerReducer,
+	orderReducer,
 };

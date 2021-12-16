@@ -10,13 +10,17 @@ import Modal from '../modal/modal';
 
 import DataContext from '../../services/data-context';
 import ModalContext from '../../services/modal-context';
+import OrderContext from '../../services/order-context';
+
 import {
 	modalReducer,
 	dataReducer,
+	burgerReducer,
+	orderReducer,
 } from '../../services/reducers';
 
 import {
-	API_URL,
+	API_INGREDIENTS,
 	MODAL_DETAILS,
 	MODAL_ORDER,
  } from '../../utils/constants';
@@ -34,18 +38,31 @@ const dataInitialState = {
 	itemDetails: null,
 };
 
+const burgerInitialState = {
+	bun: {},
+	toppings: [],
+	totalPrice: 0,
+};
+
+const orderInitialState = {
+	number: 0,
+	name: '',
+};
+
 const App = () => {
 	const [ modalState, modalDispatch ] = React.useReducer(modalReducer, modalInitialState);
 	const [ dataState, dataDispatch ] = React.useReducer(dataReducer, dataInitialState);
+	const [ burgerState, burgerDispatch ] = React.useReducer(burgerReducer, burgerInitialState);
+	const [ orderState, orderDispatch ] = React.useReducer(orderReducer, orderInitialState);
 
 	const handleError = (error) => {
 		console.warn(error);
 		dataDispatch({ type: 'fail-fetch' });
 	};
 
-	const closeModal= () => {
+	const closeModal= React.useCallback(() => {
 		modalDispatch({ type: 'hide' });
-	};
+	}, [ modalDispatch ]);
 
 	const openModal = React.useCallback(
 		(name) => () => {
@@ -61,7 +78,7 @@ const App = () => {
 		dataDispatch({ type: 'start-fetch' });
 
 		try {
-			fetch(API_URL)
+			fetch(API_INGREDIENTS)
 				.then(response => response.json())
 				.then(response => {
 					if (!response.success) {
@@ -92,7 +109,6 @@ const App = () => {
 				openModalDetails,
 				openModalOrder,
 				closeModal,
-				modal: modalState.modal,
 			}}>
 				{ isLoading &&
 					<p className="text text_type_main-large p-10">
@@ -107,20 +123,32 @@ const App = () => {
 				{ !isLoading &&
 					!hasError &&
 					Boolean(ingredients.length) &&
-					<DataContext.Provider value={{ ingredients, dataDispatch }}>
-						<main className={ cn(styles.main, 'container pl-5 pr-5') }>
-							<h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
-							<div className="row">
-								<BurgerIngredients />
-								<BurgerConstructor />
-							</div>
-						</main>
-					</DataContext.Provider>
+					<main className={ cn(styles.main, 'container pl-5 pr-5') }>
+						<h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
+						<div className="row">
+							<DataContext.Provider value={{
+								dataDispatch,
+								burgerDispatch,
+								ingredients,
+								burger: burgerState,
+							}}>
+								<OrderContext.Provider value={{
+									orderDispatch,
+									order: orderState,
+								}}>
+									<BurgerIngredients />
+									<BurgerConstructor />
+								</OrderContext.Provider>
+							</DataContext.Provider>
+						</div>
+					</main>
 				}
 
 				{ modalState.modal === MODAL_ORDER &&
 					<Modal open={ true }>
-						<OrderDetails />
+						<OrderContext.Provider value={{ order: orderState }}>
+							<OrderDetails />
+						</OrderContext.Provider>
 					</Modal>
 				}
 

@@ -2,6 +2,7 @@ import styles from './burger-constructor.module.css';
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { isEmpty } from '../../utils/utils';
 
 import {
 	Button,
@@ -11,10 +12,40 @@ import IngredientConstructor from '../ingredient-constructor/ingredient-construc
 import cn from 'classnames';
 import DataContext from '../../services/data-context';
 import ModalContext from '../../services/modal-context';
+import OrderContext from '../../services/order-context';
+
+import { API_ORDERS } from '../../utils/constants';
+
+const getRandomIngredients = (ingredients) => (
+	ingredients.slice(0, Math.ceil(Math.random() * ingredients.length))
+);
+
+const getIngredientsIds = (bun, toppings) => (
+	[ bun._id, ...toppings.map(topping => topping._id) ]
+);
+
+const createOrder = (data) => new Promise((resolve, reject) => {
+	try {
+		fetch(API_ORDERS, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data),
+		})
+			.then(response => response.json())
+			.then(response => {
+				if (!response.success) {
+					const error = new Error('Данные о заказе не получены');
+					reject(error);
+				}
+				resolve(response);
+			})
+			.catch(err => reject(err));
+	} catch (error) {
+		reject(error)
+	}
+});
 
 const Total = (props) => {
-	// const { data } = React.useContext(DataContext);
-
 	return(
 		<div className={ cn(styles.total, 'pt-10') }>
 			<span className="text text_type_digits-medium pr-10">
@@ -28,51 +59,99 @@ const Total = (props) => {
 };
 
 const BurgerConstructor = () => {
-	const { ingredients } = React.useContext(DataContext);
+	const {
+		ingredients,
+		burger: {
+			bun,
+			toppings,
+			totalPrice,
+		},
+		burgerDispatch,
+	} = React.useContext(DataContext);
 	const { openModalOrder } = React.useContext(ModalContext);
+	const { order, orderDispatch } = React.useContext(OrderContext);
 
-	const totalPrice = React.useMemo(() =>
-		ingredients.reduce((acum, current) => acum + current.price, 0),
-		[ ingredients ]
-	);
+	const onOrder = () => {
+		createOrder({
+			ingredients: getIngredientsIds(bun, toppings)
+		})
+			.then(res => {
+				const {
+					order: {
+						name,
+						number,
+					},
+				} = res;
 
-	const bun = React.useMemo(() =>
-		ingredients.find(item => item.type === 'bun'),
-		[ ingredients ]
-	);
-	const ingredientsWitoutBun = React.useMemo(() =>
-		ingredients.filter(item => item.type !== 'bun'),
-		[ ingredients ]
-	);
+				orderDispatch({
+					type: 'create-order',
+					payload: { number, name },
+				});
+				openModalOrder();
+			})
+			.catch(err => {
+				console.warn(err);
+				orderDispatch({ type: 'create-order-error' });
+				openModalOrder();
+			})
+		;
+	};
+
+	const handleOrder = () => {
+		// TODO: Убрать, возможно лишнее условие
+		// if (order.number) {
+		// 	openModalOrder();
+		// 	return;
+		// }
+		onOrder();
+	};
+
+	React.useEffect(() => {
+		// TODO: Убрать. Временное заполнение данными конструктора.
+		const bun = ingredients.find(item => item.type === 'bun');
+		const toppings = ingredients
+			.filter(item => item.type !== 'bun');
+
+		burgerDispatch({ type: 'add-bun', payload: bun });
+		burgerDispatch({ type: 'add-toppings', payload: getRandomIngredients(toppings) });
+	}, [ ingredients, burgerDispatch ]);
+
+	React.useEffect(() => {
+		burgerDispatch({ type: 'calc-total-price' });
+	}, [ bun, toppings, burgerDispatch ]);
 
 	return (
 		<section className="col-6">
-			<ul className={ styles.list }>
-				{ bun &&
-					<li className={ styles.item }>
-						<IngredientConstructor item={ bun } type="top" />
-					</li>
-				}
-				<li className={ cn(styles.listContainer, 'custom-scroll') }>
-					<ul className={ cn(styles.list) }>
-						{ ingredientsWitoutBun
-							.map(item => {
-								return (
-									<li className={ styles.item } key={ item._id }>
-										<IngredientConstructor item={ item } />
-									</li>
-								);
-							})
+			{ (!isEmpty(bun) || toppings.length) &&
+				<>
+					<ul className={ styles.list }>
+						{ bun &&
+							<li className={ styles.item }>
+								<IngredientConstructor item={ bun } type="top" />
+							</li>
+						}
+						<li className={ cn(styles.listContainer, 'custom-scroll') }>
+							<ul className={ cn(styles.list) }>
+								{ toppings
+									.map(item => {
+										return (
+											<li className={ styles.item } key={ item._id }>
+												<IngredientConstructor item={ item } />
+											</li>
+										);
+									})
+								}
+							</ul>
+						</ li>
+						{ bun &&
+							<li className={ styles.item }>
+								<IngredientConstructor item={ bun } type="bottom" />
+							</li>
 						}
 					</ul>
-				</ li>
-				{ bun &&
-					<li className={ styles.item }>
-						<IngredientConstructor item={ bun } type="bottom" />
-					</li>
-				}
-			</ul>
-			<Total price={ totalPrice} onOrder={ openModalOrder } />
+					<Total price={ totalPrice} onOrder={ handleOrder } />
+				</>
+			}
 		</section>
 	);
 };
