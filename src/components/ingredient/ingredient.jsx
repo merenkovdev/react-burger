@@ -5,24 +5,17 @@ import PropTypes from 'prop-types';
 import { CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import cn from 'classnames';
 
-interface IIngredient {
-	_id: string,
-	image: string,
-	image_large: string,
-	name: string,
-	price?: number,
-	count?: number,
-	size?: string,
-	onClickCard?: (id: string) => void,
-}
+import { itemPropTypes } from '../../utils/types';
 
-const Ingredient = (props: IIngredient) => {
+const Ingredient = (props) => {
 	const {
-		_id,
-		image,
-		image_large,
-		name,
-		price,
+		item: {
+			_id,
+			image,
+			image_large,
+			name,
+			price,
+		},
 		count,
 		onClickCard,
 		size = 'default',
@@ -61,11 +54,7 @@ const Ingredient = (props: IIngredient) => {
 export default Ingredient;
 
 Ingredient.propTypes = {
-	_id: PropTypes.string.isRequired,
-	image: PropTypes.string.isRequired,
-	image_large: PropTypes.string.isRequired,
-	name: PropTypes.string.isRequired,
-	price: PropTypes.number,
+	item: PropTypes.shape(itemPropTypes).isRequired,
 	count: PropTypes.number,
 	onClickCard: PropTypes.func,
 	size: PropTypes.string,

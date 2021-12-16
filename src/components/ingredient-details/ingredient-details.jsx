@@ -4,27 +4,9 @@ import PropTypes from 'prop-types';
 import Ingredient from '../ingredient/ingredient';
 import cn from 'classnames';
 
-interface IIngredientDetails {
-	_id: string,
-	image: string,
-	image_large: string,
-	name: string,
-	fat: number,
-	calories: number,
-	proteins: number,
-	carbohydrates: number,
-	price?: number,
-	onClickCard?: () => void,
-}
+import { itemPropTypes } from '../../utils/types';
 
-interface IСalorieСontent {
-	[fat: string ]: number,
-	calories: number,
-	proteins: number,
-	carbohydrates: number,
-}
-
-const keysCaloriesContent: [key: string, name: string][] = [
+const keysCaloriesContent = [
 	[ 'fat', 'Калории,ккал'],
 	[ 'calories', 'Белки, г',],
 	[ 'proteins', 'Жиры, г'],
@@ -34,7 +16,7 @@ const keysCaloriesContent: [key: string, name: string][] = [
 const classesText = 'text text_type_main-default text_color_inactive';
 const classesTextDigits = 'text text_type_digits-default text_color_inactive';
 
-const СalorieСontent = (props: IСalorieСontent) => {
+const СalorieСontent = (props) => {
 	return (
 		<ul className={ cn(styles.list, 'pt-4') }>
 			{ keysCaloriesContent.map(([ key, name ]) => (
@@ -47,7 +29,7 @@ const СalorieСontent = (props: IСalorieСontent) => {
 	);
 };
 
-const IngredientDetails = (props: IIngredientDetails) => {
+const IngredientDetails = ({ item }) => {
 	const {
 		price,
 		fat,
@@ -55,11 +37,11 @@ const IngredientDetails = (props: IIngredientDetails) => {
 		proteins,
 		carbohydrates,
 		...otherProps
-	} = props;
+	} = item;
 
 	return (
 		<>
-			<Ingredient size="large" { ...otherProps } />
+			<Ingredient size="large" item={ otherProps } />
 			<СalorieСontent
 				fat={ fat }
 				calories={ calories }
@@ -80,14 +62,5 @@ export default IngredientDetails;
 };
 
 IngredientDetails.propTypes = {
-	_id: PropTypes.string.isRequired,
-	image: PropTypes.string.isRequired,
-	image_large: PropTypes.string.isRequired,
-	name: PropTypes.string.isRequired,
-	fat: PropTypes.number.isRequired,
-	calories: PropTypes.number.isRequired,
-	proteins: PropTypes.number.isRequired,
-	carbohydrates: PropTypes.number.isRequired,
-	price: PropTypes.number,
-	onClickCard: PropTypes.func,
+	item: PropTypes.shape(itemPropTypes).isRequired,
 };

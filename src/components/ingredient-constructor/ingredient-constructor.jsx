@@ -2,18 +2,9 @@ import styles from './ingredient-constructor.module.css';
 import PropTypes from 'prop-types'
 
 import { DragIcon, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
+import { itemPropTypes } from '../../utils/types';
 
-type TypeElem = 'top' | 'bottom' | undefined;
-
-interface IItem {
-	name: string,
-	price: number,
-	image: string,
-	type: string,
-	_id: string,
-}
-
-const formattingName = (name: string, type?: TypeElem) => {
+const formattingName = (name, type) => {
 	switch (type) {
 		case 'top':
 			return name + ' (верх)';
@@ -26,7 +17,7 @@ const formattingName = (name: string, type?: TypeElem) => {
 	}
 };
 
-const Ingredient = (props: { item: IItem, type?: TypeElem }) => {
+const Ingredient = (props) => {
 	const { item, type } = props;
 
 	return (
@@ -50,12 +41,6 @@ const Ingredient = (props: { item: IItem, type?: TypeElem }) => {
 export default Ingredient;
 
 Ingredient.propTypes = {
-	item: PropTypes.shape({
-		_id: PropTypes.string,
-		type: PropTypes.string,
-		name: PropTypes.string,
-		price: PropTypes.number,
-		image: PropTypes.string,
-	}).isRequired,
+	item: PropTypes.shape(itemPropTypes).isRequired,
 	type: PropTypes.oneOf(['top', 'bottom']),
 };
