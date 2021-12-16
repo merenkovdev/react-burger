@@ -69,7 +69,11 @@ const BurgerConstructor = () => {
 		burgerDispatch,
 	} = React.useContext(DataContext);
 	const { openModalOrder } = React.useContext(ModalContext);
-	const { order, orderDispatch } = React.useContext(OrderContext);
+	const {
+		// TODO: Убрать, возможно лишнее условие
+		// order,
+		orderDispatch,
+	} = React.useContext(OrderContext);
 
 	const onOrder = () => {
 		createOrder({
