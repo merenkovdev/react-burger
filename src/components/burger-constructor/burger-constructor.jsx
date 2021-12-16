@@ -15,6 +15,7 @@ import ModalContext from '../../services/modal-context';
 import OrderContext from '../../services/order-context';
 
 import { API_ORDERS } from '../../utils/constants';
+import { checkResponse } from '../../utils/utils';
 
 const getRandomIngredients = (ingredients) => (
 	ingredients.slice(0, Math.ceil(Math.random() * ingredients.length))
@@ -31,7 +32,7 @@ const createOrder = (data) => new Promise((resolve, reject) => {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(data),
 		})
-			.then(response => response.json())
+			.then(checkResponse)
 			.then(response => {
 				if (!response.success) {
 					const error = new Error('Данные о заказе не получены');
@@ -41,7 +42,7 @@ const createOrder = (data) => new Promise((resolve, reject) => {
 			})
 			.catch(err => reject(err));
 	} catch (error) {
-		reject(error)
+		console.warn(error);
 	}
 });
 
@@ -93,11 +94,10 @@ const BurgerConstructor = () => {
 				});
 				openModalOrder();
 			})
-			.catch(err => {
-				console.warn(err);
+			.catch(() => {
 				orderDispatch({ type: 'create-order-error' });
 				openModalOrder();
-			})
+			});
 		;
 	};
 

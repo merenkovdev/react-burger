@@ -24,6 +24,7 @@ import {
 	MODAL_DETAILS,
 	MODAL_ORDER,
  } from '../../utils/constants';
+import { checkResponse } from '../../utils/utils';
 import cn from 'classnames';
 
 const modalInitialState = {
@@ -79,7 +80,7 @@ const App = () => {
 
 		try {
 			fetch(API_INGREDIENTS)
-				.then(response => response.json())
+				.then(checkResponse)
 				.then(response => {
 					if (!response.success) {
 						throw new Error('Данные не получены');
@@ -110,56 +111,54 @@ const App = () => {
 				openModalOrder,
 				closeModal,
 			}}>
-				{ isLoading &&
-					<p className="text text_type_main-large p-10">
-						Загрузка...
-					</p>
-				}
-				{ hasError &&
-					<p className="text text_type_main-large p-10">
-						Произошла ошибка
-					</p>
-				}
-				{ !isLoading &&
-					!hasError &&
-					Boolean(ingredients.length) &&
-					<main className={ cn(styles.main, 'container pl-5 pr-5') }>
-						<h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
-						<div className="row">
-							<DataContext.Provider value={{
-								dataDispatch,
-								burgerDispatch,
-								ingredients,
-								burger: burgerState,
-							}}>
-								<OrderContext.Provider value={{
-									orderDispatch,
-									order: orderState,
+				<OrderContext.Provider value={{
+					orderDispatch,
+					order: orderState,
+				}}>
+					{ isLoading &&
+						<p className="text text_type_main-large p-10">
+							Загрузка...
+						</p>
+					}
+					{ hasError &&
+						<p className="text text_type_main-large p-10">
+							Произошла ошибка
+						</p>
+					}
+					{ !isLoading &&
+						!hasError &&
+						Boolean(ingredients.length) &&
+						<main className={ cn(styles.main, 'container pl-5 pr-5') }>
+							<h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
+							<div className="row">
+								<DataContext.Provider value={{
+									dataDispatch,
+									burgerDispatch,
+									ingredients,
+									burger: burgerState,
 								}}>
 									<BurgerIngredients />
 									<BurgerConstructor />
-								</OrderContext.Provider>
-							</DataContext.Provider>
-						</div>
-					</main>
-				}
+								</DataContext.Provider>
+							</div>
+						</main>
+					}
 
-				{ modalState.modal === MODAL_ORDER &&
-					<Modal open={ true }>
-						<OrderContext.Provider value={{ order: orderState }}>
+					{ modalState.modal === MODAL_ORDER &&
+						<Modal open={ true }>
 							<OrderDetails />
-						</OrderContext.Provider>
-					</Modal>
-				}
+						</Modal>
+					}
 
-				{ modalState.modal === MODAL_DETAILS &&
-					itemDetails &&
-					<Modal open={ true }
-						header='Детали ингредиента'
-					>
-						<IngredientDetails {...itemDetails} />
-					</Modal>
-				}
+					{ modalState.modal === MODAL_DETAILS &&
+						itemDetails &&
+						<Modal open={ true }
+							header='Детали ингредиента'
+						>
+							<IngredientDetails item={ itemDetails } />
+						</Modal>
+					}
+				</OrderContext.Provider>
 			</ModalContext.Provider>
 		</div>
 	)

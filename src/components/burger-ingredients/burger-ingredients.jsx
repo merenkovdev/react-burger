@@ -8,19 +8,7 @@ import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import Ingredient from '../ingredient/ingredient';
 import ModalContext from '../../services/modal-context';
 import DataContext from '../../services/data-context';
-
-const itemPropTypes = PropTypes.shape({
-	_id: PropTypes.string,
-	name: PropTypes.string,
-	price: PropTypes.number,
-	image: PropTypes.string,
-	image_large: PropTypes.string,
-	type: PropTypes.string,
-	fat: PropTypes.number,
-	calories: PropTypes.number,
-	proteins: PropTypes.number,
-	carbohydrates: PropTypes.number,
-});
+import { itemPropTypes } from '../../utils/types';
 
 const tabNames = {
 	bun: 'Булки',
@@ -75,12 +63,12 @@ const TabContent = React.memo(React.forwardRef((props, ref) => {
 						</h2>
 						<ul className={ cn(styles.ingredients, ' pb-10') }>
 							{ ingredients[type].map(item => (
-								<li className={ cn(styles.ingredient, 'p-3') } key={ item._id } >
-									<Ingredient { ...item } count={1} onClickCard={ onClickCard } />
+								<li className={ cn(styles.ingredient, 'p-3') } key={ item._id }>
+									<Ingredient item={ item } count={1} onClickCard={ onClickCard } />
 								</li>
 							)) }
 						</ul>
-					</React.Fragment >
+					</React.Fragment>
 				))
 			}
 		</div>
@@ -137,9 +125,9 @@ TabHeader.propTypes = {
 };
 
 TabContent.propTypes = {
-	// TODO: Убрать комментарий. Разобраться в чем ошибка, после прохождения темы Typescript
-	// @ts-ignore: Unreachable code error
 	ingredients: PropTypes.objectOf(
-		PropTypes.arrayOf(itemPropTypes)
+		PropTypes.arrayOf(
+			PropTypes.shape(itemPropTypes)
+		)
 	).isRequired,
 };
