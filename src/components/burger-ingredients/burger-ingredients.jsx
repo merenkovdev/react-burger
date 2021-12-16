@@ -28,7 +28,7 @@ const tabNames = {
 	main: 'Начинки',
 };
 
-const TabHeader = (props) => {
+const TabHeader = React.memo((props) => {
 	const {
 		activeTab,
 		tabs,
@@ -48,9 +48,9 @@ const TabHeader = (props) => {
 			</div>
 		</>
 	)
-}
+});
 
-const TabContent = React.forwardRef((props, ref) => {
+const TabContent = React.memo(React.forwardRef((props, ref) => {
 	const { dataDispatch } = React.useContext(DataContext);
 	const { openModalDetails } = React.useContext(ModalContext);
 	const {
@@ -85,7 +85,7 @@ const TabContent = React.forwardRef((props, ref) => {
 			}
 		</div>
 	);
-});
+}));
 
 const BurgerIngredients = () => {
 	const { ingredients } = React.useContext(DataContext);
