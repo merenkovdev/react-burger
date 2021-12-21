@@ -4,10 +4,10 @@ import React from 'react';
 import cn from 'classnames';
 
 import doneImg from '../../images/done.png';
-import OrderContext from '../../services/order-context';
+import { useSelector } from 'react-redux';
 
 const OrderDetails = () => {
-	const { order } = React.useContext(OrderContext);
+	const order = useSelector(store => store.order);
 
 	return (
 		<div className={ styles.order }>

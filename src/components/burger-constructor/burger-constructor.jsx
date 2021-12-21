@@ -10,7 +10,6 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import IngredientConstructor from '../ingredient-constructor/ingredient-constructor';
 import cn from 'classnames';
-import OrderContext from '../../services/order-context';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { SHOW_MODAL } from '../../services/actions/modal';
@@ -20,8 +19,7 @@ import {
 	CALC_TOTAL_PRICE,
 } from '../../services/actions/burger';
 import { MODAL_ORDER } from '../../utils/constants';
-import { API_ORDERS } from '../../utils/constants';
-import { checkResponse } from '../../utils/utils';
+import { createOrder } from '../../services/actions/order';
 
 const getRandomIngredients = (ingredients) => (
 	ingredients.slice(0, Math.ceil(Math.random() * ingredients.length))
@@ -30,27 +28,6 @@ const getRandomIngredients = (ingredients) => (
 const getIngredientsIds = (bun, toppings) => (
 	[ bun._id, ...toppings.map(topping => topping._id) ]
 );
-
-const createOrder = (data) => new Promise((resolve, reject) => {
-	try {
-		fetch(API_ORDERS, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(data),
-		})
-			.then(checkResponse)
-			.then(response => {
-				if (!response.success) {
-					const error = new Error('Данные о заказе не получены');
-					reject(error);
-				}
-				resolve(response);
-			})
-			.catch(err => reject(err));
-	} catch (error) {
-		console.warn(error);
-	}
-});
 
 const Total = (props) => {
 	return (
@@ -78,44 +55,12 @@ const BurgerConstructor = () => {
 		dispatch({ type: SHOW_MODAL, name: MODAL_ORDER });
 	};
 
-	const {
-		// TODO: Убрать, возможно лишнее условие
-		// order,
-		orderDispatch,
-	} = React.useContext(OrderContext);
-
-	const onOrder = () => {
-		createOrder({
-			ingredients: getIngredientsIds(bun, toppings)
-		})
-			.then(res => {
-				const {
-					order: {
-						name,
-						number,
-					},
-				} = res;
-
-				orderDispatch({
-					type: 'create-order',
-					payload: { number, name },
-				});
-				openModalOrder();
-			})
-			.catch(() => {
-				orderDispatch({ type: 'create-order-error' });
-				openModalOrder();
-			});
-		;
-	};
-
 	const handleOrder = () => {
-		// TODO: Убрать, возможно лишнее условие
-		// if (order.number) {
-		// 	openModalOrder();
-		// 	return;
-		// }
-		onOrder();
+		dispatch(
+			createOrder({
+				ingredients: getIngredientsIds(bun, toppings)
+			})
+		).finally(openModalOrder);
 	};
 
 	React.useEffect(() => {
