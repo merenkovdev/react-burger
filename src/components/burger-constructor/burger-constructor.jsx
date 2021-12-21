@@ -11,9 +11,11 @@ import {
 import IngredientConstructor from '../ingredient-constructor/ingredient-constructor';
 import cn from 'classnames';
 import DataContext from '../../services/data-context';
-import ModalContext from '../../services/modal-context';
 import OrderContext from '../../services/order-context';
 
+import { useSelector, useDispatch } from 'react-redux';
+import { SHOW_MODAL } from '../../services/actions/modal';
+import { MODAL_ORDER } from '../../utils/constants';
 import { API_ORDERS } from '../../utils/constants';
 import { checkResponse } from '../../utils/utils';
 
@@ -69,7 +71,13 @@ const BurgerConstructor = () => {
 		},
 		burgerDispatch,
 	} = React.useContext(DataContext);
-	const { openModalOrder } = React.useContext(ModalContext);
+
+	//redux
+	const dispatch = useDispatch();
+	const openModalOrder = () => {
+		dispatch({ type: SHOW_MODAL, name: MODAL_ORDER });
+	};
+
 	const {
 		// TODO: Убрать, возможно лишнее условие
 		// order,

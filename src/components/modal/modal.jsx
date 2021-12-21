@@ -7,8 +7,8 @@ import cn from 'classnames';
 
 import ModalOverlay from '../modal-overlay/modal-overlay';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-
-import ModalContext from '../../services/modal-context';
+import { useDispatch } from 'react-redux';
+import { HIDE_MODAL } from '../../services/actions/modal';
 
 const modalRoot = document.getElementById('modals');
 
@@ -31,12 +31,16 @@ const ModalHeader = (props) => {
 };
 
 const Modal = (props) => {
-	const { closeModal } = React.useContext(ModalContext);
 	const {
 		children,
 		header,
 		open
 	} = props;
+
+	const dispatch = useDispatch();
+	const closeModal = React.useCallback(() => {
+		dispatch({ type: HIDE_MODAL });
+	}, [ dispatch ]);
 
 	React.useEffect(() => {
 		const onKeyPress = (e) => {
@@ -50,7 +54,7 @@ const Modal = (props) => {
 		return () => {
 			document.removeEventListener('keydown', onKeyPress);
 		};
-	}, [closeModal, open]);
+	}, [ open, closeModal ]);
 
 	return (modalRoot &&
 		ReactDOM.createPortal(

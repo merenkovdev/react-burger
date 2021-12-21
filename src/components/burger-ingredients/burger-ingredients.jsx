@@ -6,9 +6,12 @@ import cn from 'classnames';
 
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import Ingredient from '../ingredient/ingredient';
-import ModalContext from '../../services/modal-context';
 import DataContext from '../../services/data-context';
 import { itemPropTypes } from '../../utils/types';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { SHOW_MODAL } from '../../services/actions/modal';
+import { MODAL_DETAILS } from '../../utils/constants';
 
 const tabNames = {
 	bun: 'Булки',
@@ -40,18 +43,21 @@ const TabHeader = React.memo((props) => {
 
 const TabContent = React.memo(React.forwardRef((props, ref) => {
 	const { dataDispatch } = React.useContext(DataContext);
-	const { openModalDetails } = React.useContext(ModalContext);
 	const {
 		ingredients,
 	} = props;
+
+	//redux
+	const dispatch = useDispatch();
 
 	const onClickCard = React.useCallback((id) => {
 		dataDispatch({
 			type: 'item-details',
 			payload: id,
 		});
-		openModalDetails();
-	}, [ dataDispatch, openModalDetails ]);
+
+		dispatch({ type: SHOW_MODAL, name: MODAL_DETAILS });
+	}, [ dataDispatch, dispatch ]);
 
 	return (
 		<div ref={ ref } className={ cn('mt-10 custom-scroll', styles.tabsContainer) }>
