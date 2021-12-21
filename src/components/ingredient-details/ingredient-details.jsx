@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Ingredient from '../ingredient/ingredient';
 import cn from 'classnames';
 
-import { itemPropTypes } from '../../utils/types';
+import { useSelector } from 'react-redux';
 
 const keysCaloriesContent = [
 	[ 'fat', 'Калории,ккал'],
@@ -29,7 +29,7 @@ const СalorieСontent = (props) => {
 	);
 };
 
-const IngredientDetails = ({ item }) => {
+const IngredientDetails = () => {
 	const {
 		price,
 		fat,
@@ -37,7 +37,7 @@ const IngredientDetails = ({ item }) => {
 		proteins,
 		carbohydrates,
 		...otherProps
-	} = item;
+	} = useSelector(store => store.ingredients.ingredientDetails);
 
 	return (
 		<>
@@ -59,8 +59,4 @@ export default IngredientDetails;
 	calories: PropTypes.number.isRequired,
 	proteins: PropTypes.number.isRequired,
 	carbohydrates: PropTypes.number.isRequired,
-};
-
-IngredientDetails.propTypes = {
-	item: PropTypes.shape(itemPropTypes).isRequired,
 };

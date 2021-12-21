@@ -10,11 +10,15 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import IngredientConstructor from '../ingredient-constructor/ingredient-constructor';
 import cn from 'classnames';
-import DataContext from '../../services/data-context';
 import OrderContext from '../../services/order-context';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { SHOW_MODAL } from '../../services/actions/modal';
+import {
+	ADD_BUN,
+	ADD_TOPPING,
+	CALC_TOTAL_PRICE,
+} from '../../services/actions/burger';
 import { MODAL_ORDER } from '../../utils/constants';
 import { API_ORDERS } from '../../utils/constants';
 import { checkResponse } from '../../utils/utils';
@@ -49,7 +53,7 @@ const createOrder = (data) => new Promise((resolve, reject) => {
 });
 
 const Total = (props) => {
-	return(
+	return (
 		<div className={ cn(styles.total, 'pt-10') }>
 			<span className="text text_type_digits-medium pr-10">
 				{ props.price } <CurrencyIcon type="primary" />
@@ -62,18 +66,14 @@ const Total = (props) => {
 };
 
 const BurgerConstructor = () => {
+	const ingredients = useSelector(store => store.ingredients.items);
 	const {
-		ingredients,
-		burger: {
-			bun,
-			toppings,
-			totalPrice,
-		},
-		burgerDispatch,
-	} = React.useContext(DataContext);
-
-	//redux
+		bun,
+		toppings,
+		totalPrice,
+	} = useSelector(store => store.burger);
 	const dispatch = useDispatch();
+
 	const openModalOrder = () => {
 		dispatch({ type: SHOW_MODAL, name: MODAL_ORDER });
 	};
@@ -124,17 +124,17 @@ const BurgerConstructor = () => {
 		const toppings = ingredients
 			.filter(item => item.type !== 'bun');
 
-		burgerDispatch({ type: 'add-bun', payload: bun });
-		burgerDispatch({ type: 'add-toppings', payload: getRandomIngredients(toppings) });
-	}, [ ingredients, burgerDispatch ]);
+		dispatch({ type: ADD_BUN, bun });
+		dispatch({ type: ADD_TOPPING, toppings: getRandomIngredients(toppings) });
+	}, [ ingredients, dispatch ]);
 
 	React.useEffect(() => {
-		burgerDispatch({ type: 'calc-total-price' });
-	}, [ bun, toppings, burgerDispatch ]);
+		dispatch({ type: CALC_TOTAL_PRICE });
+	}, [ bun, toppings, dispatch ]);
 
 	return (
 		<section className="col-6">
-			{ (!isEmpty(bun) || toppings.length) &&
+			{ (!isEmpty(bun) || Boolean(toppings.length)) &&
 				<>
 					<ul className={ styles.list }>
 						{ bun &&

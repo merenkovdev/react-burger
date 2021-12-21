@@ -12,27 +12,18 @@ import DataContext from '../../services/data-context';
 import OrderContext from '../../services/order-context';
 
 import {
-	dataReducer,
 	burgerReducer,
 	orderReducer,
 } from '../../services/reducers';
 
 import {
-	API_INGREDIENTS,
 	MODAL_DETAILS,
 	MODAL_ORDER,
  } from '../../utils/constants';
-import { checkResponse } from '../../utils/utils';
 import cn from 'classnames';
 
 import { useSelector, useDispatch } from 'react-redux';
-
-const dataInitialState = {
-	isLoading: false,
-	hasError: false,
-	ingredients: [],
-	itemDetails: null,
-};
+import { CLEAR_INGREDIENTS_DETAILS } from '../../services/actions/ingredients';
 
 const burgerInitialState = {
 	bun: {},
@@ -46,46 +37,17 @@ const orderInitialState = {
 };
 
 const App = () => {
-	const [ dataState, dataDispatch ] = React.useReducer(dataReducer, dataInitialState);
 	const [ burgerState, burgerDispatch ] = React.useReducer(burgerReducer, burgerInitialState);
 	const [ orderState, orderDispatch ] = React.useReducer(orderReducer, orderInitialState);
 
 	// redux
 	const activeModal = useSelector(store => store.modal.active);
+	const ingredientDetails = useSelector(store => store.ingredients.ingredientDetails);
 	const dispatch = useDispatch();
 
-	const handleError = (error) => {
-		console.warn(error);
-		dataDispatch({ type: 'fail-fetch' });
+	const clearDetailIngredients = () => {
+		dispatch({ type: CLEAR_INGREDIENTS_DETAILS });
 	};
-
-	const getIngredients = () => {
-		dataDispatch({ type: 'start-fetch' });
-
-		try {
-			fetch(API_INGREDIENTS)
-				.then(checkResponse)
-				.then(response => {
-					if (!response.success) {
-						throw new Error('Данные не получены');
-					}
-
-					dataDispatch({ type: 'done-fetch', payload: response.data });
-				})
-				.catch(handleError);
-		} catch (error) {
-			handleError(error);
-		}
-	};
-
-	React.useEffect(getIngredients, []);
-
-	const {
-		ingredients,
-		isLoading,
-		hasError,
-		itemDetails,
-	} = dataState;
 
 	return (
 		<div className={ styles.layout }>
@@ -94,34 +56,18 @@ const App = () => {
 				orderDispatch,
 				order: orderState,
 			}}>
-				{ isLoading &&
-					<p className="text text_type_main-large p-10">
-						Загрузка...
-					</p>
-				}
-				{ hasError &&
-					<p className="text text_type_main-large p-10">
-						Произошла ошибка
-					</p>
-				}
-				{ !isLoading &&
-					!hasError &&
-					Boolean(ingredients.length) &&
-					<main className={ cn(styles.main, 'container pl-5 pr-5') }>
-						<h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
-						<div className="row">
-							<DataContext.Provider value={{
-								dataDispatch,
-								burgerDispatch,
-								ingredients,
-								burger: burgerState,
-							}}>
-								<BurgerIngredients />
-								<BurgerConstructor />
-							</DataContext.Provider>
-						</div>
-					</main>
-				}
+				<main className={ cn(styles.main, 'container pl-5 pr-5') }>
+					<h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
+					<div className="row">
+						<DataContext.Provider value={{
+							burgerDispatch,
+							burger: burgerState,
+						}}>
+							<BurgerIngredients />
+							<BurgerConstructor />
+						</DataContext.Provider>
+					</div>
+				</main>
 
 				{ activeModal === MODAL_ORDER &&
 					<Modal open={ true }>
@@ -130,11 +76,12 @@ const App = () => {
 				}
 
 				{ activeModal === MODAL_DETAILS &&
-					itemDetails &&
+					ingredientDetails &&
 					<Modal open={ true }
 						header='Детали ингредиента'
+						onClose={clearDetailIngredients}
 					>
-						<IngredientDetails item={ itemDetails } />
+						<IngredientDetails />
 					</Modal>
 				}
 			</OrderContext.Provider>

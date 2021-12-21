@@ -6,10 +6,14 @@ import cn from 'classnames';
 
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import Ingredient from '../ingredient/ingredient';
-import DataContext from '../../services/data-context';
 import { itemPropTypes } from '../../utils/types';
 
 import { useSelector, useDispatch } from 'react-redux';
+import {
+	SET_INGREDIENTS_DETAILS,
+	SORT_INGREDIENTS,
+	getIngredients,
+} from '../../services/actions/ingredients';
 import { SHOW_MODAL } from '../../services/actions/modal';
 import { MODAL_DETAILS } from '../../utils/constants';
 
@@ -42,22 +46,20 @@ const TabHeader = React.memo((props) => {
 });
 
 const TabContent = React.memo(React.forwardRef((props, ref) => {
-	const { dataDispatch } = React.useContext(DataContext);
 	const {
 		ingredients,
 	} = props;
 
-	//redux
 	const dispatch = useDispatch();
 
 	const onClickCard = React.useCallback((id) => {
-		dataDispatch({
-			type: 'item-details',
-			payload: id,
+		dispatch({
+			type: SET_INGREDIENTS_DETAILS,
+			id,
 		});
 
 		dispatch({ type: SHOW_MODAL, name: MODAL_DETAILS });
-	}, [ dataDispatch, dispatch ]);
+	}, [ dispatch ]);
 
 	return (
 		<div ref={ ref } className={ cn('mt-10 custom-scroll', styles.tabsContainer) }>
@@ -82,23 +84,24 @@ const TabContent = React.memo(React.forwardRef((props, ref) => {
 }));
 
 const BurgerIngredients = () => {
-	const { ingredients } = React.useContext(DataContext);
 	const [ activeTab, setTab ] = React.useState('bun');
 	const tabContentRef = React.useRef(null);
 
-	const sortedData = React.useMemo(() => {
-		return ingredients.reduce((acum, current) => {
-			if (current.type && !acum[current.type]) {
-				acum[current.type] = [];
-			}
+	const {
+		items: ingredients,
+		hasError: IngredientsError,
+		isRequested: ingredientsRequest,
+		sortedItems: sortedIngredients,
+	} = useSelector(store => store.ingredients);
+	const dispatch = useDispatch();
 
-			if (acum[current.type]) {
-				acum[current.type].push(current);
-			}
+	React.useEffect(() => {
+		dispatch(getIngredients());
+	}, [ dispatch ]);
 
-			return acum;
-		}, {})
-	}, [ ingredients ]);
+	React.useEffect(() => {
+		dispatch({ type: SORT_INGREDIENTS });
+	}, [ ingredients, dispatch ]);
 
 	React.useEffect(() => {
 		const title = document.getElementById(activeTab);
@@ -111,13 +114,29 @@ const BurgerIngredients = () => {
 
 	return (
 		<section className="col-6">
-			<TabHeader tabs={ Object.keys(sortedData) }
-				activeTab={ activeTab }
-				setTab={ setTab }
-			/>
-			<TabContent ref={ tabContentRef }
-				ingredients={ sortedData }
-			/>
+			{ ingredientsRequest &&
+				<p className="text text_type_main-large p-10">
+					Загрузка...
+				</p>
+			}
+			{ IngredientsError &&
+				<p className="text text_type_main-large p-10">
+					Ошибка при получнии ингредиентов...
+				</p>
+			}
+			{ !ingredientsRequest &&
+				!IngredientsError &&
+				Boolean(ingredients.length) &&
+				<>
+					<TabHeader tabs={ Object.keys(sortedIngredients) }
+						activeTab={ activeTab }
+						setTab={ setTab }
+					/>
+					<TabContent ref={ tabContentRef }
+						ingredients={ sortedIngredients }
+					/>
+				</>
+			}
 		</section>
 	);
 };
