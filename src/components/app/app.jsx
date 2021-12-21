@@ -8,152 +8,158 @@ import OrderDetails from '../order-details/order-details';
 import IngredientDetails from '../ingredient-details/ingredient-details';
 import Modal from '../modal/modal';
 
+import DataContext from '../../services/data-context';
+import ModalContext from '../../services/modal-context';
+import OrderContext from '../../services/order-context';
+
 import {
-	API_URL,
+	modalReducer,
+	dataReducer,
+	burgerReducer,
+	orderReducer,
+} from '../../services/reducers';
+
+import {
+	API_INGREDIENTS,
 	MODAL_DETAILS,
 	MODAL_ORDER,
  } from '../../utils/constants';
+import { checkResponse } from '../../utils/utils';
 import cn from 'classnames';
 
+const modalInitialState = {
+	modal: '',
+	closeModal: () => {}
+};
+
+const dataInitialState = {
+	isLoading: false,
+	hasError: false,
+	ingredients: [],
+	itemDetails: null,
+};
+
+const burgerInitialState = {
+	bun: {},
+	toppings: [],
+	totalPrice: 0,
+};
+
+const orderInitialState = {
+	number: 0,
+	name: '',
+};
+
 const App = () => {
-	const [ state, setState ] = React.useState({
-		isLoading: false,
-		hasError: false,
-		data: [],
-		modal: '',
-		itemDetails: null,
-	});
+	const [ modalState, modalDispatch ] = React.useReducer(modalReducer, modalInitialState);
+	const [ dataState, dataDispatch ] = React.useReducer(dataReducer, dataInitialState);
+	const [ burgerState, burgerDispatch ] = React.useReducer(burgerReducer, burgerInitialState);
+	const [ orderState, orderDispatch ] = React.useReducer(orderReducer, orderInitialState);
 
 	const handleError = (error) => {
 		console.warn(error);
-		setState(prevState => ({
-			...prevState,
-			isLoaded: false,
-			hasError: true
-		}));
+		dataDispatch({ type: 'fail-fetch' });
 	};
 
 	const closeModal= React.useCallback(() => {
-		setState({
-			...state,
-			modal: '',
-		});
-	}, [ state ]);
+		modalDispatch({ type: 'hide' });
+	}, [ modalDispatch ]);
 
 	const openModal = React.useCallback(
-		(name) => (dataProp) =>
-			setState({
-				...state,
-				...dataProp,
-				modal: name,
-			}),
-		[ state ]
+		(name) => () => {
+			modalDispatch({ type: name });
+		},
+		[ modalDispatch ]
 	);
 
 	const openModalDetails = openModal(MODAL_DETAILS);
 	const openModalOrder = openModal(MODAL_ORDER);
 
 	const getIngredients = () => {
-		setState(prevState => ({
-			...prevState,
-			isLoaded: true,
-			hasError: false,
-		}));
+		dataDispatch({ type: 'start-fetch' });
 
 		try {
-			fetch(API_URL)
-				.then(response => response.json())
+			fetch(API_INGREDIENTS)
+				.then(checkResponse)
 				.then(response => {
 					if (!response.success) {
 						throw new Error('Данные не получены');
 					}
 
-					setState((prevState) => ({
-						...prevState,
-						isLoaded: false,
-						data: response.data,
-					}));
+					dataDispatch({ type: 'done-fetch', payload: response.data });
 				})
 				.catch(handleError);
 		} catch (error) {
 			handleError(error);
 		}
-
-		fetch(API_URL)
-			.then(response => response.json())
-			.then(response => {
-				setState((prevState) => ({
-					...prevState,
-					isLoaded: false,
-					data: response.data,
-				}));
-			})
-			.catch(err => {
-				console.warn(err);
-				setState(prevState => ({
-					...prevState,
-					isLoaded: false,
-					hasError: true
-				}));
-			});
 	};
 
 	React.useEffect(getIngredients, []);
 
 	const {
+		ingredients,
 		isLoading,
 		hasError,
-		modal,
-		data,
 		itemDetails,
-	} = state;
+	} = dataState;
 
 	return (
 		<div className={ styles.layout }>
 			<AppHeader />
-			{ isLoading &&
-				<p className="text text_type_main-large p-10">
-					Загрузка...
-				</p>
-			}
-			{ hasError &&
-				<p className="text text_type_main-large p-10">
-			 		Произошла ошибка
-		 		</p>
-			}
-			{ !isLoading &&
-				!hasError &&
-				Boolean(data.length) &&
-				<main className={ cn(styles.main, 'container pl-5 pr-5') }>
-					<h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
-					<div className="row">
-						<BurgerIngredients data={ data }
-							modal={ modal }
-							openModal={ openModalDetails }
-							closeModal={ closeModal }
-						/>
-						<BurgerConstructor data={ data } openModal={ openModalOrder } />
-					</div>
-				</main>
-			}
+			<ModalContext.Provider value={{
+				openModalDetails,
+				openModalOrder,
+				closeModal,
+			}}>
+				<OrderContext.Provider value={{
+					orderDispatch,
+					order: orderState,
+				}}>
+					{ isLoading &&
+						<p className="text text_type_main-large p-10">
+							Загрузка...
+						</p>
+					}
+					{ hasError &&
+						<p className="text text_type_main-large p-10">
+							Произошла ошибка
+						</p>
+					}
+					{ !isLoading &&
+						!hasError &&
+						Boolean(ingredients.length) &&
+						<main className={ cn(styles.main, 'container pl-5 pr-5') }>
+							<h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
+							<div className="row">
+								<DataContext.Provider value={{
+									dataDispatch,
+									burgerDispatch,
+									ingredients,
+									burger: burgerState,
+								}}>
+									<BurgerIngredients />
+									<BurgerConstructor />
+								</DataContext.Provider>
+							</div>
+						</main>
+					}
 
-			{ modal === MODAL_ORDER &&
-				<Modal open={ true }
-					onClose={ closeModal }
-				>
-					<OrderDetails />
-				</Modal>
-			}
+					{ modalState.modal === MODAL_ORDER &&
+						<Modal open={ true }>
+							<OrderDetails />
+						</Modal>
+					}
 
-			{ modal === MODAL_DETAILS &&
-				itemDetails &&
-				<Modal open={ true }
-					onClose={ closeModal }
-					header='Детали ингредиента'
-				>
-					<IngredientDetails {...itemDetails} />
-				</Modal>
-			}
+					{ modalState.modal === MODAL_DETAILS &&
+						itemDetails &&
+						<Modal open={ true }
+							header='Детали ингредиента'
+						>
+							<IngredientDetails item={ itemDetails } />
+						</Modal>
+					}
+				</OrderContext.Provider>
+			</ModalContext.Provider>
 		</div>
 	)
 };
