@@ -12,7 +12,34 @@ const checkResponse = (res) => {
 	return Promise.reject(`Ошибка ${res.status}`);
 };
 
+const getDataRequest = (url, data) => new Promise((resolve, reject) => {
+	const options = data ?
+		{
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data),
+		} : {};
+
+	try {
+		fetch(url, options)
+			.then(checkResponse)
+			.then(response => {
+				if (!response.success) {
+					throw new Error(`
+						Запрос к ${ url } не успешен.
+						Response: ${ JSON.stringify(response) }
+					`.trim());
+				}
+				resolve(response);
+			})
+			.catch(reject);
+	} catch (error) {
+		console.warn(error);
+	}
+});
+
 export {
 	isEmpty,
 	checkResponse,
+	getDataRequest,
 };
