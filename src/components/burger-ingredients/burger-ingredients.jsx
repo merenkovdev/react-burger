@@ -13,6 +13,7 @@ import {
 	SET_INGREDIENTS_DETAILS,
 	SORT_INGREDIENTS,
 	getIngredients,
+	SET_ACTIVE_TAB,
 } from '../../services/actions/ingredients';
 import { SHOW_MODAL } from '../../services/actions/modal';
 import { MODAL_DETAILS } from '../../utils/constants';
@@ -84,16 +85,19 @@ const TabContent = React.memo(React.forwardRef((props, ref) => {
 }));
 
 const BurgerIngredients = () => {
-	const [ activeTab, setTab ] = React.useState('bun');
 	const tabContentRef = React.useRef(null);
-
 	const {
 		items: ingredients,
 		hasError: IngredientsError,
 		isRequested: ingredientsRequest,
 		sortedItems: sortedIngredients,
+		activeTab,
 	} = useSelector(store => store.ingredients);
 	const dispatch = useDispatch();
+
+	const setTab = (tab) => {
+		dispatch({ type: SET_ACTIVE_TAB, tab });
+	};
 
 	React.useEffect(() => {
 		dispatch(getIngredients());
@@ -110,7 +114,7 @@ const BurgerIngredients = () => {
 		if (container && container === tabContentRef.current) {
 			tabContentRef.current.scroll(0, title?.offsetTop);
 		}
-	}, [activeTab])
+	}, [ activeTab ]);
 
 	return (
 		<section className="col-6">

@@ -7,11 +7,11 @@ export const GET_INGREDIENTS_FAILED = 'GET_INGREDIENTS_FAILED';
 export const SET_INGREDIENTS_DETAILS = 'SET_INGREDIENTS_DETAILS';
 export const CLEAR_INGREDIENTS_DETAILS = 'CLEAR_INGREDIENTS_DETAILS';
 export const SORT_INGREDIENTS = 'SORT_INGREDIENTS';
+export const SET_ACTIVE_TAB = 'SET_ACTIVE_TAB';
 
 export const getIngredients = () => dispatch => {
 	getDataRequest(API_INGREDIENTS)
 		.then(response => {
-			console.log(response);
 			dispatch({ type: GET_INGREDIENTS_SUCCESS, items: response.data });
 		})
 		.catch(() => {

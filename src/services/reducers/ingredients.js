@@ -5,6 +5,7 @@ import {
 	SET_INGREDIENTS_DETAILS,
 	CLEAR_INGREDIENTS_DETAILS,
 	SORT_INGREDIENTS,
+	SET_ACTIVE_TAB,
 } from '../actions/ingredients';
 
 const ingredientsInitialState = {
@@ -13,6 +14,7 @@ const ingredientsInitialState = {
 	items: [],
 	sortedItems: {},
 	ingredientDetails: null,
+	activeTab: 'bun',
 };
 
 const sortIngredients = (ingredients) => (
@@ -72,6 +74,12 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
 			return {
 				...state,
 				sortedItems: sortIngredients(state.items),
+			};
+
+		case SET_ACTIVE_TAB:
+			return {
+				...state,
+				activeTab: action.tab,
 			};
 
 		default:
