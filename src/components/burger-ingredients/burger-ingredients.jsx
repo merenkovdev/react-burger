@@ -3,12 +3,15 @@ import styles from './burger-ingredients.module.css';
 import React from 'react';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
+import { useSelector, useDispatch } from 'react-redux';
+import { itemPropTypes } from '../../utils/types';
 
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { DraggableIngredient } from '../ingredient/ingredient';
-import { itemPropTypes } from '../../utils/types';
 
-import { useSelector, useDispatch } from 'react-redux';
+import { MODAL_DETAILS } from '../../utils/constants';
+import { throttle } from '../../utils/utils';
+
 import {
 	SET_INGREDIENTS_DETAILS,
 	SORT_INGREDIENTS,
@@ -16,7 +19,6 @@ import {
 	SET_ACTIVE_TAB,
 } from '../../services/actions/ingredients';
 import { SHOW_MODAL } from '../../services/actions/modal';
-import { MODAL_DETAILS } from '../../utils/constants';
 
 const tabNames = {
 	bun: 'Булки',
@@ -50,6 +52,7 @@ const TabContent = React.memo(React.forwardRef((props, ref) => {
 	const addedIngredients = useSelector(store => store.ingredients.addedIngredients);
 	const {
 		ingredients,
+		handlerScroll,
 	} = props;
 
 	const dispatch = useDispatch();
@@ -64,7 +67,10 @@ const TabContent = React.memo(React.forwardRef((props, ref) => {
 	}, [ dispatch ]);
 
 	return (
-		<div ref={ ref } className={ cn('mt-10 custom-scroll', styles.tabsContainer) }>
+		<div ref={ ref }
+			className={ cn('mt-10 custom-scroll', styles.tabsContainer) }
+			onScroll={ handlerScroll }
+		>
 			{ Object.keys(ingredients)
 				.map(type => (
 					<React.Fragment key={ type }>
@@ -105,6 +111,28 @@ const BurgerIngredients = () => {
 		dispatch({ type: SET_ACTIVE_TAB, tab });
 	};
 
+	const trottledHandlerScroll = throttle(() => {
+		const titles = [].slice.call(document.querySelectorAll('h2'));
+		const container = tabContentRef.current;
+		let active = 'bun';
+
+		const titleOffsets = titles.reduce((acum, current) => {
+			acum[Math.abs(current.offsetTop - container.scrollTop)] = current.id;
+			return acum;
+		}, {});
+
+		const minDistance = Math.min(...Object.keys(titleOffsets));
+
+		active = titleOffsets[minDistance];
+
+		dispatch({ type: SET_ACTIVE_TAB, tab: active });
+	}, 50);
+
+	const handlerScrollContainer = React.useCallback(
+		trottledHandlerScroll,
+		[ trottledHandlerScroll ]
+	);
+
 	React.useEffect(() => {
 		dispatch(getIngredients());
 	}, [ dispatch ]);
@@ -113,14 +141,15 @@ const BurgerIngredients = () => {
 		dispatch({ type: SORT_INGREDIENTS });
 	}, [ ingredients, dispatch ]);
 
-	React.useEffect(() => {
-		const title = document.getElementById(activeTab);
-		const container = title?.offsetParent;
+	// TODO: Доработать переключение табов
+	// React.useEffect(() => {
+	// 	const title = document.getElementById(activeTab);
+	// 	const container = title?.offsetParent;
 
-		if (container && container === tabContentRef.current) {
-			tabContentRef.current.scroll(0, title?.offsetTop);
-		}
-	}, [ activeTab ]);
+	// 	if (container && container === tabContentRef.current) {
+	// 		tabContentRef.current.scroll(0, title?.offsetTop);
+	// 	}
+	// }, [ activeTab ]);
 
 	return (
 		<section className="col-6">
@@ -144,6 +173,7 @@ const BurgerIngredients = () => {
 					/>
 					<TabContent ref={ tabContentRef }
 						ingredients={ sortedIngredients }
+						handlerScroll={ handlerScrollContainer }
 					/>
 				</>
 			}
@@ -165,4 +195,5 @@ TabContent.propTypes = {
 			PropTypes.shape(itemPropTypes)
 		)
 	).isRequired,
+	handlerScroll: PropTypes.func,
 };
