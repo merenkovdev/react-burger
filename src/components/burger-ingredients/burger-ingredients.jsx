@@ -51,6 +51,7 @@ const TabHeader = React.memo((props) => {
 const TabContent = React.memo(React.forwardRef((props, ref) => {
 	const addedIngredients = useSelector(store => store.ingredients.addedIngredients);
 	const {
+		titlesRef,
 		ingredients,
 		handlerScroll,
 	} = props;
@@ -72,9 +73,12 @@ const TabContent = React.memo(React.forwardRef((props, ref) => {
 			onScroll={ handlerScroll }
 		>
 			{ Object.keys(ingredients)
-				.map(type => (
+				.map((type, index) => (
 					<React.Fragment key={ type }>
-						<h2 className="text text_type_main-medium pb-6" id={ type }>
+						<h2 className="text text_type_main-medium pb-6"
+							id={ type }
+							ref={ node => titlesRef.current[index] = node }
+						>
 							{ tabNames[type] }
 						</h2>
 						<ul className={ cn(styles.ingredients, ' pb-10') }>
@@ -98,6 +102,8 @@ const TabContent = React.memo(React.forwardRef((props, ref) => {
 
 const BurgerIngredients = () => {
 	const tabContentRef = React.useRef(null);
+	const titlesRef = React.useRef([]);
+
 	const {
 		items: ingredients,
 		hasError: IngredientsError,
@@ -107,14 +113,20 @@ const BurgerIngredients = () => {
 	} = useSelector(store => store.ingredients);
 	const dispatch = useDispatch();
 
+	
 	const setTab = (tab) => {
-		dispatch({ type: SET_ACTIVE_TAB, tab });
+		// TODO: Доработать переключение табов
+		// dispatch({ type: SET_ACTIVE_TAB, tab });
 	};
 
 	const trottledHandlerScroll = throttle(() => {
-		const titles = [].slice.call(document.querySelectorAll('h2'));
+		const titles = titlesRef.current;
+
+		if (!titles.length) {
+			return;
+		}
+
 		const container = tabContentRef.current;
-		let active = 'bun';
 
 		const titleOffsets = titles.reduce((acum, current) => {
 			acum[Math.abs(current.offsetTop - container.scrollTop)] = current.id;
@@ -122,8 +134,7 @@ const BurgerIngredients = () => {
 		}, {});
 
 		const minDistance = Math.min(...Object.keys(titleOffsets));
-
-		active = titleOffsets[minDistance];
+		const active = titleOffsets[minDistance];
 
 		dispatch({ type: SET_ACTIVE_TAB, tab: active });
 	}, 50);
@@ -172,6 +183,7 @@ const BurgerIngredients = () => {
 						setTab={ setTab }
 					/>
 					<TabContent ref={ tabContentRef }
+						titlesRef={ titlesRef }
 						ingredients={ sortedIngredients }
 						handlerScroll={ handlerScrollContainer }
 					/>
