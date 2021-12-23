@@ -21,26 +21,3 @@ export const getIngredients = () => dispatch => {
 		});
 
 };
-
-export const changeCountAddedIngredients = (item, typeChange) => (dispatch) => {
-	switch (typeChange) {
-		case 'increase':
-			dispatch({
-				type: INCREASE_ADDED_INGREDIENT,
-				item: item._id,
-				count: 1,
-			});
-			break;
-
-		case 'decrease':
-			dispatch({
-				type: DECREASE_ADDED_INGREDIENT,
-				_id: item._id,
-				count: -1,
-			});
-			break;
-
-		default:
-			break;
-	}
-};
