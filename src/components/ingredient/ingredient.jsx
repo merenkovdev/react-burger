@@ -1,13 +1,14 @@
 import styles from './ingredient.module.css';
 
+import React from 'react';
 import PropTypes from 'prop-types';
-
-import { CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import cn from 'classnames';
 
+import { CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import { itemPropTypes } from '../../utils/types';
+import { useDrag } from 'react-dnd';
 
-const Ingredient = (props) => {
+const Ingredient = React.forwardRef((props, ref) => {
 	const {
 		item: {
 			_id,
@@ -29,10 +30,16 @@ const Ingredient = (props) => {
 
 	return (
 		<div className={ cn(styles.item, { [ styles.item_clickable ]: onClickCard } ) }
-			onClick={ handlerClickCard }>
+			onClick={ handlerClickCard }
+			{...(
+				ref ? {
+					ref,
+				} : {}
+			)}
+		>
 			<div className={ cn(styles.imageContainer, 'text text_type_main-default') }>
 				<img className={ styles.image } src={ size === 'large' ? image_large : image } alt="" />
-				{ count &&
+				{ Boolean(count) &&
 					<Counter count={ count } size="default" />
 				}
 			</div>
@@ -48,6 +55,20 @@ const Ingredient = (props) => {
 				{ name }
 			</div>
 		</div>
+	);
+});
+
+export const DraggableIngredient = (props) => {
+	const [, dragRef ] = useDrag({
+		type: 'ingredient',
+		item: props.item,
+		collect: monitor => ({
+			isDrag: monitor.isDragging()
+		})
+	});
+
+	return (
+		<Ingredient { ...props } ref={ dragRef } />
 	);
 };
 

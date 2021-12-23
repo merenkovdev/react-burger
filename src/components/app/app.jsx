@@ -16,6 +16,9 @@ import cn from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import { CLEAR_INGREDIENTS_DETAILS } from '../../services/actions/ingredients';
 
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+
 const App = () => {
 	const activeModal = useSelector(store => store.modal.active);
 	const ingredientDetails = useSelector(store => store.ingredients.ingredientDetails);
@@ -31,8 +34,10 @@ const App = () => {
 			<main className={ cn(styles.main, 'container pl-5 pr-5') }>
 				<h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
 				<div className="row">
-					<BurgerIngredients />
-					<BurgerConstructor />
+					<DndProvider backend={HTML5Backend}>
+						<BurgerIngredients />
+						<BurgerConstructor />
+					</ DndProvider>
 				</div>
 			</main>
 

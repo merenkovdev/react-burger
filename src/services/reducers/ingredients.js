@@ -6,6 +6,8 @@ import {
 	CLEAR_INGREDIENTS_DETAILS,
 	SORT_INGREDIENTS,
 	SET_ACTIVE_TAB,
+	INCREASE_ADDED_INGREDIENT,
+	DECREASE_ADDED_INGREDIENT,
 } from '../actions/ingredients';
 
 const ingredientsInitialState = {
@@ -15,6 +17,7 @@ const ingredientsInitialState = {
 	sortedItems: {},
 	ingredientDetails: null,
 	activeTab: 'bun',
+	addedIngredients: {},
 };
 
 const sortIngredients = (ingredients) => (
@@ -30,6 +33,56 @@ const sortIngredients = (ingredients) => (
 		return acum;
 	}, {})
 );
+
+const changeValue = (value, count) => {
+	if (Number.isInteger(value)) {
+		return value + count;
+	}
+
+	return count;
+};
+
+const getAddedIngredients = (items, { item }, count) => {
+	const copyItems = { ...items };
+
+	switch (item.type) {
+		case 'bun':
+			const key = Object.keys(copyItems)
+				.find(id => copyItems[id]?.type === 'bun');
+			delete copyItems[key];
+
+			copyItems[item._id] = {
+				type: item.type,
+				count: 2,
+			};
+
+			return copyItems;
+
+		case 'main':
+		case 'sauce':
+			const value = changeValue(
+				items[item._id]?.count,
+				count,
+			);
+
+			if (!value) {
+				delete copyItems[item._id];
+
+				return copyItems;
+			}
+
+			return {
+				...items,
+				[item._id]: {
+					type: item.type,
+					count: value,
+				}
+			};
+
+		default:
+			return items;
+	}
+};
 
 export const ingredientsReducer = (state = ingredientsInitialState, action) => {
 	switch (action.type) {
@@ -80,6 +133,26 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
 			return {
 				...state,
 				activeTab: action.tab,
+			};
+
+		case INCREASE_ADDED_INGREDIENT:
+			return {
+				...state,
+				addedIngredients: getAddedIngredients(
+					state.addedIngredients,
+					action,
+					1
+				),
+			};
+
+		case DECREASE_ADDED_INGREDIENT:
+			return {
+				...state,
+				addedIngredients: getAddedIngredients(
+					state.addedIngredients,
+					action,
+					-1
+				),
 			};
 
 		default:

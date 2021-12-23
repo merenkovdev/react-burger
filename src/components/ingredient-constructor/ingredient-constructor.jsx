@@ -18,7 +18,15 @@ const formattingName = (name, type) => {
 };
 
 const Ingredient = (props) => {
-	const { item, type } = props;
+	const {
+		item,
+		type,
+		onClose,
+	} = props;
+
+	const handleClose = () => {
+		onClose(item);
+	};
 
 	return (
 		<>
@@ -33,6 +41,7 @@ const Ingredient = (props) => {
 				text={ formattingName(item.name, type) }
 				price={ item.price }
 				thumbnail={ item.image }
+				handleClose={ handleClose }
 			/>
 		</>
 	)

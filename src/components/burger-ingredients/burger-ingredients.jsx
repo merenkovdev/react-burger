@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import cn from 'classnames';
 
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
-import Ingredient from '../ingredient/ingredient';
+import { DraggableIngredient } from '../ingredient/ingredient';
 import { itemPropTypes } from '../../utils/types';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -47,6 +47,7 @@ const TabHeader = React.memo((props) => {
 });
 
 const TabContent = React.memo(React.forwardRef((props, ref) => {
+	const addedIngredients = useSelector(store => store.ingredients.addedIngredients);
 	const {
 		ingredients,
 	} = props;
@@ -73,7 +74,12 @@ const TabContent = React.memo(React.forwardRef((props, ref) => {
 						<ul className={ cn(styles.ingredients, ' pb-10') }>
 							{ ingredients[type].map(item => (
 								<li className={ cn(styles.ingredient, 'p-3') } key={ item._id }>
-									<Ingredient item={ item } count={1} onClickCard={ onClickCard } />
+									<DraggableIngredient item={ item }
+										count={ addedIngredients[item._id] ?
+											Number(addedIngredients[item._id].count) : 0
+										}
+										onClickCard={ onClickCard }
+									/>
 								</li>
 							)) }
 						</ul>
