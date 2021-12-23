@@ -1,6 +1,7 @@
 export const ADD_BUN = 'ADD_BUN';
 export const ADD_TOPPING = 'ADD_TOPPING';
 export const REMOVE_IMGREDIENT = 'REMOVE_IMGREDIENT';
+export const MOVE_INGREDIENT = 'MOVE_INGREDIENT';
 export const CALC_TOTAL_PRICE = 'CALC_TOTAL_PRICE';
 
 export const addIngredient = (id) => (dispatch, getState) => {

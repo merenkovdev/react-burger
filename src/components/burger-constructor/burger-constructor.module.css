@@ -13,13 +13,6 @@
 	overflow-y: auto;
 }
 
-.item {
-	position: relative;
-	display: flex;
-	padding-left: 32px;
-	align-items: center;
-}
-
 .total {
 	display: flex;
 	align-items: center;

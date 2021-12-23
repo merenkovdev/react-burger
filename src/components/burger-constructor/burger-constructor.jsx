@@ -8,7 +8,7 @@ import {
 	Button,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import IngredientConstructor from '../ingredient-constructor/ingredient-constructor';
+import IngredientConstructor, { DraggableConstructorIngredient } from '../ingredient-constructor/ingredient-constructor';
 import cn from 'classnames';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -97,17 +97,18 @@ const BurgerConstructor = () => {
 					<>
 						<ul className={ styles.list }>
 							{ !isEmpty(bun) &&
-								<li className={ styles.item }>
+								<li>
 									<IngredientConstructor item={ bun } type="top" />
 								</li>
 							}
 							<li className={ cn(styles.listContainer, 'custom-scroll') }>
 								<ul className={ cn(styles.list) }>
 									{ toppings
-										.map(item => {
+										.map((item, index) => {
 											return (
 												<li className={ styles.item } key={ item.uid }>
-													<IngredientConstructor item={ item }
+													<DraggableConstructorIngredient item={ item }
+														index={ index }
 														onClose={ handleRemoveTopping }
 													/>
 												</li>
@@ -117,7 +118,7 @@ const BurgerConstructor = () => {
 								</ul>
 							</ li>
 							{ !isEmpty(bun) &&
-								<li className={ styles.item }>
+								<li>
 									<IngredientConstructor item={ bun } type="bottom" />
 								</li>
 							}
