@@ -136,7 +136,9 @@ const BurgerIngredients = () => {
 		const minDistance = Math.min(...Object.keys(titleOffsets));
 		const active = titleOffsets[minDistance];
 
-		dispatch({ type: SET_ACTIVE_TAB, tab: active });
+		if (active !== activeTab) {
+			dispatch({ type: SET_ACTIVE_TAB, tab: active });			
+		}
 	}, 50);
 
 	const handlerScrollContainer = React.useCallback(
