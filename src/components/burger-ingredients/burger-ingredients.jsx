@@ -209,5 +209,10 @@ TabContent.propTypes = {
 			PropTypes.shape(itemPropTypes)
 		)
 	).isRequired,
+	titlesRef: PropTypes.shape({
+		current: PropTypes.arrayOf(
+			PropTypes.instanceOf(Element)
+		),
+	}),
 	handlerScroll: PropTypes.func,
 };

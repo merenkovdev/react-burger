@@ -11,6 +11,11 @@ import { MOVE_INGREDIENT } from '../../services/actions/burger';
 import { DragIcon, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
 import { itemPropTypes } from '../../utils/types';
 
+const ingredietnProtoTypes = {
+	item: PropTypes.shape(itemPropTypes).isRequired,
+	type: PropTypes.oneOf(['top', 'bottom']),
+};
+
 const formattingName = (name, type) => {
 	switch (type) {
 		case 'top':
@@ -134,7 +139,9 @@ export const DraggableConstructorIngredient = (props) => {
 
 export default ConstructorIngredient;
 
-Ingredient.propTypes = {
-	item: PropTypes.shape(itemPropTypes).isRequired,
-	type: PropTypes.oneOf(['top', 'bottom']),
+Ingredient.propTypes = ingredietnProtoTypes;
+ConstructorIngredient.propTypes = ingredietnProtoTypes;
+DraggableConstructorIngredient.propTypes = {
+	index: PropTypes.number.isRequired,
+	...ingredietnProtoTypes,
 };

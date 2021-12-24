@@ -8,6 +8,13 @@ import { CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-c
 import { itemPropTypes } from '../../utils/types';
 import { useDrag } from 'react-dnd';
 
+const ingredientProtoTypes = {
+	item: PropTypes.shape(itemPropTypes).isRequired,
+	count: PropTypes.number,
+	onClickCard: PropTypes.func,
+	size: PropTypes.string,
+};
+
 const Ingredient = React.forwardRef((props, ref) => {
 	const {
 		item: {
@@ -74,9 +81,5 @@ export const DraggableIngredient = (props) => {
 
 export default Ingredient;
 
-Ingredient.propTypes = {
-	item: PropTypes.shape(itemPropTypes).isRequired,
-	count: PropTypes.number,
-	onClickCard: PropTypes.func,
-	size: PropTypes.string,
-};
+Ingredient.propTypes = ingredientProtoTypes;
+DraggableIngredient.propTypes = ingredientProtoTypes;

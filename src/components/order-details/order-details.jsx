@@ -1,6 +1,5 @@
 import styles from './order-details.module.css';
 
-import React from 'react';
 import cn from 'classnames';
 
 import doneImg from '../../images/done.png';
