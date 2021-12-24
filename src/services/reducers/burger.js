@@ -15,19 +15,30 @@ const burgerInitialState = {
 
 const NUMBER_BUNS_IN_BURGERS = 2;
 
-export const burgerReducer = (state = burgerInitialState, action) => {
-	const getTotalPrice = () => (
-		state.toppings.reduce(
-			(acum, current) => acum + current.price,
-			0
-		) + (state.bun?.price * NUMBER_BUNS_IN_BURGERS || 0)
-	);
+const moveArrayElement = (array, to, from) => {
+	const copyArray = [...array];
+	const movedElem = copyArray.splice(from, 1);
 
+	return [
+		...copyArray.slice(0, to),
+		...movedElem,
+		...copyArray.slice(to),
+	];
+};
+
+const getTotalPrice = (toppings, bun) => (
+	toppings.reduce(
+		(acum, current) => acum + current.price,
+		0
+	) + (bun?.price * NUMBER_BUNS_IN_BURGERS || 0)
+);
+
+export const burgerReducer = (state = burgerInitialState, action) => {
 	switch (action.type) {
 		case CALC_TOTAL_PRICE:
 			return {
 				...state,
-				totalPrice: getTotalPrice(),
+				totalPrice: getTotalPrice(state.toppings, state.bun),
 			};
 		case ADD_BUN:
 			return {
@@ -56,16 +67,10 @@ export const burgerReducer = (state = burgerInitialState, action) => {
 
 		case MOVE_INGREDIENT: 
 			const { movedTo, movedFrom } = action;
-			const copyToppings = [...state.toppings];
-			const movedItem = copyToppings.splice(movedFrom, 1);
 
 			return {
 				...state,
-				toppings: [
-					...copyToppings.slice(0, movedTo),
-					...movedItem,
-					...copyToppings.slice(movedTo),
-				],
+				toppings: moveArrayElement(state.toppings, movedTo, movedFrom),
 			};
 
 		default:

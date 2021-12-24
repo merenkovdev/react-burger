@@ -24,7 +24,7 @@ import {
 } from '../../services/actions/ingredients';
 import { MODAL_ORDER } from '../../utils/constants';
 import { createOrder } from '../../services/actions/order';
-import { useDrop, useDrag } from 'react-dnd';
+import { useDrop } from 'react-dnd';
 
 const getIngredientsIds = (bun, toppings) => (
 	[ bun._id, ...toppings.map(topping => topping._id) ]
