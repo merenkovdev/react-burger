@@ -16,6 +16,7 @@ import { SHOW_MODAL } from '../../services/actions/modal';
 import {
 	CALC_TOTAL_PRICE,
 	REMOVE_IMGREDIENT,
+	CLEAR_CONSTRUCTOR,
 	addIngredient,
 } from '../../services/actions/burger';
 import {
@@ -26,18 +27,25 @@ import { MODAL_ORDER } from '../../utils/constants';
 import { createOrder } from '../../services/actions/order';
 import { useDrop } from 'react-dnd';
 
-const getIngredientsIds = (bun, toppings) => (
-	[ bun._id, ...toppings.map(topping => topping._id) ]
-);
-
 const Total = (props) => {
+	const createOrderRequest = useSelector(store => store.order.isRequested);
+
 	return (
 		<div className={ cn(styles.total, 'pt-10') }>
 			<span className="text text_type_digits-medium pr-10">
 				{ props.price } <CurrencyIcon type="primary" />
 			</span>
-			<Button type="primary" size="large" onClick={ props.onOrder }>
-				Оформить заказ
+			<Button type="primary"
+				size="large"
+				onClick={ props.onOrder }
+				{...(createOrderRequest ? {
+					disabled: true,
+				} : {})}
+			>
+				{ createOrderRequest ?
+					'Создание заказа...' : 
+					'Оформить заказ'
+				}
 			</Button>
 		</div>
 	);
@@ -49,6 +57,7 @@ const BurgerConstructor = () => {
 		toppings,
 		totalPrice,
 	} = useSelector(store => store.burger);
+
 	const dispatch = useDispatch();
 
 	const openModalOrder = () => {
@@ -56,11 +65,11 @@ const BurgerConstructor = () => {
 	};
 
 	const handleOrder = () => {
-		dispatch(
-			createOrder({
-				ingredients: getIngredientsIds(bun, toppings)
+		dispatch(createOrder())
+			.then(() => {
+				dispatch({ type: CLEAR_CONSTRUCTOR });
 			})
-		).finally(openModalOrder);
+			.finally(openModalOrder);
 	};
 
 	const handleRemoveTopping = (item) => {

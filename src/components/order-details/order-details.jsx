@@ -10,11 +10,16 @@ const OrderDetails = () => {
 
 	return (
 		<div className={ styles.order }>
-			{ order.error &&
-				<p className={ cn('text text_type_main-large', 'pt-8') }>Ошибка при создании заказа</p>
+			{ order.hasError &&
+				<p className={ cn('text text_type_main-large', 'pt-8') }>
+					{ order.textError ?
+						order.textError :
+						'Ошибка при создании заказа'
+					}
+				</p>
 			}
 
-			{ !order.error &&
+			{ !order.hasError &&
 				<>
 					<p className="text text_type_digits-large">{ order.number }</p>
 					<p className={ cn('text text_type_main-large', 'pt-8') }>идентификатор заказа</p>

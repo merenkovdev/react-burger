@@ -4,8 +4,8 @@ import {
 	REMOVE_IMGREDIENT,
 	CALC_TOTAL_PRICE,
 	MOVE_INGREDIENT,
+	CLEAR_CONSTRUCTOR,
 } from '../actions/burger';
-import { nanoid  } from 'nanoid';
 
 const burgerInitialState = {
 	bun: {},
@@ -53,7 +53,7 @@ export const burgerReducer = (state = burgerInitialState, action) => {
 					...state.toppings,
 					{
 						...action.ingredient,
-						uid: nanoid(),
+						uid: action.uid,
 					},
 				],
 			};
@@ -64,13 +64,19 @@ export const burgerReducer = (state = burgerInitialState, action) => {
 				toppings: state.toppings.filter(topping => topping.uid !== action.uid),
 			};
 
-
 		case MOVE_INGREDIENT: 
 			const { movedTo, movedFrom } = action;
 
 			return {
 				...state,
 				toppings: moveArrayElement(state.toppings, movedTo, movedFrom),
+			};
+
+		case CLEAR_CONSTRUCTOR: 
+			return {
+				...state,
+				toppings: burgerInitialState.toppings,
+				bun: burgerInitialState.bun,
 			};
 
 		default:
