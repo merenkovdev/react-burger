@@ -18,12 +18,14 @@ export const createOrder = () => (dispatch, getState) => {
 	} = getState();
 
 	if (isEmpty(bun)) {
+		const textError = 'Пожалуйста, добавьте булку';
+
 		dispatch({
+			textError,
 			type: CREATE_ORDER_FAILED,
-			textError: 'Пожалуйста, добавьте булку',
 		});
 
-		return Promise.reject('Пожалуйста, добавьте булку');
+		return Promise.reject(textError);
 	}
 
 	dispatch({ type: CREATE_ORDER_REQUEST });
