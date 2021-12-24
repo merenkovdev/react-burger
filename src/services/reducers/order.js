@@ -16,6 +16,7 @@ export const orderReducer = (state = orderInitialState, action) => {
 				...state,
 				number,
 				name,
+				error: false,
 			};
 
 		case CREATE_ORDER_ERROR:
