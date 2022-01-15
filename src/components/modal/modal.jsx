@@ -7,15 +7,15 @@ import cn from 'classnames';
 
 import ModalOverlay from '../modal-overlay/modal-overlay';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-
-import ModalContext from '../../services/modal-context';
+import { useDispatch } from 'react-redux';
+import { HIDE_MODAL } from '../../services/actions/modal';
 
 const modalRoot = document.getElementById('modals');
 
 const ModalHeader = (props) => {
 	const {
 		children,
-		onClose,
+		closeModal,
 	} = props;
 
 	return (
@@ -23,7 +23,7 @@ const ModalHeader = (props) => {
 			{ children &&
 				<h2 className={ cn(styles.title, 'text text_type_main-large') }>{ children }</h2>
 			}
-			<button onClick={ onClose } className={ cn(styles.close, 'btn-clear') }>
+			<button onClick={ closeModal } className={ cn(styles.close, 'btn-clear') }>
 				<CloseIcon type="primary" />
 			</button>
 		</div>
@@ -31,12 +31,20 @@ const ModalHeader = (props) => {
 };
 
 const Modal = (props) => {
-	const { closeModal } = React.useContext(ModalContext);
 	const {
 		children,
 		header,
-		open
+		open,
+		onClose,
 	} = props;
+
+	const dispatch = useDispatch();
+	const closeModal = React.useCallback(() => {
+		dispatch({ type: HIDE_MODAL });
+		if (typeof onClose === 'function') {
+			onClose();
+		}
+	}, [ dispatch, onClose ]);
 
 	React.useEffect(() => {
 		const onKeyPress = (e) => {
@@ -50,7 +58,7 @@ const Modal = (props) => {
 		return () => {
 			document.removeEventListener('keydown', onKeyPress);
 		};
-	}, [closeModal, open]);
+	}, [ open, closeModal ]);
 
 	return (modalRoot &&
 		ReactDOM.createPortal(
@@ -59,7 +67,7 @@ const Modal = (props) => {
 				<ModalOverlay onClose={ closeModal } />
 				<div className={ styles.modalContainer }>
 					<div className={ cn(styles.modal, 'p-10') }>
-						<ModalHeader onClose={ closeModal }>{ header }</ModalHeader>
+						<ModalHeader closeModal={ closeModal }>{ header }</ModalHeader>
 						{ children }
 					</div>
 				</div>
@@ -72,7 +80,7 @@ const Modal = (props) => {
 export default Modal;
 
 ModalHeader.propTypes = {
-	onClose: PropTypes.func.isRequired,
+	closeModal: PropTypes.func.isRequired,
 	children: PropTypes.node,
 };
 
@@ -80,4 +88,5 @@ Modal.propTypes = {
 	open: PropTypes.bool.isRequired,
 	children: PropTypes.node,
 	header: PropTypes.node,
+	onClose: PropTypes.func,
 };

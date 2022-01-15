@@ -5,3 +5,15 @@
 	cursor: pointer;
 	transform: translateY(-50%);
 }
+
+.item {
+	position: relative;
+	display: flex;
+	padding-left: 32px;
+	align-items: center;
+}
+
+.item_move {
+	color: 'move';
+	opacity: 0;
+}

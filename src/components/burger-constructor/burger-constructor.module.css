@@ -8,21 +8,21 @@
 }
 
 .listContainer {
-	max-height: 35vh;
+	max-height: 52vh;
 	padding-right: 10px;
 	overflow-y: auto;
-}
-
-.item {
-	position: relative;
-	display: flex;
-	padding-left: 32px;
-	align-items: center;
 }
 
 .total {
 	display: flex;
 	align-items: center;
 	margin-left: auto;
-    justify-content: flex-end;
+	justify-content: flex-end;
+}
+
+.stub {
+	display: flex;
+	min-height: 300px;
+	align-items: center;
+	justify-content: center;
 }
