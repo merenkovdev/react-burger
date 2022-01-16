@@ -113,10 +113,11 @@ const BurgerIngredients = () => {
 	} = useSelector(store => store.ingredients);
 	const dispatch = useDispatch();
 
-	
+
 	const setTab = (tab) => {
-		// TODO: Доработать переключение табов
-		// dispatch({ type: SET_ACTIVE_TAB, tab });
+		const title = titlesRef.current.find(elem => elem.id === tab);
+
+		title?.scrollIntoView({ behavior: 'smooth' })
 	};
 
 	const trottledHandlerScroll = throttle(() => {
@@ -137,7 +138,7 @@ const BurgerIngredients = () => {
 		const active = titleOffsets[minDistance];
 
 		if (active !== activeTab) {
-			dispatch({ type: SET_ACTIVE_TAB, tab: active });			
+			dispatch({ type: SET_ACTIVE_TAB, tab: active });
 		}
 	}, 50);
 
@@ -153,16 +154,6 @@ const BurgerIngredients = () => {
 	React.useEffect(() => {
 		dispatch({ type: SORT_INGREDIENTS });
 	}, [ ingredients, dispatch ]);
-
-	// TODO: Доработать переключение табов
-	// React.useEffect(() => {
-	// 	const title = document.getElementById(activeTab);
-	// 	const container = title?.offsetParent;
-
-	// 	if (container && container === tabContentRef.current) {
-	// 		tabContentRef.current.scroll(0, title?.offsetTop);
-	// 	}
-	// }, [ activeTab ]);
 
 	return (
 		<section className="col-6">
