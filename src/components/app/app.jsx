@@ -1,23 +1,27 @@
 import styles from './app.module.css';
 
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+
 import AppHeader from '../app-header/app-header';
-import BurgerConstructor from '../burger-constructor/burger-constructor';
-import BurgerIngredients from '../burger-ingredients/burger-ingredients';
 import OrderDetails from '../order-details/order-details';
 import IngredientDetails from '../ingredient-details/ingredient-details';
 import Modal from '../modal/modal';
 
 import {
+	Home,
+	LoginPage,
+	RegisterPage,
+	ForgotPasswordPage,
+	ResetPasswordPage,
+} from '../../pages';
+
+import {
 	MODAL_DETAILS,
 	MODAL_ORDER,
  } from '../../utils/constants';
-import cn from 'classnames';
 
-import { useSelector, useDispatch } from 'react-redux';
 import { CLEAR_INGREDIENTS_DETAILS } from '../../services/actions/ingredients';
-
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 
 const App = () => {
 	const activeModal = useSelector(store => store.modal.active);
@@ -31,15 +35,25 @@ const App = () => {
 	return (
 		<div className={ styles.layout }>
 			<AppHeader />
-			<main className={ cn(styles.main, 'container pl-5 pr-5') }>
-				<h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
-				<div className="row">
-					<DndProvider backend={HTML5Backend}>
-						<BurgerIngredients />
-						<BurgerConstructor />
-					</ DndProvider>
-				</div>
-			</main>
+			<Router>
+				<Switch>
+					<Route path="/" exact={true}>
+						<Home />
+					</Route>
+					<Route path="/login" exact={true}>
+						<LoginPage />
+					</Route>
+					<Route path="/register" exact={true}>
+						<RegisterPage />
+					</Route>
+					<Route path="/forgot-password" exact={true}>
+						<ForgotPasswordPage />
+					</Route>
+					<Route path="/reset-password" exact={true}>
+						<ResetPasswordPage />
+					</Route>
+				</Switch>
+			</Router>
 
 			{ activeModal === MODAL_ORDER &&
 				<Modal open={ true }>
