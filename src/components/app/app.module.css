@@ -1,3 +1,7 @@
 .layout {
 	min-width: var(--min-width-window);
 }
+
+.main {
+	padding-top: 20px;
+}

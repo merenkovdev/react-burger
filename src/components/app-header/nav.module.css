@@ -6,12 +6,11 @@
 }
 
 .link {
-	text-decoration: none;
 	display: flex;
 	align-items: center;
 	border-radius: var(--common-border-radius-s);
 }
 
-.link:hover {
-	text-decoration: underline;
+.link_inactive svg {
+	fill: var(--text-inactive-color);
 }

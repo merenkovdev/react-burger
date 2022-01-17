@@ -1,5 +1,6 @@
 import styles from './app-header.module.css';
 
+import { NavLink } from 'react-router-dom';
 import {
 	Logo,
 	ProfileIcon,
@@ -7,6 +8,13 @@ import {
 import cn from 'classnames';
 
 import Nav from './nav';
+
+const getClassesLink = isActive =>
+	cn(
+		'text text_type_main-default pt-4 pb-4 pl-5 pr-5',
+		{ [styles.link_inactive + ' text_color_inactive']: !isActive },
+		styles.user
+	);
 
 const AppHeader = () => {
 	return (
@@ -18,10 +26,10 @@ const AppHeader = () => {
 				</div>
 
 				<div className={ styles.headerUser }>
-					<button type="button" className={ cn('text text_type_main-default text_color_inactive pt-4 pb-4 pl-5 pr-5', styles.user) }>
-						<ProfileIcon type="secondary" />
+					<NavLink to="/profile" className={getClassesLink} exact={ true }>
+						<ProfileIcon type="primary" />
 						<span className="pl-2">Личный кабинет</span>
-					</button>
+					</NavLink>
 				</div>
 			</div>
 		</header>

@@ -1,4 +1,5 @@
 import styles from './nav.module.css';
+import { NavLink } from 'react-router-dom';
 
 import {
 	ListIcon,
@@ -6,22 +7,27 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import cn from 'classnames';
 
-const defaultClassesLink = 'text text_type_main-default pt-4 pb-4 pl-5 pr-5';
+const getClassesLink = isActive =>
+	cn(
+		'text text_type_main-default pt-4 pb-4 pl-5 pr-5',
+		{ [styles.link_inactive + ' text_color_inactive']: !isActive },
+		styles.link
+	);
 
 const Nav = () => (
 	<nav>
 		<ul className={ styles.list }>
 			<li>
-				<a className={ cn(defaultClassesLink, styles.link) } href="/const">
+				<NavLink className={ getClassesLink } to="/" exact={ true }>
 					<BurgerIcon type="primary" />
 					<span className="pl-2">Конструктор</span>
-				</a>
+				</NavLink>
 			</li>
 			<li>
-				<a className={ cn(defaultClassesLink, styles.link, 'text_color_inactive') } href="/feed">
-					<ListIcon type="secondary" />
+				<NavLink className={ getClassesLink } to="/feed" exact={ true }>
+					<ListIcon type="primary" />
 					<span className="pl-2">Лента новостей</span>
-				</a>
+				</NavLink>
 			</li>
 		</ul>
 	</nav>

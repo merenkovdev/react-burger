@@ -25,3 +25,7 @@
 	background: transparent;
 	cursor: pointer;
 }
+
+.link_inactive svg {
+	fill: var(--text-inactive-color);
+}
