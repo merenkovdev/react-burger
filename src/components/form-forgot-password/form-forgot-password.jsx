@@ -2,42 +2,44 @@ import {
 	Input,
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-
-import {
-	FORM_NAME_FORGOT_PASSWORD,
-} from '../../utils/constants';
-import {
-	requestForgotForm,
-	actionChangeValueForgotForm,
-} from '../../services/actions/forms';
+import { useForm, Controller  } from 'react-hook-form';
+import { requestForgot } from '../../services/actions/user';
 import styles from './form-forgot-password.module.css';
 
+const defaultValuesForm = {
+	email: '',
+};
+
 const FormForgotPassword = () => {
-	const { email } = useSelector(store => store.forms[FORM_NAME_FORGOT_PASSWORD]);
+	const {
+		handleSubmit,
+		control,
+	} = useForm({
+		defaultValues: defaultValuesForm,
+	});
 	const dispatch = useDispatch();
 
-	const handleChange = (event) => {
-		dispatch(actionChangeValueForgotForm('email', event.target.value));
-	};
-
-	const handleSubmitForm = (event) => {
-		event.preventDefault();
-		dispatch(requestForgotForm({ email }));
+	const onSubmitForm = ({ email }) => {
+		dispatch(requestForgot({ email }));
 	};
 
 	return (
-		<form className={ styles.form } onSubmit={handleSubmitForm}>
+		<form className={ styles.form } onSubmit={handleSubmit(onSubmitForm)}>
 			<div className="pb-6">
-				<Input
-					type={'email'}
-					placeholder={'Укажите e-mail'}
-					onChange={handleChange}
-					value={email}
-					name={'email'}
-					error={false}
-				/>
+			<Controller
+				name="email"
+				control={control}
+				rules={{ required: true }}
+				render={({ field }) =>
+					<Input
+						{...field}
+						type="email"
+						placeholder={'Укажите e-mail'}
+					/>
+				}
+			/>
 			</div>
 			<Button type="primary" size="medium">
 				Восстановить

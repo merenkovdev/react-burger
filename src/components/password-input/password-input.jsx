@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { forwardRef, useState } from 'react';
 import { Input } from '@ya.praktikum/react-developer-burger-ui-components';
 
-const PasswordInput = (props) => {
+const PasswordInput = forwardRef((props, ref) => {
 	const [ type, setType ] = useState('password');
 	const changeType = () => {
 		setType(type === 'password' ? 'text' : 'password');
@@ -10,10 +10,11 @@ const PasswordInput = (props) => {
 	return (
 		<Input
 			{ ...props }
+			ref={ ref }
 			type={ type }
 			onIconClick={ changeType }
 		/>
 	);
-};
+});
 
 export default PasswordInput;

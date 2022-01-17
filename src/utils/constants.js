@@ -6,8 +6,3 @@ export const API_RESET_PASSWORD = API_ORIGIN + 'password-reset/reset';
 
 export const MODAL_DETAILS = 'modal-details';
 export const MODAL_ORDER = 'modal-order';
-
-export const FORM_NAME_LOGIN = 'login';
-export const FORM_NAME_REGISTER = 'register';
-export const FORM_NAME_FORGOT_PASSWORD = 'forgot';
-export const FORM_NAME_RESET_PASSWORD = 'reset';

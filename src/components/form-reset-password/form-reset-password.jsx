@@ -4,56 +4,64 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import {
-	FORM_NAME_RESET_PASSWORD,
-} from '../../utils/constants';
-import {
-	requestResetForm,
-	actionChangeValueResetForm,
-} from '../../services/actions/forms';
+import { useForm, Controller  } from 'react-hook-form';
+
+import { requestReset } from '../../services/actions/user';
 import PasswordInput from '../password-input/password-input';
-import cn from 'classnames';
 import styles from './form-reset-password.module.css';
+
+const defaultValuesForm = {
+	password: '',
+	token: '',
+};
 
 const FormResetPassword = () => {
 	const {
-		password,
-		token,
-		hasError,
-	} = useSelector(store => store.forms[FORM_NAME_RESET_PASSWORD]);
+		hasError = false,
+	} = useSelector(store => store.user?.reset);
+	const {
+		handleSubmit,
+		control,
+	} = useForm({
+		defaultValues: defaultValuesForm,
+	});
 	const dispatch = useDispatch();
-	const handleChange = (event) => {
-		dispatch(actionChangeValueResetForm( event.target.name, event.target.value));
-	};
-	const handleSubmitForm = (event) => {
-		event.preventDefault();
-		dispatch(requestResetForm({ password, token }));
+	const onSubmitForm = ({ password, token }) => {
+		dispatch(requestReset({ password, token }));
 	};
 
 	return (
-		<form className={ styles.form } onSubmit={ handleSubmitForm }>
+		<form className={ styles.form } onSubmit={ handleSubmit(onSubmitForm) }>
 			<div className="pb-6">
-				<PasswordInput
-					type={'password'}
-					placeholder={'Введите новый пароль'}
-					onChange={handleChange}
-					value={ password }
-					icon={'ShowIcon'}
+				<Controller
 					name={'password'}
-					// error={false}
-					// errorText={'Ошибка'}
+					control={control}
+					rules={{ required: true }}
+					render={({ field }) =>
+						<PasswordInput
+							{...field}
+							type={'password'}
+							placeholder={'Введите новый пароль'}
+							icon={'ShowIcon'}
+						/>
+					}
 				/>
 			</div>
 
 			<div className="pb-6">
-				<Input
-					type={'text'}
-					placeholder={'Введите код из письма'}
-					onChange={handleChange}
-					value={token}
-					name={'token'}
-					error={hasError}
-					errorText={'Неверный токен сброса'}
+				<Controller
+					name="token"
+					control={control}
+					rules={{ required: true }}
+					render={({ field }) =>
+						<Input
+							{...field}
+							type="text"
+							error={hasError}
+							placeholder={'Введите код из письма'}
+							errorText={'Неверный токен сброса'}
+						/>
+					}
 				/>
 			</div>
 			<Button type="primary" size="medium">
