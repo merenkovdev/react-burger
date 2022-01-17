@@ -2,6 +2,7 @@ import styles from './app.module.css';
 
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import cn from 'classnames';
 
 import AppHeader from '../app-header/app-header';
 import OrderDetails from '../order-details/order-details';
@@ -14,6 +15,7 @@ import {
 	RegisterPage,
 	ForgotPasswordPage,
 	ResetPasswordPage,
+	ProfilePage,
 } from '../../pages';
 
 import {
@@ -33,44 +35,49 @@ const App = () => {
 	};
 
 	return (
-		<div className={ styles.layout }>
-			<AppHeader />
-			<Router>
-				<Switch>
-					<Route path="/" exact={true}>
-						<Home />
-					</Route>
-					<Route path="/login" exact={true}>
-						<LoginPage />
-					</Route>
-					<Route path="/register" exact={true}>
-						<RegisterPage />
-					</Route>
-					<Route path="/forgot-password" exact={true}>
-						<ForgotPasswordPage />
-					</Route>
-					<Route path="/reset-password" exact={true}>
-						<ResetPasswordPage />
-					</Route>
-				</Switch>
-			</Router>
+		<Router>
+			<div className={ styles.layout }>
+				<AppHeader />
+				<main className={ cn(styles.main, 'container pl-5 pr-5') }>
+					<Switch>
+						<Route path="/" exact={true}>
+							<Home />
+						</Route>
+						<Route path="/profile" exact={true}>
+							<ProfilePage />
+						</Route>
+						<Route path="/login" exact={true}>
+							<LoginPage />
+						</Route>
+						<Route path="/register" exact={true}>
+							<RegisterPage />
+						</Route>
+						<Route path="/forgot-password" exact={true}>
+							<ForgotPasswordPage />
+						</Route>
+						<Route path="/reset-password" exact={true}>
+							<ResetPasswordPage />
+						</Route>
+					</Switch>
+				</main>
 
-			{ activeModal === MODAL_ORDER &&
-				<Modal open={ true }>
-					<OrderDetails />
-				</Modal>
-			}
+				{ activeModal === MODAL_ORDER &&
+					<Modal open={ true }>
+						<OrderDetails />
+					</Modal>
+				}
 
-			{ activeModal === MODAL_DETAILS &&
-				ingredientDetails &&
-				<Modal open={ true }
-					header='Детали ингредиента'
-					onClose={clearDetailIngredients}
-				>
-					<IngredientDetails />
-				</Modal>
-			}
-		</div>
+				{ activeModal === MODAL_DETAILS &&
+					ingredientDetails &&
+					<Modal open={ true }
+						header='Детали ингредиента'
+						onClose={clearDetailIngredients}
+					>
+						<IngredientDetails />
+					</Modal>
+				}
+			</div>
+		</Router>
 	)
 };
 

@@ -9,7 +9,7 @@ import styles from './home.module.css';
 
 const Home = () => {
 	return (
-		<main className={ cn(styles.main, 'container pl-5 pr-5') }>
+		<>
 			<h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
 			<div className="row">
 				<DndProvider backend={HTML5Backend}>
@@ -17,7 +17,7 @@ const Home = () => {
 					<BurgerConstructor />
 				</ DndProvider>
 			</div>
-		</main>
+		</>
 	);
 };
 
