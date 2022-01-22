@@ -9,7 +9,14 @@ const checkResponse = (res) => {
 	if (res.ok) {
 		return res.json();
 	}
-	return Promise.reject(`Ошибка ${res.status}`);
+
+	return res.json()
+		.then(({ message }) => {
+			return Promise.reject(message);
+		})
+		.catch(error => {
+			return Promise.reject(error);
+		});
 };
 
 const getDataRequest = (url, data) => new Promise((resolve, reject) => {
@@ -49,11 +56,22 @@ const throttle = (func, timeFrame) => {
 			lastTime = now;
 		}
 	};
-}
+};
+
+const getAccessToken = () => {
+	const tokensData = localStorage.getItem('accessToken');
+
+	if (!tokensData) {
+		return {};
+	}
+
+	return  JSON.parse(tokensData)?.accessToken || {};
+};
 
 export {
 	isEmpty,
 	throttle,
 	checkResponse,
 	getDataRequest,
+	getAccessToken,
 };

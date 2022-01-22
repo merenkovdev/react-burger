@@ -3,55 +3,90 @@ import {
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Link } from 'react-router-dom';
+import { useForm, Controller  } from 'react-hook-form';
+import { useSelector, useDispatch } from 'react-redux';
+
+import PasswordInput from '../password-input/password-input';
+import { register } from '../../services/actions/user';
 import cn from 'classnames';
 import styles from './form-register.module.css';
 
+const defaultValuesForm = {
+	email: '',
+	password: '',
+	name: '',
+};
+
 const FormRegister = () => {
+	const {
+		handleSubmit,
+		control,
+	} = useForm({
+		defaultValues: defaultValuesForm,
+	});
+	const { hasError, error, isRequested } = useSelector(store => store.user.register);
+	const dispatch = useDispatch();
+
+	const onSubmit = (data) => {
+		dispatch(register(data));
+		console.log(data);
+	};
+
 	return (
-		<form className={ styles.form } action="">
+		<form className={ styles.form } onSubmit={handleSubmit(onSubmit)}>
 			<div className="pb-6">
-				<Input
-					type={'text'}
-					placeholder={'Имя'}
-					// onChange={e => setValue(e.target.value)}
-					// value={value}
-					name={'email'}
-					error={false}
-					// ref={inputRef}
-					errorText={'Ошибка'}
-					size={'default'}
+				<Controller
+					name={'name'}
+					control={control}
+					rules={{ required: true }}
+					render={({ field }) =>
+						<Input
+							{...field}
+							type={'text'}
+							placeholder={'Имя'}
+						/>
+					}
 				/>
 			</div>
 			<div className="pb-6">
-				<Input
-					type={'text'}
-					placeholder={'E-mail'}
-					// onChange={e => setValue(e.target.value)}
-					// value={value}
+				<Controller
 					name={'email'}
-					error={false}
-					// ref={inputRef}
-					errorText={'Ошибка'}
-					size={'default'}
+					control={control}
+					rules={{ required: true }}
+					render={({ field }) =>
+						<Input
+							{...field}
+							type={'email'}
+							placeholder={'E-mail'}
+						/>
+					}
 				/>
 			</div>
 			<div className="pb-6">
-				<Input
-					type={'password'}
-					placeholder={'Пароль'}
-					// onChange={e => setValue(e.target.value)}
-					icon={'ShowIcon'}
-					// value={value}
+				<Controller
 					name={'password'}
-					error={false}
-					// ref={inputRef}
-					// onIconClick={onIconClick}
-					errorText={'Ошибка'}
-					size={'default'}
+					control={control}
+					rules={{ required: true }}
+					render={({ field }) =>
+						<PasswordInput
+							{...field}
+							placeholder={'Пароль'}
+						/>
+					}
 				/>
 			</div>
-			<Button type="primary" size="medium">
-				Зарегистрироваться
+			{ hasError && error &&
+				<p className="text text_type_main-small text_color_error pb-6">При созднии пользователя произошла ошибка</p>
+			}
+			<Button type="primary" size="medium"
+				{...(isRequested ? {
+					disabled: true,
+				} : {})}
+			>
+				{ isRequested ?
+					'...Регистрация' :
+					'Зарегистрироваться'
+				}
 			</Button>
 			<div className="pt-20">
 				<p className="text text_type_main-small">

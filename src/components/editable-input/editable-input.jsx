@@ -1,21 +1,22 @@
-import { useState, useRef } from 'react';
+import { useState, forwardRef } from 'react';
 import { Input } from '@ya.praktikum/react-developer-burger-ui-components';
 
-const EditableInput = (props) => {
-	const [ status, setStatus ] = useState(true);
-	const input = useRef(null);
-	const changeStatus = () => {
-		setStatus(!status);
-	};
+const EditableInput = forwardRef((props, ref) => {
+	const { clearValue, name } = props;
+	const [ disabled, setDisabled ] = useState(true);
 
 	return (
 		<Input
 			{ ...props }
-			ref={ input }
-			disabled={ status }
-			onIconClick={ changeStatus }
+			ref={ ref }
+			disabled={ disabled }
+			onIconClick={ disabled ?
+				() => setDisabled(false) :
+				() => clearValue(name)
+			}
+			icon={ disabled ? 'EditIcon' : 'CloseIcon' }
 		/>
 	);
-};
+});
 
 export default EditableInput;

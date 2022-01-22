@@ -40,9 +40,7 @@ const FormResetPassword = () => {
 					render={({ field }) =>
 						<PasswordInput
 							{...field}
-							type={'password'}
 							placeholder={'Введите новый пароль'}
-							icon={'ShowIcon'}
 						/>
 					}
 				/>

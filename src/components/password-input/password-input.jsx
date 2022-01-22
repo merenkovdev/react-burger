@@ -6,6 +6,7 @@ const PasswordInput = forwardRef((props, ref) => {
 	const changeType = () => {
 		setType(type === 'password' ? 'text' : 'password');
 	};
+	const icon = type === 'password' ? 'ShowIcon' : 'HideIcon';
 
 	return (
 		<Input
@@ -13,6 +14,7 @@ const PasswordInput = forwardRef((props, ref) => {
 			ref={ ref }
 			type={ type }
 			onIconClick={ changeType }
+			icon={ icon }
 		/>
 	);
 });

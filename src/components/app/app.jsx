@@ -1,13 +1,16 @@
 import styles from './app.module.css';
 
+import { useEffect } from 'react';
+
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 
 import AppHeader from '../app-header/app-header';
 import OrderDetails from '../order-details/order-details';
-import IngredientDetails from '../ingredient-details/ingredient-details';
 import Modal from '../modal/modal';
+import Loader from '../loader/loader';
+import ModalDetails from '../modal-details/modal-details';
 
 import {
 	Home,
@@ -23,16 +26,22 @@ import {
 	MODAL_ORDER,
  } from '../../utils/constants';
 
-import { CLEAR_INGREDIENTS_DETAILS } from '../../services/actions/ingredients';
+import { getUser } from '../../services/actions/user';
 
 const App = () => {
 	const activeModal = useSelector(store => store.modal.active);
 	const ingredientDetails = useSelector(store => store.ingredients.ingredientDetails);
+	const { authAttemptSucceeded } = useSelector(store => store.user);
+
 	const dispatch = useDispatch();
 
-	const clearDetailIngredients = () => {
-		dispatch({ type: CLEAR_INGREDIENTS_DETAILS });
-	};
+	useEffect(() => {
+		dispatch(getUser());
+	}, [dispatch]);
+
+	if (!authAttemptSucceeded) {
+		return null;
+	}
 
 	return (
 		<Router>
@@ -43,7 +52,7 @@ const App = () => {
 						<Route path="/" exact={true}>
 							<Home />
 						</Route>
-						<Route path="/profile" exact={true}>
+						<Route path="/profile">
 							<ProfilePage />
 						</Route>
 						<Route path="/login" exact={true}>
@@ -69,12 +78,7 @@ const App = () => {
 
 				{ activeModal === MODAL_DETAILS &&
 					ingredientDetails &&
-					<Modal open={ true }
-						header='Детали ингредиента'
-						onClose={clearDetailIngredients}
-					>
-						<IngredientDetails />
-					</Modal>
+					<ModalDetails />
 				}
 			</div>
 		</Router>
