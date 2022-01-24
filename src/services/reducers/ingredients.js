@@ -8,6 +8,7 @@ import {
 	SET_ACTIVE_TAB,
 	INCREASE_ADDED_INGREDIENT,
 	DECREASE_ADDED_INGREDIENT,
+	CLEAR_ADDED_INGREDIENT,
 } from '../actions/ingredients';
 
 const ingredientsInitialState = {
@@ -155,6 +156,11 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
 				),
 			};
 
+		case CLEAR_ADDED_INGREDIENT:
+			return {
+				...state,
+				addedIngredients: ingredientsInitialState.addedIngredients,
+			};
 		default:
 			return state;
 	}
