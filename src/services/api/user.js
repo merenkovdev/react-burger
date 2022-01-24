@@ -10,6 +10,34 @@ import {
 
 import { checkResponse, getAccessToken } from '../../utils/utils';
 
+const requestForgot = async (data) => {
+	try {
+		const response = await fetch(API_FORGOT_PASSWORD, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data),
+		});
+
+		return checkResponse(response);
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
+const requestReset = async (data) => {
+	try {
+		const response = await fetch(API_RESET_PASSWORD, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data),
+		});
+
+		return checkResponse(response);
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
 const requestRegistration = async (data) => {
 	try {
 		const response = await fetch(API_REGISTER, {
@@ -129,6 +157,8 @@ export {
 	requestRegistration,
 	requestLogin,
 	requestLogout,
+	requestForgot,
+	requestReset,
 	requestToken,
 	requestUserData,
 	requestChangeUserData,

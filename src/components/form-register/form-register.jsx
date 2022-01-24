@@ -8,7 +8,6 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import PasswordInput from '../password-input/password-input';
 import { register } from '../../services/actions/user';
-import cn from 'classnames';
 import styles from './form-register.module.css';
 
 const defaultValuesForm = {
@@ -29,7 +28,6 @@ const FormRegister = () => {
 
 	const onSubmit = (data) => {
 		dispatch(register(data));
-		console.log(data);
 	};
 
 	return (

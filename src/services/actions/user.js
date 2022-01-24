@@ -1,6 +1,4 @@
 import {
-	API_FORGOT_PASSWORD,
-	API_RESET_PASSWORD,
 	ACCESS_TOKEN_LIFETIME,
 } from '../../utils/constants';
 import { getDataRequest } from '../../utils/utils';
@@ -8,6 +6,8 @@ import {
 	requestRegistration,
 	requestLogin,
 	requestLogout,
+	requestForgot,
+	requestReset,
 	requestToken,
 	requestUserData,
 	requestChangeUserData,
@@ -15,10 +15,12 @@ import {
 
 export const FORGOT_REQUEST = 'FORGOT_REQUEST';
 export const FORGOT_SUCCESS = 'FORGOT_SUCCESS';
+export const FORGOT_INITIAL = 'FORGOT_INITIAL';
 export const FORGOT_FAILED = 'FORGOT_FAILED';
 
 export const RESET_REQUEST = 'RESET_REQUEST';
 export const RESET_SUCCESS = 'RESET_SUCCESS';
+export const RESET_INITIAL = 'RESET_INITIAL';
 export const RESET_FAILED = 'RESET_FAILED';
 
 export const REGISTER_REQUEST = 'REGISTER_REQUEST';
@@ -61,42 +63,43 @@ const setTokens = (accessToken, refreshToken) => {
 	}));
 };
 
-// forgot actions
-export const actionRequestForgot = () => (dispatch) =>
+// forgot
+export const forgot = (requestData) => (dispatch) => {
 	dispatch({ type: FORGOT_REQUEST });
 
-export const actionSuccesForgot = (data) => (dispatch) =>
-	dispatch({ type: FORGOT_SUCCESS, data });
-
-export const actionFailedForgot = (error) => (dispatch) =>
-	dispatch({ type: FORGOT_FAILED, error });
-
-export const requestForgot = (requestData) => (dispatch) => {
-	dispatch(actionRequestForgot());
-
-	getDataRequest(API_FORGOT_PASSWORD, requestData)
+	requestForgot(requestData)
 		.then(response => {
-			dispatch(actionSuccesForgot());
+			if (!response.success) {
+				dispatch({ type: FORGOT_FAILED, error: response.message });
+
+				throw new Error(response.message);
+			}
+
+			dispatch({ type: FORGOT_SUCCESS });
 		})
-		.catch((error) => dispatch(actionFailedForgot(error)));
+		.catch(error => dispatch({ type: FORGOT_FAILED, error }));
 };
 
-// reset actions
-export const actionRequestReset = () => (dispatch) =>
+// reset
+export const reset = (requestData) => (dispatch) => {
 	dispatch({ type: RESET_REQUEST });
-export const actionSuccesReset = (data) => (dispatch) =>
-	dispatch({ type: RESET_SUCCESS, data });
-export const actionFailedReset = (error) => (dispatch) =>
-	dispatch({ type: RESET_FAILED, error });
 
-export const requestReset = (requestData) => (dispatch) => {
-	dispatch(actionRequestReset());
-
-	getDataRequest(API_RESET_PASSWORD, requestData)
+	requestReset(requestData)
 		.then(response => {
-			dispatch(actionSuccesReset());
+			if (!response.success) {
+				dispatch({ type: RESET_FAILED, error: response.message });
+
+				throw new Error(response.message);
+			}
+
+			dispatch({ type: RESET_SUCCESS });
 		})
-		.catch((error) => dispatch(actionFailedReset(error)));
+		.catch(error => dispatch({ type: RESET_FAILED, error }));
+};
+
+export const returnResetInitialState = (dispatch) => {
+	dispatch({ type: FORGOT_INITIAL });
+	dispatch({ type: RESET_INITIAL });
 };
 
 // register actions
@@ -167,6 +170,7 @@ export const logout = () => (dispatch) => {
 			}
 			clearTokens();
 			dispatch({ type: CLEAR_USER });
+			dispatch({ type: LOGOUT_SUCCESS });
 		})
 		.catch(error => {
 			dispatch({ type: LOGOUT_REQUEST, error });
@@ -205,6 +209,7 @@ export const getUser = () => async (dispatch) => {
 			}
 		} catch (error) {
 			dispatch({ type: USER_DATA_FAILED });
+			dispatch({ type: CLEAR_USER });
 			console.log(error);
 		}
 	}

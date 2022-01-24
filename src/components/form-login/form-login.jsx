@@ -33,9 +33,7 @@ const FormLogin = () => {
 
 	const onSubmit = (data) => {
 		dispatch(login(data));
-		console.log(data);
 	};
-	console.log(isRequested);
 
 	return (
 		<form className={ styles.form } onSubmit={handleSubmit(onSubmit)}>

@@ -9,8 +9,8 @@ import cn from 'classnames';
 import AppHeader from '../app-header/app-header';
 import OrderDetails from '../order-details/order-details';
 import Modal from '../modal/modal';
-import Loader from '../loader/loader';
 import ModalDetails from '../modal-details/modal-details';
+import ProtectedRoute from '../protected-route/protected-route';
 
 import {
 	Home,
@@ -52,9 +52,9 @@ const App = () => {
 						<Route path="/" exact={true}>
 							<Home />
 						</Route>
-						<Route path="/profile">
+						<ProtectedRoute path="/profile">
 							<ProfilePage />
-						</Route>
+						</ProtectedRoute>
 						<Route path="/login" exact={true}>
 							<LoginPage />
 						</Route>

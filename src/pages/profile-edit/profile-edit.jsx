@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useForm, Controller  } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
@@ -6,11 +6,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { changeUserData } from '../../services/actions/user';
 import EditableInput from '../../components/editable-input/editable-input';
 import styles from './profile-edit.module.css';
-
-// const ERRORS_FORM = {
-// 	'email or password are incorrect': 'Некорректный email или пароль',
-// 	default: 'При авторизации пользователя произошла ошибка',
-// };
 
 const ProfileEdit = () => {
 	const {
@@ -22,7 +17,7 @@ const ProfileEdit = () => {
 			email,
 		},
 	} = useSelector(store => store.user);
-
+	console.log(name, email);
 
 	const {
 		handleSubmit,
@@ -33,14 +28,18 @@ const ProfileEdit = () => {
 			isDirty,
 			dirtyFields,
 		},
-	} = useForm({ name, email, password: '' });
+	} = useForm({ defaultValues: {
+		name, email, password: '',
+	}});
 
 	const dispatch = useDispatch();
 	const clearValue = (name) => setValue(name, '');
+	const resetChanges = useCallback(
+		() => reset({ name, email, password: '' }),
+		[reset, name, email]
+	);
 
-	const onCancel = () => {
-		reset({ name, email, password: '' });
-	};
+	const onCancel = () => resetChanges();
 
 	const onSubmit = (data) => {
 		const requestData = Object.keys(dirtyFields)
@@ -50,9 +49,10 @@ const ProfileEdit = () => {
 			}, {});
 		dispatch(changeUserData(requestData));
 	};
+
 	useEffect(() => {
-		reset({ name, email });
-	}, [reset, email, name]);
+		resetChanges();
+	}, [resetChanges]);
 
 	return (
 		<form className={ styles.form } onSubmit={handleSubmit(onSubmit)}>

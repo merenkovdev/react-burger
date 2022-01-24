@@ -3,19 +3,29 @@ import cn from 'classnames';
 import styles from './profile.module.css';
 import { NavLink } from 'react-router-dom';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 
+import { logout } from '../../services/actions/user';
 import ProfileEdit from '../profile-edit/profile-edit';
 import ProfileOrders from '../profile-orders/profile-orders';
 
+const LINK_DEFAULT_CLASSES = 'text text_type_main-medium pt-3 pb-3';
+
 const getClassesLink = isActive =>
 	cn(
-		'text text_type_main-medium pt-3 pb-3',
+		LINK_DEFAULT_CLASSES,
 		{ 'text_color_inactive': !isActive },
 		styles.link
 	);
 
 const Profile = () => {
 	const { path } = useRouteMatch();
+	const { isRequested } = useSelector(store => store.user.logout);
+	const dispatch = useDispatch();
+
+	const handleClickLogout = () => {
+		dispatch(logout());
+	};
 
 	return (
 		<>
@@ -24,13 +34,27 @@ const Profile = () => {
 					<nav>
 						<ul className={ styles.list }>
 							<li>
-								<NavLink to={ path } exact={ true } className={ getClassesLink }>Профиль</NavLink>
+								<NavLink to={ path }
+									exact={ true }
+									className={ getClassesLink }
+								>Профиль</NavLink>
 							</li>
 							<li>
-								<NavLink to={ `${ path }/orders` } exact={ true } className={ getClassesLink }>История заказов</NavLink>
+								<NavLink to={ `${ path }/orders` }
+									className={ getClassesLink }
+								>История заказов</NavLink>
 							</li>
 							<li>
-								<NavLink to="/" exact={ true } className={ getClassesLink }>Выход</NavLink>
+								<button onClick={ handleClickLogout }
+									className={ cn(
+										styles.link,
+										LINK_DEFAULT_CLASSES,
+										'text_color_inactive'
+									) }
+									{...(isRequested ? {
+										disabled: true,
+									} : {})}
+								>Выход</button>
 							</li>
 						</ul>
 					</nav>

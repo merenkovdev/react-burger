@@ -2,10 +2,10 @@ import {
 	Input,
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link, Redirect } from 'react-router-dom';
 import { useForm, Controller  } from 'react-hook-form';
-import { requestForgot } from '../../services/actions/user';
+import { forgot } from '../../services/actions/user';
 import styles from './form-forgot-password.module.css';
 
 const defaultValuesForm = {
@@ -19,11 +19,16 @@ const FormForgotPassword = () => {
 	} = useForm({
 		defaultValues: defaultValuesForm,
 	});
+	const { isRequested, success } = useSelector(store => store.user.forgot);
 	const dispatch = useDispatch();
 
 	const onSubmitForm = ({ email }) => {
-		dispatch(requestForgot({ email }));
+		dispatch(forgot({ email }));
 	};
+
+	if (success) {
+		return <Redirect to="/reset-password" />
+	}
 
 	return (
 		<form className={ styles.form } onSubmit={handleSubmit(onSubmitForm)}>
@@ -41,13 +46,21 @@ const FormForgotPassword = () => {
 				}
 			/>
 			</div>
-			<Button type="primary" size="medium">
-				Восстановить
+			<Button type="primary"
+				size="medium"
+				{...(isRequested ? {
+					disabled: true,
+				} : {})}
+			>
+				{ isRequested ?
+					'...Отправляем' :
+					'Восстановить'
+				}
 			</Button>
 			<div className="pt-20">
 				<p className="text text_type_main-small pb-4">
 					<span className="text_color_inactive">Вспомнили пароль? </span>
-					<Link className={ styles.link } to="/register">Войти</Link>
+					<Link className={ styles.link } to="/login">Войти</Link>
 				</p>
 			</div>
 		</form>

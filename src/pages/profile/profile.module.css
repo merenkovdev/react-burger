@@ -2,6 +2,16 @@
 	display: inline-block;
 }
 
+button.link {
+	border: none;
+	background: transparent;
+	cursor: pointer;
+}
+
+button.link:hover {
+	text-decoration: underline;
+}
+
 .container {
 	display: flex;
 }

@@ -1,9 +1,11 @@
 import {
 	FORGOT_REQUEST,
 	FORGOT_SUCCESS,
+	FORGOT_INITIAL,
 	FORGOT_FAILED,
 	RESET_REQUEST,
 	RESET_SUCCESS,
+	RESET_INITIAL,
 	RESET_FAILED,
 	REGISTER_REQUEST,
 	REGISTER_SUCCESS,
@@ -31,13 +33,13 @@ const defaultRequestState = {
 };
 
 const userInitialState = {
-	forgot: { ...defaultRequestState },
-	reset: { ...defaultRequestState },
 	login: { ...defaultRequestState },
 	register: { ...defaultRequestState },
 	logout: { ...defaultRequestState },
 	fetchUser: { ...defaultRequestState },
 	changeUserData: { ...defaultRequestState },
+	reset: { ...defaultRequestState, success: false },
+	forgot: { ...defaultRequestState, success: false },
 	user: {},
 	isAuth: false,
 	authAttemptSucceeded: false,
@@ -50,30 +52,35 @@ export const userReducer = (state = userInitialState, action) => {
 				...state,
 				forgot: {
 					...state.forgot,
+					success: false,
 					isRequested: true,
 					hasError: false,
 				},
 			};
 
-		case FORGOT_SUCCESS: {
-			const { data } = action;
-
+		case FORGOT_SUCCESS:
 			return {
 				...state,
 				forgot: {
 					...state.forgot,
-					data,
+					success: true,
 					isRequested: false,
 					hasError: false,
 				},
 			};
-		};
+
+		case FORGOT_INITIAL:
+			return {
+				...state,
+				forgot: userInitialState.forgot,
+			};
 
 		case FORGOT_FAILED:
 			return {
 				...state,
 				forgot: {
 					...state.forgot,
+					success: false,
 					isRequested: false,
 					hasError: true,
 				},
@@ -84,30 +91,35 @@ export const userReducer = (state = userInitialState, action) => {
 				...state,
 				reset: {
 					...state.reset,
+					success: false,
 					isRequested: true,
 					hasError: false,
 				},
 			};
 
-		case RESET_SUCCESS: {
-			const { data } = action;
-
+		case RESET_SUCCESS:
 			return {
 				...state,
 				reset: {
 					...state.reset,
-					data,
+					success: true,
 					isRequested: false,
 					hasError: false,
 				},
 			};
-		};
+
+		case RESET_INITIAL:
+			return {
+				...state,
+				reset: userInitialState.reset,
+			};
 
 		case RESET_FAILED:
 			return {
 				...state,
 				reset: {
 					...state.reset,
+					success: false,
 					isRequested: false,
 					hasError: true,
 				},
@@ -251,8 +263,8 @@ export const userReducer = (state = userInitialState, action) => {
 		case LOGOUT_REQUEST:
 			return {
 				...state,
-				login: {
-					...state.login,
+				logout: {
+					...state.logout,
 					isRequested: true,
 					hasError: false,
 				},
@@ -262,8 +274,8 @@ export const userReducer = (state = userInitialState, action) => {
 
 			return {
 				...state,
-				login: {
-					...state.login,
+				logout: {
+					...state.logout,
 					isRequested: false,
 					hasError: false,
 				},
@@ -273,8 +285,8 @@ export const userReducer = (state = userInitialState, action) => {
 			const { error } = action;
 			return {
 				...state,
-				login: {
-					...state.login,
+				logout: {
+					...state.logout,
 					error,
 					isRequested: false,
 					hasError: true,
