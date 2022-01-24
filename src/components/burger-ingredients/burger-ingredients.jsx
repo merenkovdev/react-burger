@@ -4,21 +4,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link, useLocation } from "react-router-dom";
 import { itemPropTypes } from '../../utils/types';
 
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { DraggableIngredient } from '../ingredient/ingredient';
 
-import { MODAL_DETAILS } from '../../utils/constants';
 import { throttle } from '../../utils/utils';
 
 import {
-	SET_INGREDIENTS_DETAILS,
 	SORT_INGREDIENTS,
 	getIngredients,
 	SET_ACTIVE_TAB,
 } from '../../services/actions/ingredients';
-import { SHOW_MODAL } from '../../services/actions/modal';
 
 const tabNames = {
 	bun: 'Булки',
@@ -49,23 +47,13 @@ const TabHeader = React.memo((props) => {
 });
 
 const TabContent = React.memo(React.forwardRef((props, ref) => {
+	let location = useLocation();
 	const addedIngredients = useSelector(store => store.ingredients.addedIngredients);
 	const {
 		titlesRef,
 		ingredients,
 		handlerScroll,
 	} = props;
-
-	const dispatch = useDispatch();
-
-	const onClickCard = React.useCallback((id) => {
-		dispatch({
-			type: SET_INGREDIENTS_DETAILS,
-			id,
-		});
-
-		dispatch({ type: SHOW_MODAL, name: MODAL_DETAILS });
-	}, [ dispatch ]);
 
 	return (
 		<div ref={ ref }
@@ -84,12 +72,19 @@ const TabContent = React.memo(React.forwardRef((props, ref) => {
 						<ul className={ cn(styles.ingredients, ' pb-10') }>
 							{ ingredients[type].map(item => (
 								<li className={ cn(styles.ingredient, 'p-3') } key={ item._id }>
-									<DraggableIngredient item={ item }
-										count={ addedIngredients[item._id] ?
-											Number(addedIngredients[item._id].count) : 0
-										}
-										onClickCard={ onClickCard }
-									/>
+									 <Link
+										key={item._id}
+										to={{
+											pathname: `/ingredients/${item._id}`,
+											state: { background: location }
+										}}
+									>
+										<DraggableIngredient item={ item }
+											count={ addedIngredients[item._id] ?
+												Number(addedIngredients[item._id].count) : 0
+											}
+										/>
+									</Link>
 								</li>
 							)) }
 						</ul>

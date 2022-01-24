@@ -3,7 +3,6 @@ import {
 	GET_INGREDIENTS_SUCCESS,
 	GET_INGREDIENTS_FAILED,
 	SET_INGREDIENTS_DETAILS,
-	CLEAR_INGREDIENTS_DETAILS,
 	SORT_INGREDIENTS,
 	SET_ACTIVE_TAB,
 	INCREASE_ADDED_INGREDIENT,
@@ -93,13 +92,6 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
 			return {
 				...state,
 				ingredientDetails,
-			};
-
-		case CLEAR_INGREDIENTS_DETAILS:
-
-			return {
-				...state,
-				ingredientDetails: null,
 			};
 
 		case GET_INGREDIENTS_REQUEST:

@@ -17,7 +17,6 @@ const ProfileEdit = () => {
 			email,
 		},
 	} = useSelector(store => store.user);
-	console.log(name, email);
 
 	const {
 		handleSubmit,

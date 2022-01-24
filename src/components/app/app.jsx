@@ -2,7 +2,7 @@ import styles from './app.module.css';
 
 import { useEffect } from 'react';
 
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Route, Switch, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 
@@ -19,18 +19,18 @@ import {
 	ForgotPasswordPage,
 	ResetPasswordPage,
 	ProfilePage,
+	IngredientPage,
 } from '../../pages';
 
-import {
-	MODAL_DETAILS,
-	MODAL_ORDER,
- } from '../../utils/constants';
+import { MODAL_ORDER } from '../../utils/constants';
 
 import { getUser } from '../../services/actions/user';
 
 const App = () => {
+	let location = useLocation();
+	let background = location?.state?.background;
 	const activeModal = useSelector(store => store.modal.active);
-	const ingredientDetails = useSelector(store => store.ingredients.ingredientDetails);
+	const ingredients = useSelector(store => store.ingredients.items);
 	const { authAttemptSucceeded } = useSelector(store => store.user);
 
 	const dispatch = useDispatch();
@@ -44,44 +44,46 @@ const App = () => {
 	}
 
 	return (
-		<Router>
-			<div className={ styles.layout }>
-				<AppHeader />
-				<main className={ cn(styles.main, 'container pl-5 pr-5') }>
-					<Switch>
-						<Route path="/" exact={true}>
-							<Home />
-						</Route>
-						<ProtectedRoute path="/profile">
-							<ProfilePage />
-						</ProtectedRoute>
-						<Route path="/login" exact={true}>
-							<LoginPage />
-						</Route>
-						<Route path="/register" exact={true}>
-							<RegisterPage />
-						</Route>
-						<Route path="/forgot-password" exact={true}>
-							<ForgotPasswordPage />
-						</Route>
-						<Route path="/reset-password" exact={true}>
-							<ResetPasswordPage />
-						</Route>
-					</Switch>
-				</main>
+		<div className={ styles.layout }>
+			<AppHeader />
+			<main className={ cn(styles.main, 'container pl-5 pr-5') }>
+				<Switch location={ background || location }>
+					<Route path="/" exact={true}>
+						<Home />
+					</Route>
+					<Route path="/ingredients/:id" exact={true}>
+						<IngredientPage />
+					</Route>
+					<ProtectedRoute path="/profile">
+						<ProfilePage />
+					</ProtectedRoute>
+					<Route path="/login" exact={true}>
+						<LoginPage />
+					</Route>
+					<Route path="/register" exact={true}>
+						<RegisterPage />
+					</Route>
+					<Route path="/forgot-password" exact={true}>
+						<ForgotPasswordPage />
+					</Route>
+					<Route path="/reset-password" exact={true}>
+						<ResetPasswordPage />
+					</Route>
+				</Switch>
+			</main>
 
-				{ activeModal === MODAL_ORDER &&
-					<Modal open={ true }>
-						<OrderDetails />
-					</Modal>
-				}
+			{ activeModal === MODAL_ORDER &&
+				<Modal open={ true }>
+					<OrderDetails />
+				</Modal>
+			}
 
-				{ activeModal === MODAL_DETAILS &&
-					ingredientDetails &&
+			{ background && Boolean(ingredients.length) &&
+				<Route path="/ingredients/:id" >
 					<ModalDetails />
-				}
-			</div>
-		</Router>
+				</Route>
+			}
+		</div>
 	)
 };
 

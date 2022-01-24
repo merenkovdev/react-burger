@@ -1,10 +1,9 @@
 import styles from './ingredient-details.module.css';
 import PropTypes from 'prop-types';
+import { useParams } from 'react-router-dom';
 
 import Ingredient from '../ingredient/ingredient';
 import cn from 'classnames';
-
-import { useSelector } from 'react-redux';
 
 const keysCaloriesContent = [
 	[ 'fat', 'Калории,ккал'],
@@ -29,7 +28,9 @@ const СalorieСontent = (props) => {
 	);
 };
 
-const IngredientDetails = () => {
+const IngredientDetails = ({ ingredients }) => {
+	const { id } = useParams();
+	const ingredient = ingredients.find(item => item._id === id);
 	const {
 		price,
 		fat,
@@ -37,7 +38,7 @@ const IngredientDetails = () => {
 		proteins,
 		carbohydrates,
 		...otherProps
-	} = useSelector(store => store.ingredients.ingredientDetails);
+	} = ingredient;
 
 	return (
 		<>

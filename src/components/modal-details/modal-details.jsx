@@ -1,21 +1,22 @@
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import IngredientDetails from '../ingredient-details/ingredient-details';
 import Modal from '../modal/modal';
-import { CLEAR_INGREDIENTS_DETAILS } from '../../services/actions/ingredients';
 
 const ModalDetails = () => {
-	const dispatch = useDispatch();
+	const history = useHistory();
 	const clearDetailIngredients = () => {
-		dispatch({ type: CLEAR_INGREDIENTS_DETAILS });
+		history.push('/');
 	};
+	const ingredients = useSelector(store => store.ingredients.items);
 
 	return (
 		<Modal open={ true }
 			header='Детали ингредиента'
-			onClose={clearDetailIngredients}
+			onClose={ clearDetailIngredients }
 		>
-			<IngredientDetails />
+			<IngredientDetails ingredients={ ingredients } />
 		</Modal>
 	)
 };
