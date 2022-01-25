@@ -8,7 +8,8 @@ import {
 	API_TOKEN,
 } from '../../utils/constants';
 
-import { checkResponse, getAccessToken } from '../../utils/utils';
+import { checkResponse } from '../../utils/utils';
+import { getAccessToken } from '../../utils/tokens';
 
 const requestForgot = async (data) => {
 	try {

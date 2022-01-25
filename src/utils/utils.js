@@ -58,20 +58,9 @@ const throttle = (func, timeFrame) => {
 	};
 };
 
-const getAccessToken = () => {
-	const tokensData = localStorage.getItem('accessToken');
-
-	if (!tokensData) {
-		return {};
-	}
-
-	return  JSON.parse(tokensData)?.accessToken || {};
-};
-
 export {
 	isEmpty,
 	throttle,
 	checkResponse,
 	getDataRequest,
-	getAccessToken,
 };

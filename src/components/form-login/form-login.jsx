@@ -8,7 +8,6 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { login } from '../../services/actions/user';
 import PasswordInput from '../password-input/password-input';
-import cn from 'classnames';
 import styles from './form-login.module.css';
 
 const ERRORS_FORM = {

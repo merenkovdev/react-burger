@@ -1,4 +1,3 @@
-import { isEmpty } from '../../utils/utils';
 import { requestCreateOrder } from '../api/order';
 
 export const CREATE_ORDER_REQUEST = 'CREATE_ORDER_REQUEST';
@@ -16,17 +15,6 @@ export const createOrder = () => async (dispatch, getState) => {
 			toppings,
 		},
 	} = getState();
-
-	if (isEmpty(bun)) {
-		const textError = 'Пожалуйста, добавьте булку';
-
-		dispatch({
-			textError,
-			type: CREATE_ORDER_FAILED,
-		});
-
-		return Promise.reject(textError);
-	}
 
 	dispatch({ type: CREATE_ORDER_REQUEST });
 

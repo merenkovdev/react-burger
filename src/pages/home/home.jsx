@@ -3,9 +3,6 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import BurgerConstructor from '../../components/burger-constructor/burger-constructor';
 import BurgerIngredients from '../../components/burger-ingredients/burger-ingredients';
-import cn from 'classnames';
-
-import styles from './home.module.css';
 
 const Home = () => {
 	return (

@@ -1,9 +1,11 @@
 import styles from './ingredient-details.module.css';
+
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
+import cn from 'classnames';
 
 import Ingredient from '../ingredient/ingredient';
-import cn from 'classnames';
+import { itemPropTypes } from '../../utils/types';
 
 const keysCaloriesContent = [
 	[ 'fat', 'Калории,ккал'],
@@ -55,9 +57,16 @@ const IngredientDetails = ({ ingredients }) => {
 
 export default IngredientDetails;
 
+IngredientDetails.propTypes = {
+	ingredients: PropTypes.arrayOf(
+		PropTypes.shape(itemPropTypes)
+	),
+};
+
 СalorieСontent.propTypes = {
 	fat: PropTypes.number.isRequired,
 	calories: PropTypes.number.isRequired,
 	proteins: PropTypes.number.isRequired,
 	carbohydrates: PropTypes.number.isRequired,
 };
+

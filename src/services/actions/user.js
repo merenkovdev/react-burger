@@ -1,7 +1,5 @@
-import {
-	ACCESS_TOKEN_LIFETIME,
-} from '../../utils/constants';
-import { getDataRequest } from '../../utils/utils';
+import { setTokens, clearTokens } from '../../utils/tokens';
+
 import {
 	requestRegistration,
 	requestLogin,
@@ -46,23 +44,6 @@ export const CHANGE_USER_DATA_FAILED = 'CHANGE_USER_DATA_FAILED';
 export const SET_USER = 'SET_USER';
 export const CLEAR_USER = 'CLEAR_USER';
 
-const clearTokens = () => {
-	localStorage.removeItem('accessToken');
-};
-
-const setTokens = (accessToken, refreshToken) => {
-	const [authorizationScheme, token] = accessToken.split(' ');
-
-	localStorage.setItem('accessToken', JSON.stringify({
-		accessToken: {
-			token,
-			authorizationScheme,
-			refreshToken,
-			refreshTime: Date.now() + ACCESS_TOKEN_LIFETIME,
-		}
-	}));
-};
-
 // forgot
 export const forgot = (requestData) => (dispatch) => {
 	dispatch({ type: FORGOT_REQUEST });
@@ -70,8 +51,6 @@ export const forgot = (requestData) => (dispatch) => {
 	requestForgot(requestData)
 		.then(response => {
 			if (!response.success) {
-				dispatch({ type: FORGOT_FAILED, error: response.message });
-
 				throw new Error(response.message);
 			}
 
@@ -87,8 +66,6 @@ export const reset = (requestData) => (dispatch) => {
 	requestReset(requestData)
 		.then(response => {
 			if (!response.success) {
-				dispatch({ type: RESET_FAILED, error: response.message });
-
 				throw new Error(response.message);
 			}
 
@@ -102,18 +79,9 @@ export const returnResetInitialState = (dispatch) => {
 	dispatch({ type: RESET_INITIAL });
 };
 
-// register actions
-export const actionRequestRegister = () => (dispatch) =>
-	dispatch({ type: REGISTER_REQUEST });
-export const actionSuccesRegister = (data) => (dispatch) => {
-	dispatch({ type: REGISTER_SUCCESS });
-	dispatch({ type: SET_USER, user: data });
-};
-export const actionFailedRegister = (error) => (dispatch) =>
-	dispatch({ type: REGISTER_FAILED, error });
-
+// register
 export const register = (requestData) => (dispatch) => {
-	dispatch(actionRequestRegister());
+	dispatch({ type: REGISTER_REQUEST });
 
 	requestRegistration(requestData)
 		.then(response => {
@@ -123,24 +91,20 @@ export const register = (requestData) => (dispatch) => {
 				user,
 			} = response;
 
+			if (!response.success) {
+				throw new Error(response.message);
+			}
+
 			setTokens(accessToken, refreshToken);
-			dispatch(actionSuccesRegister(user));
+			dispatch({ type: REGISTER_SUCCESS });
+			dispatch({ type: SET_USER, user });
 		})
-		.catch((error) => dispatch(actionFailedRegister(error)));
+		.catch((error) => dispatch({ type: REGISTER_FAILED, error }));
 };
 
-// login actions
-export const actionRequestLogin = () => (dispatch) =>
-	dispatch({ type: LOGIN_REQUEST });
-export const actionSuccesLogin = (data) => (dispatch) => {
-	dispatch({ type: LOGIN_SUCCESS });
-	dispatch({ type: SET_USER, user: data });
-};
-export const actionFailedLogin = (error) => (dispatch) =>
-	dispatch({ type: LOGIN_FAILED, error });
-
+// login
 export const login = (requestData) => (dispatch) => {
-	dispatch(actionRequestLogin());
+	dispatch({ type: LOGIN_REQUEST });
 
 	requestLogin(requestData)
 		.then(response => {
@@ -150,12 +114,15 @@ export const login = (requestData) => (dispatch) => {
 				user,
 			} = response;
 
+			if (!response.success) {
+				throw new Error(response.message);
+			}
+
 			setTokens(accessToken, refreshToken);
-			dispatch(actionSuccesLogin(user));
+			dispatch({ type: LOGIN_SUCCESS });
+			dispatch({ type: SET_USER, user });
 		})
-		.catch(error => {
-			dispatch(actionFailedLogin(error));
-		});
+		.catch(error => dispatch({ type: LOGIN_FAILED, error }));
 };
 
 export const logout = () => (dispatch) => {

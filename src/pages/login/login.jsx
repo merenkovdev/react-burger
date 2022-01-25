@@ -14,16 +14,12 @@ const Login = () => {
 	}
 
 	return (
-		<>
-			{ !isAuth &&
-				<div className={ 'pt-30' }>
-					<h1 className={ cn(styles.header, 'text text_type_main-medium mb-6') }>Вход</h1>
-					<div className={ styles.form }>
-						<FormLogin />
-					</div>
-				</div>
-			}
-		</>
+		<div className={ 'pt-30' }>
+			<h1 className={ cn(styles.header, 'text text_type_main-medium mb-6') }>Вход</h1>
+			<div className={ styles.form }>
+				<FormLogin />
+			</div>
+		</div>
 	);
 };
 

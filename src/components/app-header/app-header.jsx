@@ -26,7 +26,7 @@ const AppHeader = () => {
 				</div>
 
 				<div className={ styles.headerUser }>
-					<NavLink to="/profile" className={getClassesLink} exact={ true }>
+					<NavLink to="/profile" className={getClassesLink}>
 						<ProfileIcon type="primary" />
 						<span className="pl-2">Личный кабинет</span>
 					</NavLink>

@@ -1,5 +1,6 @@
 import { API_ORDERS } from '../../utils/constants';
-import { checkResponse, getAccessToken } from '../../utils/utils';
+import { checkResponse } from '../../utils/utils';
+import { getAccessToken } from '../../utils/tokens';
 
 const requestCreateOrder = async (requestData) => {
 	const {

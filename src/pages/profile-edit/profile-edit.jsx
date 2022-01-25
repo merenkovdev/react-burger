@@ -11,6 +11,7 @@ const ProfileEdit = () => {
 	const {
 		changeUserData: {
 			isRequested,
+			hasError,
 		},
 		user: {
 			name,
@@ -96,11 +97,11 @@ const ProfileEdit = () => {
 					}
 				/>
 			</div>
-			{/* { hasError &&
+			{ hasError &&
 				<p className="text text_type_main-small text_color_error pb-6">
-					{ ERRORS_FORM[error] || ERRORS_FORM.default }
+					Ошибка при сохранении данных
 				</p>
-			} */}
+			}
 			{ isDirty &&
 				<div className={ styles.btns }>
 					<Button type="secondary"

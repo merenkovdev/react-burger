@@ -26,7 +26,7 @@ import {
 } from '../../services/actions/ingredients';
 import IngredientConstructor, { DraggableConstructorIngredient } from '../ingredient-constructor/ingredient-constructor';
 import { MODAL_ORDER } from '../../utils/constants';
-import { createOrder } from '../../services/actions/order';
+import { CREATE_ORDER_FAILED, createOrder } from '../../services/actions/order';
 import { useDrop } from 'react-dnd';
 
 const Total = (props) => {
@@ -77,7 +77,13 @@ const BurgerConstructor = () => {
 		}
 
 		if (isEmpty(bun)) {
+			dispatch({
+				textError: 'Пожалуйста, добавьте булку',
+				type: CREATE_ORDER_FAILED,
+			});
 			dispatch({ type: SHOW_MODAL, name: MODAL_ORDER });
+
+			return;
 		}
 
 		dispatch(createOrder());
