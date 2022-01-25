@@ -20,6 +20,7 @@ import {
 	ResetPasswordPage,
 	ProfilePage,
 	IngredientPage,
+	NotFound404,
 } from '../../pages';
 
 import { MODAL_ORDER } from '../../utils/constants';
@@ -68,6 +69,9 @@ const App = () => {
 					</Route>
 					<Route path="/reset-password" exact={true}>
 						<ResetPasswordPage />
+					</Route>
+					<Route>
+						<NotFound404 />
 					</Route>
 				</Switch>
 			</main>
