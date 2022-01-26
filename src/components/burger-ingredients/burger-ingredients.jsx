@@ -99,6 +99,8 @@ const BurgerIngredients = () => {
 	const titlesRef = React.useRef([]);
 
 	const {
+		hasError: hasErrorIngredients,
+		isRequested: ingredientsRequest,
 		sortedItems: sortedIngredients,
 		activeTab,
 	} = useSelector(store => store.ingredients);
@@ -142,7 +144,23 @@ const BurgerIngredients = () => {
 		dispatch({ type: SORT_INGREDIENTS });
 	}, [ dispatch ]);
 
-	if (!Object.keys(sortedIngredients).length) {
+	if (ingredientsRequest) {
+		return (
+			<p className="text text_type_main-large p-10">
+				Загрузка...
+			</p>
+		);
+	}
+
+	if (hasErrorIngredients) {
+		return (
+			<p className="text text_type_main-large p-10">
+				Ошибка при получнии ингредиентов...
+			</p>
+		);
+	}
+
+	if (!Object.keys(sortedIngredients)?.length) {
 		return null;
 	}
 
@@ -158,6 +176,7 @@ const BurgerIngredients = () => {
 				handlerScroll={ handlerScrollContainer }
 			/>
 		</section>
+		
 	);
 };
 
