@@ -14,7 +14,6 @@ import { throttle } from '../../utils/utils';
 
 import {
 	SORT_INGREDIENTS,
-	getIngredients,
 	SET_ACTIVE_TAB,
 } from '../../services/actions/ingredients';
 
@@ -100,9 +99,6 @@ const BurgerIngredients = () => {
 	const titlesRef = React.useRef([]);
 
 	const {
-		items: ingredients,
-		hasError: IngredientsError,
-		isRequested: ingredientsRequest,
 		sortedItems: sortedIngredients,
 		activeTab,
 	} = useSelector(store => store.ingredients);
@@ -143,40 +139,24 @@ const BurgerIngredients = () => {
 	);
 
 	React.useEffect(() => {
-		dispatch(getIngredients());
+		dispatch({ type: SORT_INGREDIENTS });
 	}, [ dispatch ]);
 
-	React.useEffect(() => {
-		dispatch({ type: SORT_INGREDIENTS });
-	}, [ ingredients, dispatch ]);
+	if (!Object.keys(sortedIngredients).length) {
+		return null;
+	}
 
 	return (
 		<section className="col-6">
-			{ ingredientsRequest &&
-				<p className="text text_type_main-large p-10">
-					Загрузка...
-				</p>
-			}
-			{ IngredientsError &&
-				<p className="text text_type_main-large p-10">
-					Ошибка при получнии ингредиентов...
-				</p>
-			}
-			{ !ingredientsRequest &&
-				!IngredientsError &&
-				Boolean(ingredients.length) &&
-				<>
-					<TabHeader tabs={ Object.keys(sortedIngredients) }
-						activeTab={ activeTab }
-						setTab={ setTab }
-					/>
-					<TabContent ref={ tabContentRef }
-						titlesRef={ titlesRef }
-						ingredients={ sortedIngredients }
-						handlerScroll={ handlerScrollContainer }
-					/>
-				</>
-			}
+			<TabHeader tabs={ Object.keys(sortedIngredients) }
+				activeTab={ activeTab }
+				setTab={ setTab }
+			/>
+			<TabContent ref={ tabContentRef }
+				titlesRef={ titlesRef }
+				ingredients={ sortedIngredients }
+				handlerScroll={ handlerScrollContainer }
+			/>
 		</section>
 	);
 };

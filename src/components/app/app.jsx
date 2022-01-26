@@ -26,21 +26,29 @@ import {
 import { MODAL_ORDER } from '../../utils/constants';
 
 import { getUser } from '../../services/actions/user';
+import { getIngredients } from '../../services/actions/ingredients';
 
 const App = () => {
 	let location = useLocation();
 	let background = location?.state?.background;
 	const activeModal = useSelector(store => store.modal.active);
-	const ingredients = useSelector(store => store.ingredients.items);
+	const { 
+		items: ingredients,
+		isRequested: isRequestedIngredients,
+	} = useSelector(store => store.ingredients);
 	const { authAttemptSucceeded } = useSelector(store => store.user);
 
 	const dispatch = useDispatch();
 
 	useEffect(() => {
+		dispatch(getIngredients());
+	}, [ dispatch ]);
+
+	useEffect(() => {
 		dispatch(getUser());
 	}, [dispatch]);
 
-	if (!authAttemptSucceeded) {
+	if (!authAttemptSucceeded || !ingredients.length || isRequestedIngredients) {
 		return null;
 	}
 
