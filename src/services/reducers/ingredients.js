@@ -3,11 +3,11 @@ import {
 	GET_INGREDIENTS_SUCCESS,
 	GET_INGREDIENTS_FAILED,
 	SET_INGREDIENTS_DETAILS,
-	CLEAR_INGREDIENTS_DETAILS,
 	SORT_INGREDIENTS,
 	SET_ACTIVE_TAB,
 	INCREASE_ADDED_INGREDIENT,
 	DECREASE_ADDED_INGREDIENT,
+	CLEAR_ADDED_INGREDIENT,
 } from '../actions/ingredients';
 
 const ingredientsInitialState = {
@@ -94,13 +94,6 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
 				ingredientDetails,
 			};
 
-		case CLEAR_INGREDIENTS_DETAILS:
-
-			return {
-				...state,
-				ingredientDetails: null,
-			};
-
 		case GET_INGREDIENTS_REQUEST:
 			return {
 				...state,
@@ -155,6 +148,11 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
 				),
 			};
 
+		case CLEAR_ADDED_INGREDIENT:
+			return {
+				...state,
+				addedIngredients: ingredientsInitialState.addedIngredients,
+			};
 		default:
 			return state;
 	}

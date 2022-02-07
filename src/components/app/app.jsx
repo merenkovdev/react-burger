@@ -1,44 +1,87 @@
 import styles from './app.module.css';
 
-import AppHeader from '../app-header/app-header';
-import BurgerConstructor from '../burger-constructor/burger-constructor';
-import BurgerIngredients from '../burger-ingredients/burger-ingredients';
-import OrderDetails from '../order-details/order-details';
-import IngredientDetails from '../ingredient-details/ingredient-details';
-import Modal from '../modal/modal';
+import { useEffect } from 'react';
 
-import {
-	MODAL_DETAILS,
-	MODAL_ORDER,
- } from '../../utils/constants';
+import { Route, Switch, useLocation } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { CLEAR_INGREDIENTS_DETAILS } from '../../services/actions/ingredients';
+import AppHeader from '../app-header/app-header';
+import OrderDetails from '../order-details/order-details';
+import Modal from '../modal/modal';
+import ModalDetails from '../modal-details/modal-details';
+import ProtectedRoute from '../protected-route/protected-route';
 
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import {
+	Home,
+	LoginPage,
+	RegisterPage,
+	ForgotPasswordPage,
+	ResetPasswordPage,
+	ProfilePage,
+	IngredientPage,
+	NotFound404,
+} from '../../pages';
+
+import { MODAL_ORDER } from '../../utils/constants';
+
+import { getUser } from '../../services/actions/user';
+import { getIngredients } from '../../services/actions/ingredients';
 
 const App = () => {
+	let location = useLocation();
+	let background = location?.state?.background;
 	const activeModal = useSelector(store => store.modal.active);
-	const ingredientDetails = useSelector(store => store.ingredients.ingredientDetails);
+	const { 
+		items: ingredients,
+		isRequested: isRequestedIngredients,
+	} = useSelector(store => store.ingredients);
+	const { authAttemptSucceeded } = useSelector(store => store.user);
+
 	const dispatch = useDispatch();
 
-	const clearDetailIngredients = () => {
-		dispatch({ type: CLEAR_INGREDIENTS_DETAILS });
-	};
+	useEffect(() => {
+		dispatch(getIngredients());
+	}, [ dispatch ]);
+
+	useEffect(() => {
+		dispatch(getUser());
+	}, [dispatch]);
+
+	if (!authAttemptSucceeded || !ingredients.length || isRequestedIngredients) {
+		return null;
+	}
 
 	return (
 		<div className={ styles.layout }>
 			<AppHeader />
 			<main className={ cn(styles.main, 'container pl-5 pr-5') }>
-				<h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
-				<div className="row">
-					<DndProvider backend={HTML5Backend}>
-						<BurgerIngredients />
-						<BurgerConstructor />
-					</ DndProvider>
-				</div>
+				<Switch location={ background || location }>
+					<Route path="/" exact={true}>
+						<Home />
+					</Route>
+					<Route path="/ingredients/:id" exact={true}>
+						<IngredientPage />
+					</Route>
+					<ProtectedRoute path="/profile">
+						<ProfilePage />
+					</ProtectedRoute>
+					<Route path="/login" exact={true}>
+						<LoginPage />
+					</Route>
+					<Route path="/register" exact={true}>
+						<RegisterPage />
+					</Route>
+					<Route path="/forgot-password" exact={true}>
+						<ForgotPasswordPage />
+					</Route>
+					<Route path="/reset-password" exact={true}>
+						<ResetPasswordPage />
+					</Route>
+					<Route>
+						<NotFound404 />
+					</Route>
+				</Switch>
 			</main>
 
 			{ activeModal === MODAL_ORDER &&
@@ -47,14 +90,10 @@ const App = () => {
 				</Modal>
 			}
 
-			{ activeModal === MODAL_DETAILS &&
-				ingredientDetails &&
-				<Modal open={ true }
-					header='Детали ингредиента'
-					onClose={clearDetailIngredients}
-				>
-					<IngredientDetails />
-				</Modal>
+			{ background && Boolean(ingredients.length) &&
+				<Route path="/ingredients/:id" >
+					<ModalDetails />
+				</Route>
 			}
 		</div>
 	)

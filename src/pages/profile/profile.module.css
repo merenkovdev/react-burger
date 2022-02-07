@@ -1,0 +1,35 @@
+.link {
+	display: inline-block;
+}
+
+button.link {
+	border: none;
+	background: transparent;
+	cursor: pointer;
+}
+
+button.link:hover {
+	text-decoration: underline;
+}
+
+.container {
+	display: flex;
+}
+
+.menu {
+	width: 320px;
+}
+
+.list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.content {
+	min-width: 480px;
+}
+
+.info {
+	opacity: .4;
+}

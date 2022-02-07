@@ -4,21 +4,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link, useLocation } from "react-router-dom";
 import { itemPropTypes } from '../../utils/types';
 
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { DraggableIngredient } from '../ingredient/ingredient';
 
-import { MODAL_DETAILS } from '../../utils/constants';
 import { throttle } from '../../utils/utils';
 
 import {
-	SET_INGREDIENTS_DETAILS,
 	SORT_INGREDIENTS,
-	getIngredients,
 	SET_ACTIVE_TAB,
 } from '../../services/actions/ingredients';
-import { SHOW_MODAL } from '../../services/actions/modal';
 
 const tabNames = {
 	bun: 'Булки',
@@ -49,23 +46,13 @@ const TabHeader = React.memo((props) => {
 });
 
 const TabContent = React.memo(React.forwardRef((props, ref) => {
+	let location = useLocation();
 	const addedIngredients = useSelector(store => store.ingredients.addedIngredients);
 	const {
 		titlesRef,
 		ingredients,
 		handlerScroll,
 	} = props;
-
-	const dispatch = useDispatch();
-
-	const onClickCard = React.useCallback((id) => {
-		dispatch({
-			type: SET_INGREDIENTS_DETAILS,
-			id,
-		});
-
-		dispatch({ type: SHOW_MODAL, name: MODAL_DETAILS });
-	}, [ dispatch ]);
 
 	return (
 		<div ref={ ref }
@@ -84,12 +71,19 @@ const TabContent = React.memo(React.forwardRef((props, ref) => {
 						<ul className={ cn(styles.ingredients, ' pb-10') }>
 							{ ingredients[type].map(item => (
 								<li className={ cn(styles.ingredient, 'p-3') } key={ item._id }>
-									<DraggableIngredient item={ item }
-										count={ addedIngredients[item._id] ?
-											Number(addedIngredients[item._id].count) : 0
-										}
-										onClickCard={ onClickCard }
-									/>
+									 <Link
+										key={item._id}
+										to={{
+											pathname: `/ingredients/${item._id}`,
+											state: { background: location }
+										}}
+									>
+										<DraggableIngredient item={ item }
+											count={ addedIngredients[item._id] ?
+												Number(addedIngredients[item._id].count) : 0
+											}
+										/>
+									</Link>
 								</li>
 							)) }
 						</ul>
@@ -105,18 +99,18 @@ const BurgerIngredients = () => {
 	const titlesRef = React.useRef([]);
 
 	const {
-		items: ingredients,
-		hasError: IngredientsError,
+		hasError: hasErrorIngredients,
 		isRequested: ingredientsRequest,
 		sortedItems: sortedIngredients,
 		activeTab,
 	} = useSelector(store => store.ingredients);
 	const dispatch = useDispatch();
 
-	
+
 	const setTab = (tab) => {
-		// TODO: Доработать переключение табов
-		// dispatch({ type: SET_ACTIVE_TAB, tab });
+		const title = titlesRef.current.find(elem => elem.id === tab);
+
+		title?.scrollIntoView({ behavior: 'smooth' })
 	};
 
 	const trottledHandlerScroll = throttle(() => {
@@ -137,7 +131,7 @@ const BurgerIngredients = () => {
 		const active = titleOffsets[minDistance];
 
 		if (active !== activeTab) {
-			dispatch({ type: SET_ACTIVE_TAB, tab: active });			
+			dispatch({ type: SET_ACTIVE_TAB, tab: active });
 		}
 	}, 50);
 
@@ -147,51 +141,42 @@ const BurgerIngredients = () => {
 	);
 
 	React.useEffect(() => {
-		dispatch(getIngredients());
+		dispatch({ type: SORT_INGREDIENTS });
 	}, [ dispatch ]);
 
-	React.useEffect(() => {
-		dispatch({ type: SORT_INGREDIENTS });
-	}, [ ingredients, dispatch ]);
+	if (ingredientsRequest) {
+		return (
+			<p className="text text_type_main-large p-10">
+				Загрузка...
+			</p>
+		);
+	}
 
-	// TODO: Доработать переключение табов
-	// React.useEffect(() => {
-	// 	const title = document.getElementById(activeTab);
-	// 	const container = title?.offsetParent;
+	if (hasErrorIngredients) {
+		return (
+			<p className="text text_type_main-large p-10">
+				Ошибка при получнии ингредиентов...
+			</p>
+		);
+	}
 
-	// 	if (container && container === tabContentRef.current) {
-	// 		tabContentRef.current.scroll(0, title?.offsetTop);
-	// 	}
-	// }, [ activeTab ]);
+	if (!Object.keys(sortedIngredients)?.length) {
+		return null;
+	}
 
 	return (
 		<section className="col-6">
-			{ ingredientsRequest &&
-				<p className="text text_type_main-large p-10">
-					Загрузка...
-				</p>
-			}
-			{ IngredientsError &&
-				<p className="text text_type_main-large p-10">
-					Ошибка при получнии ингредиентов...
-				</p>
-			}
-			{ !ingredientsRequest &&
-				!IngredientsError &&
-				Boolean(ingredients.length) &&
-				<>
-					<TabHeader tabs={ Object.keys(sortedIngredients) }
-						activeTab={ activeTab }
-						setTab={ setTab }
-					/>
-					<TabContent ref={ tabContentRef }
-						titlesRef={ titlesRef }
-						ingredients={ sortedIngredients }
-						handlerScroll={ handlerScrollContainer }
-					/>
-				</>
-			}
+			<TabHeader tabs={ Object.keys(sortedIngredients) }
+				activeTab={ activeTab }
+				setTab={ setTab }
+			/>
+			<TabContent ref={ tabContentRef }
+				titlesRef={ titlesRef }
+				ingredients={ sortedIngredients }
+				handlerScroll={ handlerScrollContainer }
+			/>
 		</section>
+		
 	);
 };
 

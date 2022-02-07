@@ -7,6 +7,7 @@ import {
 const orderInitialState = {
 	number: 0,
 	name: '',
+	success: false,
 	isRequested: false,
 	hasError: false,
 	textError: '',
@@ -19,6 +20,7 @@ export const orderReducer = (state = orderInitialState, action) => {
 				...state,
 				isRequested: true,
 				hasError: false,
+				success: false,
 			};
 
 		case CREATE_ORDER_SUCCESS:
@@ -28,6 +30,7 @@ export const orderReducer = (state = orderInitialState, action) => {
 				...state,
 				number,
 				name,
+				success: true,
 				isRequested: false,
 				hasError: false,
 			};
@@ -35,6 +38,7 @@ export const orderReducer = (state = orderInitialState, action) => {
 		case CREATE_ORDER_FAILED:
 			return {
 				...state,
+				success: false,
 				isRequested: false,
 				hasError: true,
 				textError: action.textError,

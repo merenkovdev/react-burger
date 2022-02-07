@@ -8,8 +8,8 @@ import {
 	Button,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import IngredientConstructor, { DraggableConstructorIngredient } from '../ingredient-constructor/ingredient-constructor';
 import cn from 'classnames';
+import { useHistory } from 'react-router-dom';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { SHOW_MODAL } from '../../services/actions/modal';
@@ -22,9 +22,11 @@ import {
 import {
 	DECREASE_ADDED_INGREDIENT,
 	INCREASE_ADDED_INGREDIENT,
+	CLEAR_ADDED_INGREDIENT,
 } from '../../services/actions/ingredients';
+import IngredientConstructor, { DraggableConstructorIngredient } from '../ingredient-constructor/ingredient-constructor';
 import { MODAL_ORDER } from '../../utils/constants';
-import { createOrder } from '../../services/actions/order';
+import { CREATE_ORDER_FAILED, createOrder } from '../../services/actions/order';
 import { useDrop } from 'react-dnd';
 
 const Total = (props) => {
@@ -43,7 +45,7 @@ const Total = (props) => {
 				} : {})}
 			>
 				{ createOrderRequest ?
-					'Создание заказа...' : 
+					'...Создание заказа' :
 					'Оформить заказ'
 				}
 			</Button>
@@ -58,18 +60,33 @@ const BurgerConstructor = () => {
 		totalPrice,
 	} = useSelector(store => store.burger);
 
+	const {
+		number,
+		name,
+		success,
+	} = useSelector(store => store.order);
+	const isAuth = useSelector(store => store.user.isAuth);
+	const history = useHistory();
+
 	const dispatch = useDispatch();
-
-	const openModalOrder = () => {
-		dispatch({ type: SHOW_MODAL, name: MODAL_ORDER });
-	};
-
 	const handleOrder = () => {
-		dispatch(createOrder())
-			.then(() => {
-				dispatch({ type: CLEAR_CONSTRUCTOR });
-			})
-			.finally(openModalOrder);
+		if (!isAuth) {
+			history.push({ pathname: '/login' });
+
+			return;
+		}
+
+		if (isEmpty(bun)) {
+			dispatch({
+				textError: 'Пожалуйста, добавьте булку',
+				type: CREATE_ORDER_FAILED,
+			});
+			dispatch({ type: SHOW_MODAL, name: MODAL_ORDER });
+
+			return;
+		}
+
+		dispatch(createOrder());
 	};
 
 	const handleRemoveTopping = (item) => {
@@ -83,6 +100,14 @@ const BurgerConstructor = () => {
 	React.useEffect(() => {
 		dispatch({ type: CALC_TOTAL_PRICE });
 	}, [ bun, toppings, dispatch ]);
+
+	React.useEffect(() => {
+		if (success) {
+			dispatch({ type: CLEAR_CONSTRUCTOR });
+			dispatch({ type: CLEAR_ADDED_INGREDIENT });
+			dispatch({ type: SHOW_MODAL, name: MODAL_ORDER });
+		}
+	}, [ number, name, success, dispatch ]);
 
 	const [, dropTarget] = useDrop({
 		accept: 'ingredient',

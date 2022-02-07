@@ -16,6 +16,11 @@ body {
 
 a {
 	color: var(--text-primary-color);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
 }
 
 * {
@@ -50,6 +55,14 @@ button:disabled {
 
 .constructor-element {
 	max-width: none;
+}
+
+.input__container {
+	width: 100%;
+}
+
+.input_size_default {
+	width: auto;
 }
 
 .has-modal {
