@@ -1,8 +1,7 @@
 import styles from './modal.module.css';
 
-import React from 'react';
+import React, { FC, ReactNode } from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
 import cn from 'classnames';
 
 import ModalOverlay from '../modal-overlay/modal-overlay';
@@ -12,7 +11,13 @@ import { HIDE_MODAL } from '../../services/actions/modal';
 
 const modalRoot = document.getElementById('modals');
 
-const ModalHeader = (props) => {
+type TModal = {
+	open?: boolean,
+	header?: ReactNode,
+	onClose?: () => void,
+};
+
+const ModalHeader: FC<{ closeModal: () => void }> = (props) => {
 	const {
 		children,
 		closeModal,
@@ -30,7 +35,7 @@ const ModalHeader = (props) => {
 	);
 };
 
-const Modal = (props) => {
+const Modal: FC<TModal> = (props) => {
 	const {
 		children,
 		header,
@@ -47,7 +52,7 @@ const Modal = (props) => {
 	}, [ dispatch, onClose ]);
 
 	React.useEffect(() => {
-		const onKeyPress = (e) => {
+		const onKeyPress = (e: KeyboardEvent) => {
 			if (open && e.key === 'Escape') {
 				closeModal();
 			}
@@ -78,15 +83,3 @@ const Modal = (props) => {
 }
 
 export default Modal;
-
-ModalHeader.propTypes = {
-	closeModal: PropTypes.func.isRequired,
-	children: PropTypes.node,
-};
-
-Modal.propTypes = {
-	open: PropTypes.bool.isRequired,
-	children: PropTypes.node,
-	header: PropTypes.node,
-	onClose: PropTypes.func,
-};

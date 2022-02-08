@@ -2,50 +2,45 @@ import {
 	Input,
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm, Controller  } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { login } from '../../services/actions/user';
 import PasswordInput from '../password-input/password-input';
-import { register } from '../../services/actions/user';
-import styles from './form-register.module.css';
+import styles from './form-login.module.css';
+
+const ERRORS_FORM: {
+	[name: string]: string
+} = {
+	'email or password are incorrect': 'Некорректный email или пароль',
+	default: 'При авторизации пользователя произошла ошибка',
+};
 
 const defaultValuesForm = {
 	email: '',
 	password: '',
-	name: '',
 };
 
-const FormRegister = () => {
+const FormLogin: FC = () => {
 	const {
 		handleSubmit,
 		control,
-	} = useForm({
+	} = useForm<typeof defaultValuesForm>({
 		defaultValues: defaultValuesForm,
 	});
-	const { hasError, error, isRequested } = useSelector(store => store.user.register);
+	// TODO: Типизация store
+	// @ts-ignore
+	const { hasError, error, isRequested }= useSelector(store => store.user.login);
 	const dispatch = useDispatch();
 
-	const onSubmit = (data) => {
-		dispatch(register(data));
+	const onSubmit = (data: typeof defaultValuesForm) => {
+		dispatch(login(data));
 	};
 
 	return (
 		<form className={ styles.form } onSubmit={handleSubmit(onSubmit)}>
-			<div className="pb-6">
-				<Controller
-					name={'name'}
-					control={control}
-					rules={{ required: true }}
-					render={({ field }) =>
-						<Input
-							{...field}
-							type={'text'}
-							placeholder={'Имя'}
-						/>
-					}
-				/>
-			</div>
 			<div className="pb-6">
 				<Controller
 					name={'email'}
@@ -73,8 +68,10 @@ const FormRegister = () => {
 					}
 				/>
 			</div>
-			{ hasError && error &&
-				<p className="text text_type_main-small text_color_error pb-6">При созднии пользователя произошла ошибка</p>
+			{ hasError &&
+				<p className="text text_type_main-small text_color_error pb-6">
+					{ ERRORS_FORM[error] || ERRORS_FORM.default }
+				</p>
 			}
 			<Button type="primary" size="medium"
 				{...(isRequested ? {
@@ -82,18 +79,22 @@ const FormRegister = () => {
 				} : {})}
 			>
 				{ isRequested ?
-					'...Регистрация' :
-					'Зарегистрироваться'
+					'...Войти' :
+					'Войти'
 				}
 			</Button>
 			<div className="pt-20">
+				<p className="text text_type_main-small pb-4">
+					<span className="text_color_inactive">Вы — новый пользователь? </span>
+					<Link className={ styles.link } to="/register">Зарегистрироваться</Link>
+				</p>
 				<p className="text text_type_main-small">
-					<span className="text_color_inactive">Уже зарегистрированы? </span>
-					<Link className={ styles.link } to="/login">Войти</Link>
+					<span className="text_color_inactive">Забыли пароль? </span>
+					<Link className={ styles.link } to="forgot-password">Восстановить пароль</Link>
 				</p>
 			</div>
 		</form>
 	);
 };
 
-export default FormRegister;
+export default FormLogin;

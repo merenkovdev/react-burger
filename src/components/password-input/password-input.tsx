@@ -1,9 +1,10 @@
 import { forwardRef, useState } from 'react';
+import { TInput } from '../../types/form';
 
 import { Input } from '@ya.praktikum/react-developer-burger-ui-components';
 
-const PasswordInput = forwardRef((props, ref) => {
-	const [ type, setType ] = useState('password');
+const PasswordInput = forwardRef<HTMLInputElement, TInput>((props, ref) => {
+	const [ type, setType ] = useState<'password' | 'text'>('password');
 	const changeType = () => {
 		setType(type === 'password' ? 'text' : 'password');
 	};

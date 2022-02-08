@@ -80,7 +80,7 @@ const TabContent = React.memo(React.forwardRef((props, ref) => {
 									>
 										<DraggableIngredient item={ item }
 											count={ addedIngredients[item._id] ?
-												Number(addedIngredients[item._id].count) : 0
+												Number(addedIngredients[item._id].count) : undefined
 											}
 										/>
 									</Link>
@@ -176,7 +176,7 @@ const BurgerIngredients = () => {
 				handlerScroll={ handlerScrollContainer }
 			/>
 		</section>
-		
+
 	);
 };
 

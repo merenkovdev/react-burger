@@ -1,23 +1,25 @@
 import styles from './ingredient-details.module.css';
 
-import PropTypes from 'prop-types';
+import { FC } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
 
+import { TItem, TCalories } from '../../types/api';
+
 import Ingredient from '../ingredient/ingredient';
 
-const keysCaloriesContent = [
-	[ 'fat', 'Калории,ккал'],
-	[ 'calories', 'Белки, г',],
-	[ 'proteins', 'Жиры, г'],
-	[ 'carbohydrates', 'Углеводы, г'],
+const keysCaloriesContent: [name: keyof TCalories, value: string][] = [
+	['fat', 'Калории,ккал'],
+	['calories', 'Белки, г',],
+	['proteins', 'Жиры, г'],
+	['carbohydrates', 'Углеводы, г'],
 ];
 
 const classesText = 'text text_type_main-default text_color_inactive';
 const classesTextDigits = 'text text_type_digits-default text_color_inactive';
 
-const СalorieСontent = (props) => {
+const СalorieСontent: FC<TCalories> = (props) => {
 	return (
 		<ul className={ cn(styles.list, 'pt-4') }>
 			{ keysCaloriesContent.map(([ key, name ]) => (
@@ -30,11 +32,20 @@ const СalorieСontent = (props) => {
 	);
 };
 
-const IngredientDetails = () => {
-	const { id } = useParams();
-	const ingredients = useSelector(store => store.ingredients.items);
+const IngredientDetails: FC = () => {
+	const { id } = useParams<{ id: string | undefined }>();
+	// TODO: Типизация store
+	// @ts-ignore
+	const ingredients: Array<TItem> = useSelector(store => store.ingredients.items);
+
 	const ingredient = ingredients.find(item => item._id === id);
+
+	if (!ingredient) {
+		return null;
+	}
+
 	const {
+		// Убрали свойство price из объекта
 		price,
 		fat,
 		calories,
@@ -57,11 +68,3 @@ const IngredientDetails = () => {
 };
 
 export default IngredientDetails;
-
-СalorieСontent.propTypes = {
-	fat: PropTypes.number.isRequired,
-	calories: PropTypes.number.isRequired,
-	proteins: PropTypes.number.isRequired,
-	carbohydrates: PropTypes.number.isRequired,
-};
-

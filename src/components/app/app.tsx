@@ -1,6 +1,6 @@
 import styles from './app.module.css';
 
-import { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 
 import { Route, Switch, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -28,14 +28,20 @@ import { MODAL_ORDER } from '../../utils/constants';
 import { getUser } from '../../services/actions/user';
 import { getIngredients } from '../../services/actions/ingredients';
 
-const App = () => {
-	let location = useLocation();
+const App: FC = () => {
+	let location = useLocation<{ background: any }>();
 	let background = location?.state?.background;
+	// TODO: Типизация store
+	// @ts-ignore
 	const activeModal = useSelector(store => store.modal.active);
-	const { 
+	const {
 		items: ingredients,
 		isRequested: isRequestedIngredients,
+		// TODO: Типизация store
+		// @ts-ignore
 	} = useSelector(store => store.ingredients);
+	// TODO: Типизация store
+	// @ts-ignore
 	const { authAttemptSucceeded } = useSelector(store => store.user);
 
 	const dispatch = useDispatch();

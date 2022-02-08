@@ -2,6 +2,7 @@ import {
 	Input,
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+import { FC } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useHistory, Redirect } from 'react-router-dom';
 import { useForm, Controller  } from 'react-hook-form';
@@ -19,22 +20,29 @@ const defaultValuesForm = {
 
 const TIMEOUT_SUCCESS_REDIRECT = 1000;
 
-const FormResetPassword = () => {
+const FormResetPassword: FC = () => {
 	const {
 		handleSubmit,
 		control,
-	} = useForm({
+	} = useForm<typeof defaultValuesForm>({
 		defaultValues: defaultValuesForm,
 	});
+
 	const dispatch = useDispatch();
 	const history = useHistory();
+
 	const {
 		success: resetSuccess,
 		hasError,
 		isRequested,
+		// TODO: Типизация store
+		// @ts-ignore
 	} = useSelector(store => store.user.reset);
+	// TODO: Типизация store
+	// @ts-ignore
 	const { success: forgotSucces } = useSelector(store => store.user.forgot);
-	const onSubmitForm = ({ password, token }) => {
+
+	const onSubmitForm = ({ password, token }: typeof defaultValuesForm) => {
 		dispatch(reset({ password, token }));
 	};
 

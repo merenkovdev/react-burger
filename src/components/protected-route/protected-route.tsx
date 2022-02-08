@@ -1,9 +1,12 @@
-import { Route, Redirect} from 'react-router-dom';
+import { Route, Redirect, RouteProps } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
+import { FC } from 'react';
 
-const ProtectedRoute = ({ children, ...props }) => {
+const ProtectedRoute: FC<RouteProps> = ({ children, ...props }) => {
+	// TODO: Типизация store
+	// @ts-ignore
 	const isAuth = useSelector(store => store.user.isAuth);
+
 	return (
 		<Route {...props}
 			render={({ location }) => (
@@ -21,7 +24,3 @@ const ProtectedRoute = ({ children, ...props }) => {
 };
 
 export default ProtectedRoute;
-
-ProtectedRoute.propTypes = {
-	children: PropTypes.node,
-};
