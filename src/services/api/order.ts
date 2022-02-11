@@ -4,7 +4,7 @@ import { getAccessToken } from '../../utils/tokens';
 import {
 	TRequestCreateOrder,
 	TResponseCreateOrder,
-} from '../../types'
+} from '../../types/api';
 
 const requestCreateOrder = async (
 	requestData: TRequestCreateOrder
