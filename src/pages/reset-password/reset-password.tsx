@@ -1,13 +1,15 @@
-import FormForgotPassword from '../../components/form-forgot-password/form-forgot-password';
+import FormResetPassword from '../../components/form-reset-password/form-reset-password';
 import { Redirect, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
 
-import styles from './forgot-password.module.css';
+import styles from './reset-password.module.css';
 
-const ForgotPassword = () => {
+const ResetPassword = () => {
+	// TODO: Типизация store
+	// @ts-ignore
 	const isAuth = useSelector(store => store.user.isAuth);
-	const { state } = useLocation();
+	const { state } = useLocation<{ from: string }>();
 
 	if (isAuth) {
 		return <Redirect to={ state?.from || '/' } />;
@@ -17,10 +19,10 @@ const ForgotPassword = () => {
 		<div className={ 'pt-30' }>
 			<h1 className={ cn(styles.header, 'text text_type_main-medium mb-6') }>Восстановление пароля</h1>
 			<div className={ styles.form }>
-				<FormForgotPassword />
+				<FormResetPassword />
 			</div>
 		</div>
 	);
 };
 
-export default ForgotPassword;
+export default ResetPassword;

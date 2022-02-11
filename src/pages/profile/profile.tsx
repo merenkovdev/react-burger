@@ -1,9 +1,10 @@
-import cn from 'classnames';
-
 import styles from './profile.module.css';
+
+import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import cn from 'classnames';
 
 import { logout } from '../../services/actions/user';
 import ProfileEdit from '../profile-edit/profile-edit';
@@ -11,15 +12,17 @@ import ProfileOrders from '../profile-orders/profile-orders';
 
 const LINK_DEFAULT_CLASSES = 'text text_type_main-medium pt-3 pb-3';
 
-const getClassesLink = isActive =>
+const getClassesLink = (isActive: boolean) =>
 	cn(
 		LINK_DEFAULT_CLASSES,
 		{ 'text_color_inactive': !isActive },
 		styles.link
 	);
 
-const Profile = () => {
+const Profile: FC = () => {
 	const { path } = useRouteMatch();
+	// TODO: Типизация store
+	// @ts-ignore
 	const { isRequested } = useSelector(store => store.user.logout);
 	const dispatch = useDispatch();
 

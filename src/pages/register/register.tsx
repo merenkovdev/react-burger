@@ -6,8 +6,10 @@ import cn from 'classnames';
 import styles from './register.module.css';
 
 const Register = () => {
+	// TODO: Типизация store
+	// @ts-ignore
 	const isAuth = useSelector(store => store.user.isAuth);
-	const { state } = useLocation();
+	const { state } = useLocation<{ from: string }>();
 
 	if (isAuth) {
 		return <Redirect to={ state?.from || '/' } />;

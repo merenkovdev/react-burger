@@ -1,11 +1,14 @@
+import { FC } from 'react';
 import { useSelector } from 'react-redux';
 import IngredientDetails from '../../components/ingredient-details/ingredient-details';
 
-const IngredientPage = () => {
+const IngredientPage: FC = () => {
 	const {
 		isRequested,
 		hasError,
 		items,
+		// TODO: Типизация store
+		// @ts-ignore
 	} = useSelector(store => store.ingredients);
 
 	if (isRequested) {

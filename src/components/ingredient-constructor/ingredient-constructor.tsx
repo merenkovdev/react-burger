@@ -1,22 +1,27 @@
 import styles from './ingredient-constructor.module.css';
-import React from 'react';
+import React, { FC } from 'react';
 
-import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { useDrag, useDrop } from 'react-dnd';
+import type { XYCoord, Identifier } from 'dnd-core'
 import cn from 'classnames';
 
 import { MOVE_INGREDIENT } from '../../services/actions/burger';
 
 import { DragIcon, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
-import { itemPropTypes } from '../../utils/types';
 
-const ingredietnProtoTypes = {
-	item: PropTypes.shape(itemPropTypes).isRequired,
-	type: PropTypes.oneOf(['top', 'bottom']),
+import {
+	TTypeConstructorIngredient,
+	TConstructorIngredient,
+	TDraggableConstructorIngredient,
+} from '../../types/ingredient';
+
+type DragItem = {
+	index: number;
+	id: string;
 };
 
-const formattingName = (name, type) => {
+const formattingName = (name: string, type?: TTypeConstructorIngredient) => {
 	switch (type) {
 		case 'top':
 			return name + ' (верх)';
@@ -28,7 +33,8 @@ const formattingName = (name, type) => {
 			return name;
 	}
 };
-const Ingredient = (props) => {
+
+const Ingredient: FC<TConstructorIngredient> = (props) => {
 	const {
 		item,
 		type,
@@ -36,7 +42,9 @@ const Ingredient = (props) => {
 	} = props;
 
 	const handleClose = () => {
-		onClose(item);
+		if (typeof onClose === 'function') {
+			onClose(item);
+		}
 	};
 
 	return (
@@ -58,7 +66,7 @@ const Ingredient = (props) => {
 	)
 };
 
-const ConstructorIngredient = (props) => {
+const ConstructorIngredient: FC<TConstructorIngredient> = (props) => {
 	return (
 		<div className={ styles.item }>
 			<Ingredient { ...props } />
@@ -66,15 +74,19 @@ const ConstructorIngredient = (props) => {
 	)
 };
 
-export const DraggableConstructorIngredient = (props) => {
+export const DraggableConstructorIngredient: FC<TDraggableConstructorIngredient> = (props) => {
 	const {
 		index,
 		item,
 	} = props;
-	const ref = React.useRef(null);
+	const ref = React.useRef<HTMLDivElement>(null);
 	const dispatch = useDispatch();
 
-	const [{ handlerId }, drop] = useDrop({
+	const [{ handlerId }, drop] = useDrop<
+		DragItem,
+		void,
+		{ handlerId: Identifier | null }
+	>({
 		accept: 'constructor',
 		collect(monitor) {
 			return {
@@ -87,29 +99,29 @@ export const DraggableConstructorIngredient = (props) => {
 			}
 			const dragIndex = item.index;
 			const hoverIndex = index;
-			
+
 			if (dragIndex === hoverIndex) {
 				return;
 			}
 			const hoverBoundingRect = ref.current?.getBoundingClientRect();
 			const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
 			const clientOffset = monitor.getClientOffset();
-			const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+			const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top;
 
 			if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
 				return;
 			}
-			
+
 			if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
 				return;
 			}
-			
+
 			dispatch({
 				type: MOVE_INGREDIENT,
 				movedTo: hoverIndex,
 				movedFrom: dragIndex,
 			});
-			
+
 			item.index = hoverIndex;
 		},
 	});
@@ -136,12 +148,4 @@ export const DraggableConstructorIngredient = (props) => {
 	)
 };
 
-
 export default ConstructorIngredient;
-
-Ingredient.propTypes = ingredietnProtoTypes;
-ConstructorIngredient.propTypes = ingredietnProtoTypes;
-DraggableConstructorIngredient.propTypes = {
-	index: PropTypes.number.isRequired,
-	...ingredietnProtoTypes,
-};

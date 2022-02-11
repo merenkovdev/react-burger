@@ -1,13 +1,16 @@
-import { useEffect, useCallback } from 'react';
+import styles from './profile-edit.module.css';
+
+import { useEffect, useCallback, FC } from 'react';
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useForm, Controller  } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { TDataForm } from '../../types/form';
+
 import { changeUserData } from '../../services/actions/user';
 import EditableInput from '../../components/editable-input/editable-input';
-import styles from './profile-edit.module.css';
 
-const ProfileEdit = () => {
+const ProfileEdit: FC = () => {
 	const {
 		changeUserData: {
 			isRequested,
@@ -17,6 +20,8 @@ const ProfileEdit = () => {
 			name,
 			email,
 		},
+	// TODO: Типизация store
+	// @ts-ignore
 	} = useSelector(store => store.user);
 
 	const {
@@ -26,14 +31,13 @@ const ProfileEdit = () => {
 		control,
 		formState: {
 			isDirty,
-			dirtyFields,
 		},
-	} = useForm({ defaultValues: {
+	} = useForm<TDataForm>({ defaultValues: {
 		name, email, password: '',
 	}});
 
 	const dispatch = useDispatch();
-	const clearValue = (name) => setValue(name, '');
+	const clearValue = (name: string) => setValue(name, '');
 	const resetChanges = useCallback(
 		() => reset({ name, email, password: '' }),
 		[reset, name, email]
@@ -41,13 +45,8 @@ const ProfileEdit = () => {
 
 	const onCancel = () => resetChanges();
 
-	const onSubmit = (data) => {
-		const requestData = Object.keys(dirtyFields)
-			.reduce((acum, field) => {
-				acum[field] = data[field];
-				return acum;
-			}, {});
-		dispatch(changeUserData(requestData));
+	const onSubmit = (data: TDataForm) => {
+		dispatch(changeUserData(data));
 	};
 
 	useEffect(() => {

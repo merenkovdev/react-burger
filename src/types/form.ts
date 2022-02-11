@@ -1,10 +1,10 @@
 type TIcons = 'ShowIcon' | 'HideIcon' | 'CloseIcon' | 'EditIcon';
 
 export type TInput = {
+	value: string;
+	name: string;
 	type?: 'text' | 'email' | 'password';
 	placeholder?: string;
-	value: string;
-	name?: string;
 	success?: boolean;
 	error?: boolean;
 	disabled?: boolean;
@@ -19,5 +19,9 @@ export type TInput = {
 };
 
 export type TEditableInput = TInput & {
-	clearValue: (name: string | undefined) => void,
+	clearValue: (name: string) => void,
+};
+
+export type TDataForm = {
+	[name: string]: string;
 };

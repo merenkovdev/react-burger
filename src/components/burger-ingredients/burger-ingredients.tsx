@@ -1,11 +1,9 @@
 import styles from './burger-ingredients.module.css';
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import cn from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useLocation } from "react-router-dom";
-import { itemPropTypes } from '../../utils/types';
+import { Link, useLocation } from 'react-router-dom';
 
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { DraggableIngredient } from '../ingredient/ingredient';
@@ -16,14 +14,29 @@ import {
 	SORT_INGREDIENTS,
 	SET_ACTIVE_TAB,
 } from '../../services/actions/ingredients';
+import { TSortIngredients } from '../../types/ingredient';
 
-const tabNames = {
+const tabNames: {[name: string]: string } = {
 	bun: 'Булки',
 	sauce: 'Соусы',
 	main: 'Начинки',
 };
 
-const TabHeader = React.memo((props) => {
+type TTabHeader = {
+	activeTab: string,
+	tabs: Array<string>,
+	setTab: (tab: string) => void,
+};
+
+type TTabContent = {
+	titlesRef: { current: TRefTitles },
+	ingredients: TSortIngredients,
+	handlerScroll: (e: React.UIEvent<HTMLDivElement>) => void,
+};
+
+type TRefTitles = Array<HTMLHeadingElement>;
+
+const TabHeader = React.memo<TTabHeader>((props) => {
 	const {
 		activeTab,
 		tabs,
@@ -45,8 +58,12 @@ const TabHeader = React.memo((props) => {
 	)
 });
 
-const TabContent = React.memo(React.forwardRef((props, ref) => {
+const TabContent = React.memo(React.forwardRef<HTMLDivElement, TTabContent>(
+	(props, ref) =>
+{
 	let location = useLocation();
+	// TODO: Типизация store
+	// @ts-ignore
 	const addedIngredients = useSelector(store => store.ingredients.addedIngredients);
 	const {
 		titlesRef,
@@ -64,7 +81,9 @@ const TabContent = React.memo(React.forwardRef((props, ref) => {
 					<React.Fragment key={ type }>
 						<h2 className="text text_type_main-medium pb-6"
 							id={ type }
-							ref={ node => titlesRef.current[index] = node }
+							ref={ (node: HTMLHeadingElement) =>
+								titlesRef.current[index] = node
+							}
 						>
 							{ tabNames[type] }
 						</h2>
@@ -95,19 +114,22 @@ const TabContent = React.memo(React.forwardRef((props, ref) => {
 }));
 
 const BurgerIngredients = () => {
-	const tabContentRef = React.useRef(null);
-	const titlesRef = React.useRef([]);
+	const tabContentRef = React.useRef<HTMLDivElement>(null);
+	const titlesRef = React.useRef<TRefTitles>([]);
 
 	const {
 		hasError: hasErrorIngredients,
 		isRequested: ingredientsRequest,
 		sortedItems: sortedIngredients,
 		activeTab,
+		// TODO: Типизация store
+		// @ts-ignore
 	} = useSelector(store => store.ingredients);
+	// { sortedItems: TSortIngredients}
 	const dispatch = useDispatch();
 
 
-	const setTab = (tab) => {
+	const setTab = (tab: string) => {
 		const title = titlesRef.current.find(elem => elem.id === tab);
 
 		title?.scrollIntoView({ behavior: 'smooth' })
@@ -122,12 +144,18 @@ const BurgerIngredients = () => {
 
 		const container = tabContentRef.current;
 
-		const titleOffsets = titles.reduce((acum, current) => {
-			acum[Math.abs(current.offsetTop - container.scrollTop)] = current.id;
-			return acum;
-		}, {});
+		const titleOffsets = titles.reduce(
+			(acum: {[name: number]: string}, current) => {
+				acum[Math.abs(current.offsetTop - (container?.scrollTop || 0))] = current.id;
+				return acum;
+			},
+			{}
+		);
 
-		const minDistance = Math.min(...Object.keys(titleOffsets));
+		const minDistance = Math.min(
+			...Object.keys(titleOffsets)
+				.map(key => Number(key))
+		);
 		const active = titleOffsets[minDistance];
 
 		if (active !== activeTab) {
@@ -181,23 +209,3 @@ const BurgerIngredients = () => {
 };
 
 export default BurgerIngredients;
-
-TabHeader.propTypes = {
-	activeTab: PropTypes.string.isRequired,
-	tabs: PropTypes.arrayOf(PropTypes.string).isRequired,
-	setTab: PropTypes.func.isRequired,
-};
-
-TabContent.propTypes = {
-	ingredients: PropTypes.objectOf(
-		PropTypes.arrayOf(
-			PropTypes.shape(itemPropTypes)
-		)
-	).isRequired,
-	titlesRef: PropTypes.shape({
-		current: PropTypes.arrayOf(
-			PropTypes.instanceOf(Element)
-		),
-	}),
-	handlerScroll: PropTypes.func,
-};

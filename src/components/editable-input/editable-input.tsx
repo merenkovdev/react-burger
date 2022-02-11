@@ -5,7 +5,7 @@ import { Input } from '@ya.praktikum/react-developer-burger-ui-components';
 
 const EditableInput = forwardRef<HTMLInputElement, TEditableInput>((props, ref) => {
 	const { clearValue, name } = props;
-	const [ disabled, setDisabled ] = useState(true);
+	const [ disabled, setDisabled ] = useState<boolean>(true);
 
 	return (
 		<Input

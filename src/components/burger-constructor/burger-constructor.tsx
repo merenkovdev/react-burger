@@ -1,7 +1,6 @@
 import styles from './burger-constructor.module.css';
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FC } from 'react';
 import { isEmpty } from '../../utils/utils';
 
 import {
@@ -10,6 +9,7 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import cn from 'classnames';
 import { useHistory } from 'react-router-dom';
+import { useDrop } from 'react-dnd';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { SHOW_MODAL } from '../../services/actions/modal';
@@ -24,22 +24,32 @@ import {
 	INCREASE_ADDED_INGREDIENT,
 	CLEAR_ADDED_INGREDIENT,
 } from '../../services/actions/ingredients';
-import IngredientConstructor, { DraggableConstructorIngredient } from '../ingredient-constructor/ingredient-constructor';
+import ConstructorIngredient, { DraggableConstructorIngredient } from '../ingredient-constructor/ingredient-constructor';
 import { MODAL_ORDER } from '../../utils/constants';
 import { CREATE_ORDER_FAILED, createOrder } from '../../services/actions/order';
-import { useDrop } from 'react-dnd';
+import { TTopping } from '../../types/ingredient';
+import {
+	TItem,
+} from '../../types/api';
 
-const Total = (props) => {
+export type TTotal = {
+	price: number,
+	onOrder: () => void,
+};
+
+const Total: FC<TTotal> = ({ price, onOrder }) => {
+	// TODO: Типизация store
+	// @ts-ignore
 	const createOrderRequest = useSelector(store => store.order.isRequested);
 
 	return (
 		<div className={ cn(styles.total, 'pt-10') }>
 			<span className="text text_type_digits-medium pr-10">
-				{ props.price } <CurrencyIcon type="primary" />
+				{ price } <CurrencyIcon type="primary" />
 			</span>
 			<Button type="primary"
 				size="large"
-				onClick={ props.onOrder }
+				onClick={ onOrder }
 				{...(createOrderRequest ? {
 					disabled: true,
 				} : {})}
@@ -58,13 +68,19 @@ const BurgerConstructor = () => {
 		bun,
 		toppings,
 		totalPrice,
+		// TODO: Типизация store
+		// @ts-ignore
 	} = useSelector(store => store.burger);
 
 	const {
 		number,
 		name,
 		success,
+		// TODO: Типизация store
+		// @ts-ignore
 	} = useSelector(store => store.order);
+	// TODO: Типизация store
+	// @ts-ignore
 	const isAuth = useSelector(store => store.user.isAuth);
 	const history = useHistory();
 
@@ -89,7 +105,7 @@ const BurgerConstructor = () => {
 		dispatch(createOrder());
 	};
 
-	const handleRemoveTopping = (item) => {
+	const handleRemoveTopping = (item: TTopping) => {
 		dispatch({ type: REMOVE_IMGREDIENT, uid: item.uid });
 		dispatch({
 			type: DECREASE_ADDED_INGREDIENT,
@@ -111,7 +127,7 @@ const BurgerConstructor = () => {
 
 	const [, dropTarget] = useDrop({
 		accept: 'ingredient',
-		drop(item) {
+		drop(item: TItem) {
 			dispatch(addIngredient(item._id));
 			dispatch({
 				type: INCREASE_ADDED_INGREDIENT,
@@ -132,13 +148,13 @@ const BurgerConstructor = () => {
 						<ul className={ styles.list }>
 							{ !isEmpty(bun) &&
 								<li>
-									<IngredientConstructor item={ bun } type="top" />
+									<ConstructorIngredient item={ bun } type="top" />
 								</li>
 							}
 							<li className={ cn(styles.listContainer, 'custom-scroll') }>
 								<ul className={ cn(styles.list) }>
 									{ toppings
-										.map((item, index) => {
+										.map((item: TTopping, index: number) => {
 											return (
 												<li className={ styles.item } key={ item.uid }>
 													<DraggableConstructorIngredient item={ item }
@@ -153,7 +169,7 @@ const BurgerConstructor = () => {
 							</ li>
 							{ !isEmpty(bun) &&
 								<li>
-									<IngredientConstructor item={ bun } type="bottom" />
+									<ConstructorIngredient item={ bun } type="bottom" />
 								</li>
 							}
 						</ul>
@@ -166,8 +182,3 @@ const BurgerConstructor = () => {
 };
 
 export default BurgerConstructor;
-
-Total.propTypes = {
-	price: PropTypes.number,
-	onOrder: PropTypes.func,
-};

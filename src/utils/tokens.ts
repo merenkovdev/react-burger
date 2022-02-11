@@ -1,12 +1,19 @@
 import {
 	ACCESS_TOKEN_LIFETIME,
-} from  '../utils/constants';
+} from './constants';
 
-const getAccessToken = () => {
+type TAccessTokenStore = {
+	authorizationScheme: string;
+	refreshTime: number;
+	refreshToken: string;
+	token: string;
+};
+
+const getAccessToken = (): TAccessTokenStore => {
 	const tokensData = localStorage.getItem('accessToken');
 
 	if (!tokensData) {
-		return {};
+		return {} as TAccessTokenStore;
 	}
 
 	return  JSON.parse(tokensData)?.accessToken || {};
@@ -16,7 +23,7 @@ const clearTokens = () => {
 	localStorage.removeItem('accessToken');
 };
 
-const setTokens = (accessToken, refreshToken) => {
+const setTokens = (accessToken: string, refreshToken: string) => {
 	const [authorizationScheme, token] = accessToken.split(' ');
 
 	localStorage.setItem('accessToken', JSON.stringify({
