@@ -28,8 +28,18 @@ import { MODAL_ORDER } from '../../utils/constants';
 import { getUser } from '../../services/actions/user';
 import { getIngredients } from '../../services/actions/ingredients';
 
+type TAppLocation = {
+	background?: {
+		key: string,
+		pathname: string,
+		search: string,
+		hash: string,
+		state: unknown,
+	};
+};
+
 const App: FC = () => {
-	let location = useLocation<{ background: any }>();
+	let location = useLocation<TAppLocation>();
 	let background = location?.state?.background;
 	// TODO: Типизация store
 	// @ts-ignore
