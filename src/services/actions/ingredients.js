@@ -1,5 +1,4 @@
-import { getDataRequest } from '../../utils/utils';
-import { API_INGREDIENTS } from '../../utils/constants';
+import { requestIngredients } from '../api/ingredients';
 
 export const GET_INGREDIENTS_REQUEST = 'GET_INGREDIENTS_REQUEST';
 export const GET_INGREDIENTS_SUCCESS = 'GET_INGREDIENTS_SUCCESS';
@@ -12,7 +11,7 @@ export const DECREASE_ADDED_INGREDIENT = 'DECREASE_ADDED_INGREDIENT';
 export const CLEAR_ADDED_INGREDIENT = 'CLEAR_ADDED_INGREDIENT';
 
 export const getIngredients = () => dispatch => {
-	getDataRequest(API_INGREDIENTS)
+	requestIngredients()
 		.then(response => {
 			dispatch({ type: GET_INGREDIENTS_SUCCESS, items: response.data });
 		})
