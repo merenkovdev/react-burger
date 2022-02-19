@@ -302,7 +302,7 @@ export const getUser: AppThunk = () => async (dispatch) => {
 		}
 	} catch (error) {
 		if (error !== 'jwt expired') {
-			throw new Error(getErrorMessage(error));
+			console.warn(getErrorMessage(error));
 		}
 
 		try {
@@ -323,7 +323,7 @@ export const getUser: AppThunk = () => async (dispatch) => {
 		} catch (error) {
 			dispatch({ type: USER_DATA_FAILED, error: getErrorMessage(error) });
 			dispatch({ type: CLEAR_USER });
-			console.log(error);
+			console.warn(error);
 		}
 	}
 };
@@ -340,7 +340,7 @@ export const changeUserData: AppThunk = (data: TRequestChange) => async (dispatc
 		}
 	} catch (error) {
 		if (error !== 'jwt expired') {
-			throw new Error(getErrorMessage(error));
+			console.warn(getErrorMessage(error));
 		}
 
 		try {
@@ -360,7 +360,7 @@ export const changeUserData: AppThunk = (data: TRequestChange) => async (dispatc
 			}
 		} catch (error) {
 			dispatch({ type: CHANGE_USER_DATA_FAILED, error: getErrorMessage(error) });
-			console.log(error);
+			console.warn(error);
 		}
 	}
 };
