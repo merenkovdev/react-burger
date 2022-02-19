@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../services/hooks';
 import IngredientDetails from '../../components/ingredient-details/ingredient-details';
 
 const IngredientPage: FC = () => {
@@ -7,8 +7,6 @@ const IngredientPage: FC = () => {
 		isRequested,
 		hasError,
 		items,
-		// TODO: Типизация store
-		// @ts-ignore
 	} = useSelector(store => store.ingredients);
 
 	if (isRequested) {

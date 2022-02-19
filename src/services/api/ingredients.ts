@@ -1,12 +1,12 @@
 import { API_INGREDIENTS } from '../../utils/constants';
 import { checkResponse } from '../../utils/utils';
-import { TItem } from '../../types/api';
+import { TResponseIngredients } from '../../types/api';
 
-const requestIngredients  = async (): Promise<Array<TItem>> => {
+const requestIngredients = async (): Promise<TResponseIngredients> => {
 	try {
 		const response = await fetch(API_INGREDIENTS);
 
-		return checkResponse<Array<TItem>>(response);
+		return checkResponse<TResponseIngredients>(response);
 	} catch (error) {
 		return Promise.reject(error);
 	}

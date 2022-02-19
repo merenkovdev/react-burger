@@ -23,6 +23,11 @@ export type TUser = {
 
 export type TResponseBase = {
 	success: boolean;
+	message?: string;
+};
+
+export type TResponseIngredients = TResponseBase & {
+	data: Array<TItem>;
 };
 
 export type TRequestCreateOrder = {
@@ -54,7 +59,12 @@ export type TRequestLogin = {
 	password: string;
 };
 
-export type TResponseUser = TResponseBase & {
+export type TResponseTokens = TResponseBase & {
+	refreshToken: string;
+	accessToken: string;
+};
+
+export type TResponseUser = TResponseTokens & {
 	user: TUser;
 };
 
@@ -68,7 +78,3 @@ export type TResponseLogout = TResponseBase & {
 	message: string;
 };
 
-export type TResponseTokens = TResponseBase & {
-	refreshToken: string;
-	accessToken: string;
-};

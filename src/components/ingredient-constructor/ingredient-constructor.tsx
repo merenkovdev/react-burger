@@ -1,7 +1,7 @@
 import styles from './ingredient-constructor.module.css';
 import React, { FC } from 'react';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch } from '../../services/hooks';
 import { useDrag, useDrop } from 'react-dnd';
 import type { XYCoord, Identifier } from 'dnd-core'
 import cn from 'classnames';
@@ -11,6 +11,7 @@ import { MOVE_INGREDIENT } from '../../services/actions/burger';
 import { DragIcon, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import {
+	isTopping,
 	TTypeConstructorIngredient,
 	TConstructorIngredient,
 	TDraggableConstructorIngredient,
@@ -42,7 +43,7 @@ const Ingredient: FC<TConstructorIngredient> = (props) => {
 	} = props;
 
 	const handleClose = () => {
-		if (typeof onClose === 'function') {
+		if (typeof onClose === 'function' && isTopping(item)) {
 			onClose(item);
 		}
 	};

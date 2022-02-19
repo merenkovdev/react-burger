@@ -3,7 +3,7 @@ import styles from './profile-edit.module.css';
 import { useEffect, useCallback, FC } from 'react';
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useForm, Controller  } from 'react-hook-form';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from  '../../services/hooks';
 
 import { TDataForm } from '../../types/form';
 
@@ -20,8 +20,6 @@ const ProfileEdit: FC = () => {
 			name,
 			email,
 		},
-	// TODO: Типизация store
-	// @ts-ignore
 	} = useSelector(store => store.user);
 
 	const {

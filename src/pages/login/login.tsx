@@ -2,14 +2,12 @@ import FormLogin from '../../components/form-login/form-login';
 import { FC } from 'react';
 
 import { Redirect, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../services/hooks';
 import cn from 'classnames';
 
 import styles from './login.module.css';
 
 const Login: FC = () => {
-	// TODO: Типизация store
-	// @ts-ignore
 	const isAuth = useSelector(store => store.user.isAuth);
 	const { state } = useLocation<{ from?: string }>();
 

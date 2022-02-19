@@ -1,13 +1,11 @@
 import FormRegister from '../../components/form-register/form-register';
 import { Redirect, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../services/hooks';
 import cn from 'classnames';
 
 import styles from './register.module.css';
 
 const Register = () => {
-	// TODO: Типизация store
-	// @ts-ignore
 	const isAuth = useSelector(store => store.user.isAuth);
 	const { state } = useLocation<{ from: string }>();
 

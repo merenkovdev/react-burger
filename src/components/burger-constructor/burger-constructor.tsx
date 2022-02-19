@@ -11,7 +11,7 @@ import cn from 'classnames';
 import { useHistory } from 'react-router-dom';
 import { useDrop } from 'react-dnd';
 
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from  '../../services/hooks';
 import { SHOW_MODAL } from '../../services/actions/modal';
 import {
 	CALC_TOTAL_PRICE,
@@ -38,8 +38,6 @@ export type TTotal = {
 };
 
 const Total: FC<TTotal> = ({ price, onOrder }) => {
-	// TODO: Типизация store
-	// @ts-ignore
 	const createOrderRequest = useSelector(store => store.order.isRequested);
 
 	return (
@@ -68,19 +66,13 @@ const BurgerConstructor = () => {
 		bun,
 		toppings,
 		totalPrice,
-		// TODO: Типизация store
-		// @ts-ignore
 	} = useSelector(store => store.burger);
 
 	const {
 		number,
 		name,
 		success,
-		// TODO: Типизация store
-		// @ts-ignore
 	} = useSelector(store => store.order);
-	// TODO: Типизация store
-	// @ts-ignore
 	const isAuth = useSelector(store => store.user.isAuth);
 	const history = useHistory();
 
@@ -138,7 +130,7 @@ const BurgerConstructor = () => {
 
 	return (
 		<section className="col-6" ref={ dropTarget }>
-			{ (isEmpty(bun) && !toppings.length) ?
+			{ (!bun && !toppings.length) ?
 				(
 					<div className={ styles.stub }>
 						<p className="text text_type_main-large">Перетащите сюда ингредиенты</p>
@@ -146,7 +138,7 @@ const BurgerConstructor = () => {
 				) : (
 					<>
 						<ul className={ styles.list }>
-							{ !isEmpty(bun) &&
+							{ bun &&
 								<li>
 									<ConstructorIngredient item={ bun } type="top" />
 								</li>
@@ -167,7 +159,7 @@ const BurgerConstructor = () => {
 									}
 								</ul>
 							</ li>
-							{ !isEmpty(bun) &&
+							{ bun &&
 								<li>
 									<ConstructorIngredient item={ bun } type="bottom" />
 								</li>

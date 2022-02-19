@@ -2,7 +2,7 @@ import styles from './ingredient-details.module.css';
 
 import { FC } from 'react';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../services/hooks';
 import cn from 'classnames';
 
 import { TItem, TCalories } from '../../types/api';
@@ -34,8 +34,6 @@ const СalorieСontent: FC<TCalories> = (props) => {
 
 const IngredientDetails: FC = () => {
 	const { id } = useParams<{ id: string | undefined }>();
-	// TODO: Типизация store
-	// @ts-ignore
 	const ingredients: Array<TItem> = useSelector(store => store.ingredients.items);
 
 	const ingredient = ingredients.find(item => item._id === id);

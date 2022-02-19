@@ -1,13 +1,11 @@
 import FormResetPassword from '../../components/form-reset-password/form-reset-password';
 import { Redirect, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../services/hooks';
 import cn from 'classnames';
 
 import styles from './reset-password.module.css';
 
 const ResetPassword = () => {
-	// TODO: Типизация store
-	// @ts-ignore
 	const isAuth = useSelector(store => store.user.isAuth);
 	const { state } = useLocation<{ from: string }>();
 

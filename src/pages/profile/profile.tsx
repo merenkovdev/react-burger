@@ -3,7 +3,7 @@ import styles from './profile.module.css';
 import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from  '../../services/hooks';
 import cn from 'classnames';
 
 import { logout } from '../../services/actions/user';
@@ -21,8 +21,6 @@ const getClassesLink = (isActive: boolean) =>
 
 const Profile: FC = () => {
 	const { path } = useRouteMatch();
-	// TODO: Типизация store
-	// @ts-ignore
 	const { isRequested } = useSelector(store => store.user.logout);
 	const dispatch = useDispatch();
 

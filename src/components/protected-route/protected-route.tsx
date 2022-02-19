@@ -1,10 +1,8 @@
 import { Route, Redirect, RouteProps } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../services/hooks';
 import { FC } from 'react';
 
 const ProtectedRoute: FC<RouteProps> = ({ children, ...props }) => {
-	// TODO: Типизация store
-	// @ts-ignore
 	const isAuth = useSelector(store => store.user.isAuth);
 
 	return (

@@ -3,7 +3,7 @@ import styles from './app.module.css';
 import { FC, useEffect } from 'react';
 
 import { Route, Switch, useLocation } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from '../../services/hooks';
 import cn from 'classnames';
 
 import AppHeader from '../app-header/app-header';
@@ -41,17 +41,11 @@ type TAppLocation = {
 const App: FC = () => {
 	let location = useLocation<TAppLocation>();
 	let background = location?.state?.background;
-	// TODO: Типизация store
-	// @ts-ignore
 	const activeModal = useSelector(store => store.modal.active);
 	const {
 		items: ingredients,
 		isRequested: isRequestedIngredients,
-		// TODO: Типизация store
-		// @ts-ignore
 	} = useSelector(store => store.ingredients);
-	// TODO: Типизация store
-	// @ts-ignore
 	const { authAttemptSucceeded } = useSelector(store => store.user);
 
 	const dispatch = useDispatch();

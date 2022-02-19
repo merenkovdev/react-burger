@@ -32,8 +32,21 @@ const throttle = (func: Function, timeFrame: number) => {
 	};
 };
 
+const getErrorMessage = (error: any) => {
+	if (error instanceof Error) {
+		return error.message;
+	}
+
+	if (typeof error === 'string') {
+		return error;
+	}
+
+	return 'Произошла неизвестная ошибка';
+};
+
 export {
 	isEmpty,
 	throttle,
 	checkResponse,
+	getErrorMessage,
 };

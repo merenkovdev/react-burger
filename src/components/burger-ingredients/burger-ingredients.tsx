@@ -2,7 +2,7 @@ import styles from './burger-ingredients.module.css';
 
 import React from 'react';
 import cn from 'classnames';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from  '../../services/hooks';
 import { Link, useLocation } from 'react-router-dom';
 
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -62,8 +62,6 @@ const TabContent = React.memo(React.forwardRef<HTMLDivElement, TTabContent>(
 	(props, ref) =>
 {
 	let location = useLocation();
-	// TODO: Типизация store
-	// @ts-ignore
 	const addedIngredients = useSelector(store => store.ingredients.addedIngredients);
 	const {
 		titlesRef,
@@ -122,12 +120,9 @@ const BurgerIngredients = () => {
 		isRequested: ingredientsRequest,
 		sortedItems: sortedIngredients,
 		activeTab,
-		// TODO: Типизация store
-		// @ts-ignore
 	} = useSelector(store => store.ingredients);
-	// { sortedItems: TSortIngredients}
-	const dispatch = useDispatch();
 
+	const dispatch = useDispatch();
 
 	const setTab = (tab: string) => {
 		const title = titlesRef.current.find(elem => elem.id === tab);
