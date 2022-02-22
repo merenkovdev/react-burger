@@ -1,0 +1,25 @@
+.item {
+	border-radius: 40px;
+	background-color: var(--background);
+}
+
+.head {
+	display: flex;
+	justify-content: space-between;
+}
+
+.footer {
+	display: flex;
+	justify-content: space-between;
+}
+
+.ingredients {
+	display: flex;
+	align-items: center;
+	flex-direction: row-reverse;
+}
+
+.ingredient {
+	display: inline-block;
+	margin-right: -15px;
+}

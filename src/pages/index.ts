@@ -1,4 +1,6 @@
 import Home from './home/home';
+import OrderFeed from './order-feed/order-feed';
+import OrderPage from './order-page/order-page';
 import LoginPage from './login/login';
 import RegisterPage from './register/register';
 import ForgotPasswordPage from './forgot-password/forgot-password';
@@ -9,6 +11,8 @@ import NotFound404 from './not-found-404/not-found-404';
 
 export {
 	Home,
+	OrderPage,
+	OrderFeed,
 	LoginPage,
 	IngredientPage,
 	RegisterPage,

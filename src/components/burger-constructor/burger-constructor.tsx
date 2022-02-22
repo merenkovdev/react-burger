@@ -1,15 +1,14 @@
 import styles from './burger-constructor.module.css';
 
 import React, { FC } from 'react';
-import { isEmpty } from '../../utils/utils';
-
-import {
-	Button,
-	CurrencyIcon,
-} from '@ya.praktikum/react-developer-burger-ui-components';
 import cn from 'classnames';
 import { useHistory } from 'react-router-dom';
 import { useDrop } from 'react-dnd';
+import { isEmpty } from '../../utils/utils';
+
+import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
+import Price from '../price/price';
+import ConstructorIngredient, { DraggableConstructorIngredient } from '../ingredient-constructor/ingredient-constructor';
 
 import { useSelector, useDispatch } from  '../../services/hooks';
 import { SHOW_MODAL } from '../../services/actions/modal';
@@ -24,7 +23,6 @@ import {
 	INCREASE_ADDED_INGREDIENT,
 	CLEAR_ADDED_INGREDIENT,
 } from '../../services/actions/ingredients';
-import ConstructorIngredient, { DraggableConstructorIngredient } from '../ingredient-constructor/ingredient-constructor';
 import { MODAL_ORDER } from '../../utils/constants';
 import { CREATE_ORDER_FAILED, createOrder } from '../../services/actions/order';
 import { TTopping } from '../../types/ingredient';
@@ -42,9 +40,9 @@ const Total: FC<TTotal> = ({ price, onOrder }) => {
 
 	return (
 		<div className={ cn(styles.total, 'pt-10') }>
-			<span className="text text_type_digits-medium pr-10">
-				{ price } <CurrencyIcon type="primary" />
-			</span>
+			<div className="pr-10">
+				<Price text={ price } size="medium" />
+			</div>
 			<Button type="primary"
 				size="large"
 				onClick={ onOrder }

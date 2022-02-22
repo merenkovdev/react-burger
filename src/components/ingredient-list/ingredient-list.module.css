@@ -1,0 +1,13 @@
+.container {
+	max-height: 312px;
+	overflow-y: auto;
+}
+
+.item {
+	display: flex;
+	align-items: center;
+}
+
+.name {
+	flex: auto;
+}

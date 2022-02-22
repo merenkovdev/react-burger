@@ -61,7 +61,7 @@ const TabHeader = React.memo<TTabHeader>((props) => {
 const TabContent = React.memo(React.forwardRef<HTMLDivElement, TTabContent>(
 	(props, ref) =>
 {
-	let location = useLocation();
+	const location = useLocation();
 	const addedIngredients = useSelector(store => store.ingredients.addedIngredients);
 	const {
 		titlesRef,
@@ -88,7 +88,7 @@ const TabContent = React.memo(React.forwardRef<HTMLDivElement, TTabContent>(
 						<ul className={ cn(styles.ingredients, ' pb-10') }>
 							{ ingredients[type].map(item => (
 								<li className={ cn(styles.ingredient, 'p-3') } key={ item._id }>
-									 <Link
+									<Link
 										key={item._id}
 										to={{
 											pathname: `/ingredients/${item._id}`,

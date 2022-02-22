@@ -2,13 +2,19 @@ import styles from './profile.module.css';
 
 import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, useRouteMatch, useLocation, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from  '../../services/hooks';
 import cn from 'classnames';
 
 import { logout } from '../../services/actions/user';
+
+import Modal from '../../components/modal/modal';
+import Order from '../../components/order/order';
 import ProfileEdit from '../profile-edit/profile-edit';
 import ProfileOrders from '../profile-orders/profile-orders';
+import OrderPage from '../order-page/order-page';
+
+import { TAppLocation } from '../../types';
 
 const LINK_DEFAULT_CLASSES = 'text text_type_main-medium pt-3 pb-3';
 
@@ -20,8 +26,16 @@ const getClassesLink = (isActive: boolean) =>
 	);
 
 const Profile: FC = () => {
+	const location = useLocation<TAppLocation>();
+	const history = useHistory();
+	const background = location?.state?.background;
 	const { path } = useRouteMatch();
+	console.log(location);
+
+
 	const { isRequested } = useSelector(store => store.user.logout);
+	const ingredients = useSelector(store => store.ingredients.items);
+
 	const dispatch = useDispatch();
 
 	const handleClickLogout = () => {
@@ -30,8 +44,8 @@ const Profile: FC = () => {
 
 	return (
 		<>
-			<div className={ cn('pt-30', styles.container) }>
-				<div className={ cn('mr-15', styles.menu) }>
+			<div className={ cn(styles.container) }>
+				<div className={ cn('mr-15 pt-30', styles.menu) }>
 					<nav>
 						<ul className={ styles.list }>
 							<li>
@@ -63,16 +77,19 @@ const Profile: FC = () => {
 						В этом разделе вы можете изменить свои персональные данные
 					</p>
 				</div>
-				<div className={ styles.content }>
-					<Switch>
-						<Route path={ path } exact={true}>
+
+				<Switch>
+					<Route path={ path } exact={true}>
+						<div className={ cn(styles.form, 'pt-30') }>
 							<ProfileEdit />
-						</Route>
-						<Route path={ `${path}/orders` } exact={true}>
+						</div>
+					</Route>
+					<Route path={ `${path}/orders` } exact={true}>
+						<div className={ cn(styles.orders) }>
 							<ProfileOrders />
-						</Route>
-					</Switch>
-				</div>
+						</div>
+					</Route>
+				</Switch>
 			</div>
 		</>
 	);

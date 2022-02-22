@@ -1,0 +1,59 @@
+:root {
+	--border-width: 2px;
+}
+
+.ingredient {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 64px;
+	height: 64px;
+	border-radius: 50%;
+	border: var(--border-width) solid transparent;
+	z-index: 1;
+}
+
+.ingredient::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(63.18deg, #801AB3 0%, #4C4CFF 100%);
+	border-radius: 50%;
+}
+
+.ingredient::after {
+	content: '';
+	position: absolute;
+	top: var(--border-width);
+	left: var(--border-width);
+	right: var(--border-width);
+	bottom: var(--border-width);
+	border-radius: 50%;
+	background-color: var(--background-alt);
+}
+
+.image {
+	position: relative;
+	object-fit: cover;
+	width: 85%;
+	height: 85%;
+	z-index: 1;
+}
+
+.text {
+	position: absolute;
+	top: var(--border-width);
+	left: var(--border-width);
+	right: var(--border-width);
+	bottom: var(--border-width);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: rgba(var(--background-alpha), .6);
+	border-radius: 50%;
+	z-index: 1;
+}
