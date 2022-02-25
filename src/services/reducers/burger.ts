@@ -5,10 +5,12 @@ import {
 	CALC_TOTAL_PRICE,
 	MOVE_INGREDIENT,
 	CLEAR_CONSTRUCTOR,
+	CREATE_ORDER_REQUEST,
+	CREATE_ORDER_SUCCESS,
+	CREATE_ORDER_FAILED,
 	TBurgerActions,
 } from '../actions/burger';
 
-import { TItem } from '../../types/api';
 import { TTopping } from '../../types/ingredient';
 import { TBurgerState } from '../../types/redux';
 
@@ -16,9 +18,15 @@ const burgerInitialState: TBurgerState = {
 	bun: null,
 	toppings: [],
 	totalPrice: 0,
+	order: {
+		number: 0,
+		name: '',
+		success: false,
+		isRequested: false,
+		hasError: false,
+		textError: '',
+	},
 };
-
-const NUMBER_BUNS_IN_BURGERS = 2;
 
 const moveArrayElement = (array: TTopping[], to: number, from: number) => {
 	const copyArray = [...array];
@@ -31,15 +39,6 @@ const moveArrayElement = (array: TTopping[], to: number, from: number) => {
 	];
 };
 
-const getTotalPrice = (toppings: TTopping[], bun: TItem | null) => {
-	const bunPrice = bun ? bun.price * NUMBER_BUNS_IN_BURGERS : 0;
-
-	return toppings.reduce(
-		(acum, current) => acum + current.price,
-		0
-	) + bunPrice;
-};
-
 export const burgerReducer = (
 	state = burgerInitialState,
 	action: TBurgerActions
@@ -48,7 +47,7 @@ export const burgerReducer = (
 		case CALC_TOTAL_PRICE:
 			return {
 				...state,
-				totalPrice: getTotalPrice(state.toppings, state.bun),
+				totalPrice: action.payload,
 			};
 		case ADD_BUN:
 			return {
@@ -87,6 +86,43 @@ export const burgerReducer = (
 				...state,
 				toppings: burgerInitialState.toppings,
 				bun: burgerInitialState.bun,
+			};
+
+		case CREATE_ORDER_REQUEST:
+			return {
+				...state,
+				order: {
+					...state.order,
+					isRequested: true,
+					hasError: false,
+					success: false,
+				}
+			};
+
+		case CREATE_ORDER_SUCCESS:
+			const { number, name } = action;
+
+			return {
+				...state,
+				order: {
+					...state.order,
+					number,
+					name,
+					success: true,
+					isRequested: false,
+					hasError: false,
+				},
+			};
+
+		case CREATE_ORDER_FAILED:
+			return {
+				...state,
+				order: {
+					...state.order,
+					success: false,
+					isRequested: false,
+					hasError: true,
+				},
 			};
 
 		default:

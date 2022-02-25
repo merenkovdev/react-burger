@@ -44,9 +44,22 @@ const getErrorMessage = (error: any) => {
 	return 'Произошла неизвестная ошибка';
 };
 
+const formatDate = (dateString: string) => {
+	const date = new Date(dateString);
+
+	return date.toLocaleString('ru-RU', {
+		weekday: 'long',
+		hour: 'numeric',
+		minute: 'numeric',
+		month: 'long',
+		day: 'numeric',
+	});
+};
+
 export {
 	isEmpty,
 	throttle,
 	checkResponse,
 	getErrorMessage,
+	formatDate,
 };

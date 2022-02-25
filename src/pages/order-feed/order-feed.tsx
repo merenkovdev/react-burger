@@ -1,77 +1,84 @@
-import { FC } from 'react';
-import OrderItem from '../../components/order-item/order-item';
+import { FC, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from  '../../services/hooks';
+import { getIdsWithStatus } from '../../services/helpers';
+import { wsCloseConnetion, wsConnectionInit } from '../../services/actions/ws-orders-all-actions';
 
 import cn from 'classnames';
 import styles from './order-feed.module.css';
 
+import OrderItem from '../../components/order-item/order-item';
+
 const OrderFeed: FC = () => {
-	let location = useLocation();
+	const {
+		orders,
+		total,
+		totalToday,
+	} = useSelector(store => store.orders.ordersAll);
+	const { done, inwork } = getIdsWithStatus(orders);
+	const location = useLocation();
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		dispatch(wsConnectionInit());
+
+		return () => {
+			dispatch(wsCloseConnetion())
+		};
+	}, [dispatch]);
+
+	if (!orders.length) {
+		return <p className="text text_type_main-medium">Загрузка</p>;
+	}
 
 	return (
 		<>
 			<h1 className="text text_type_main-large mb-5">Лента заказов</h1>
 			<div className="row">
 				<section className="col-6">
-					<div className={ cn(styles.order, "pb-4") }>
-						<Link
-							key="1"
-							to={{
-								pathname: `/feed/1`,
-								state: { background: location }
-							}}
-						>
-							<OrderItem />
-						</ Link>
-					</div>
-					<div className={ cn(styles.order, "pb-4") }>
-						<Link
-							key="2"
-							to={{
-								pathname: `/feed/2`,
-								state: { background: location }
-							}}
-						>
-							<OrderItem />
-						</ Link>
-					</div>
-					<div className={ cn(styles.order, "pb-4") }>
-						<Link
-							key="2"
-							to={{
-								pathname: `/feed/3`,
-								state: { background: location }
-							}}
-						>
-							<OrderItem />
-						</ Link>
+					<div className={ cn(styles.feeds, 'custom-scroll') }>
+						{ orders.map(order => {
+							return (
+								<div key={ order._id } className={ cn(styles.order, 'pb-4') }>
+									<Link
+										to={{
+											pathname: `/feed/${ order._id }`,
+											state: {
+												order,
+												background: location,
+											}
+										}}
+									>
+										<OrderItem order={ order } />
+									</ Link>
+								</div>
+							);
+						}) }
 					</div>
 				</section>
 				<section className="col-6">
 					<div className="row mb-15">
 						<div className="col-6">
 							<p className="text text_type_main-medium mb-6">Готовы:</p>
-							<ul className="list-without-style">
-								<li className="text text_type_main-medium text_color_success">034533</li>
-								<li className="text text_type_main-medium text_color_success">034533</li>
-								<li className="text text_type_main-medium text_color_success">034533</li>
-								<li className="text text_type_main-medium text_color_success">034533</li>
+							<ul className={ cn(styles.column, 'list-without-style') }>
+								{ done.map(id => (
+									<li key={ id } className="text text_type_digits-default text_color_success">{ id }</li>
+								)) }
 							</ul>
 						</div>
 						<div className="col-6">
 							<p className="text text_type_main-medium mb-6">В работе:</p>
-							<ul className="list-without-style">
-								<li className="text text_type_main-medium">034533</li>
-								<li className="text text_type_main-medium">034533</li>
-								<li className="text text_type_main-medium">034533</li>
-								<li className="text text_type_main-medium">034533</li>
+							<ul className={ cn(styles.column, 'list-without-style') }>
+								{ inwork.map(id => (
+									<li key={ id } className="text text_type_digits-default">{ id }</li>
+								)) }
 							</ul>
 						</div>
 					</div>
 					<p className="text text_type_main-medium">Выполнено за все время:</p>
-					<p className="text text_type_digits-large pb-15 text-shadow">28 752</p>
+					<p className="text text_type_digits-large pb-15 text-shadow">{ total }</p>
 					<p className="text text_type_main-medium">Выполнено за сегодня:</p>
-					<p className="text text_type_digits-large text-shadow">28 752</p>
+					<p className="text text_type_digits-large text-shadow">{ totalToday }</p>
 				</section>
 			</div>
 		</>

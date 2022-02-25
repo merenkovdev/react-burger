@@ -1,14 +1,10 @@
 import { nanoid  } from 'nanoid';
-// import {
-// 	ADD_BUN,
-// 	ADD_TOPPING,
-// 	REMOVE_IMGREDIENT,
-// 	MOVE_INGREDIENT,
-// 	CLEAR_CONSTRUCTOR,
-// 	CALC_TOTAL_PRICE,
-// } from '../constants/burger';
 import { TItem } from '../../types/api';
+import { TTopping } from './../../types/ingredient';
 import { AppThunk } from '../../types/redux';
+
+import { getTotalPrice } from '../helpers';
+import { requestCreateOrder } from '../api/order';
 
 export const ADD_BUN: 'ADD_BUN' = 'ADD_BUN';
 export const ADD_TOPPING: 'ADD_TOPPING' = 'ADD_TOPPING';
@@ -16,6 +12,10 @@ export const REMOVE_IMGREDIENT: 'REMOVE_IMGREDIENT' = 'REMOVE_IMGREDIENT';
 export const MOVE_INGREDIENT: 'MOVE_INGREDIENT' = 'MOVE_INGREDIENT';
 export const CLEAR_CONSTRUCTOR: 'CLEAR_CONSTRUCTOR' = 'CLEAR_CONSTRUCTOR';
 export const CALC_TOTAL_PRICE: 'CALC_TOTAL_PRICE' = 'CALC_TOTAL_PRICE';
+
+export const CREATE_ORDER_REQUEST: 'CREATE_ORDER_REQUEST' = 'CREATE_ORDER_REQUEST';
+export const CREATE_ORDER_SUCCESS: 'CREATE_ORDER_SUCCESS' = 'CREATE_ORDER_SUCCESS';
+export const CREATE_ORDER_FAILED: 'CREATE_ORDER_FAILED' = 'CREATE_ORDER_FAILED';
 
 export type TAddBunAction = {
 	readonly type: typeof ADD_BUN;
@@ -45,6 +45,21 @@ export type TClearConstructorAction = {
 
 export type TCalcTotalPriceAction = {
 	readonly type: typeof CALC_TOTAL_PRICE;
+	readonly payload: number;
+};
+
+export type TCreateOrderRequestAction = {
+	readonly type: typeof CREATE_ORDER_REQUEST;
+};
+
+export type TCreateOrderSuccessAction = {
+	readonly type: typeof CREATE_ORDER_SUCCESS;
+	readonly name: string;
+	readonly number: number;
+};
+
+export type TCreateOrderFailedAction = {
+	readonly type: typeof CREATE_ORDER_FAILED;
 };
 
 export type TBurgerActions =
@@ -54,7 +69,17 @@ export type TBurgerActions =
 	| TClearConstructorAction
 	| TMoveIngredientAction
 	| TRemoveIngredientAction
+	| TCreateOrderRequestAction
+	| TCreateOrderSuccessAction
+	| TCreateOrderFailedAction
 ;
+
+export const calcTotalPrice = (ingredients: TItem[]): TCalcTotalPriceAction => {
+	return {
+		type: CALC_TOTAL_PRICE,
+		payload: getTotalPrice(ingredients),
+	};
+};
 
 export const addIngredient: AppThunk = (id: string) => (dispatch, getState) => {
 	const {
@@ -84,4 +109,39 @@ export const addIngredient: AppThunk = (id: string) => (dispatch, getState) => {
 			console.warn('Ингредиент не найден');
 			break;
 	}
+};
+
+const getIngredientsIds = (bun: TItem, toppings: TTopping[]) => (
+	[ bun._id, ...toppings.map(topping => topping._id) ]
+);
+
+export const createOrder: AppThunk = () => async (dispatch, getState) => {
+	const {
+		burger: {
+			bun,
+			toppings,
+		},
+	} = getState();
+
+	if (!bun) {
+		dispatch({ type: CREATE_ORDER_FAILED });
+
+		return;
+	}
+
+	dispatch({ type: CREATE_ORDER_REQUEST });
+
+	requestCreateOrder({
+		ingredients: getIngredientsIds(bun, toppings),
+	})
+		.then(response => {
+			const {
+				name,
+				order: {
+					number,
+				},
+			} = response;
+			dispatch({ type: CREATE_ORDER_SUCCESS, name, number });
+		})
+		.catch(() => dispatch({ type: CREATE_ORDER_FAILED }));
 };

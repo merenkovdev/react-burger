@@ -13,9 +13,9 @@ import ConstructorIngredient, { DraggableConstructorIngredient } from '../ingred
 import { useSelector, useDispatch } from  '../../services/hooks';
 import { SHOW_MODAL } from '../../services/actions/modal';
 import {
-	CALC_TOTAL_PRICE,
 	REMOVE_IMGREDIENT,
 	CLEAR_CONSTRUCTOR,
+	calcTotalPrice,
 	addIngredient,
 } from '../../services/actions/burger';
 import {
@@ -24,7 +24,7 @@ import {
 	CLEAR_ADDED_INGREDIENT,
 } from '../../services/actions/ingredients';
 import { MODAL_ORDER } from '../../utils/constants';
-import { CREATE_ORDER_FAILED, createOrder } from '../../services/actions/order';
+import { CREATE_ORDER_FAILED, createOrder } from '../../services/actions/burger';
 import { TTopping } from '../../types/ingredient';
 import {
 	TItem,
@@ -36,7 +36,7 @@ export type TTotal = {
 };
 
 const Total: FC<TTotal> = ({ price, onOrder }) => {
-	const createOrderRequest = useSelector(store => store.order.isRequested);
+	const createOrderRequest = useSelector(store => store.burger.order.isRequested);
 
 	return (
 		<div className={ cn(styles.total, 'pt-10') }>
@@ -70,7 +70,7 @@ const BurgerConstructor = () => {
 		number,
 		name,
 		success,
-	} = useSelector(store => store.order);
+	} = useSelector(store => store.burger.order);
 	const isAuth = useSelector(store => store.user.isAuth);
 	const history = useHistory();
 
@@ -104,7 +104,10 @@ const BurgerConstructor = () => {
 	};
 
 	React.useEffect(() => {
-		dispatch({ type: CALC_TOTAL_PRICE });
+		dispatch(calcTotalPrice([
+			...toppings,
+			...(bun ? [bun] : []),
+		]));
 	}, [ bun, toppings, dispatch ]);
 
 	React.useEffect(() => {

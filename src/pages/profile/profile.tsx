@@ -2,19 +2,14 @@ import styles from './profile.module.css';
 
 import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Route, Switch, useRouteMatch, useLocation, useHistory } from 'react-router-dom';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useSelector, useDispatch } from  '../../services/hooks';
 import cn from 'classnames';
 
-import { logout } from '../../services/actions/user';
-
-import Modal from '../../components/modal/modal';
-import Order from '../../components/order/order';
 import ProfileEdit from '../profile-edit/profile-edit';
 import ProfileOrders from '../profile-orders/profile-orders';
-import OrderPage from '../order-page/order-page';
 
-import { TAppLocation } from '../../types';
+import { logout } from '../../services/actions/user';
 
 const LINK_DEFAULT_CLASSES = 'text text_type_main-medium pt-3 pb-3';
 
@@ -26,15 +21,9 @@ const getClassesLink = (isActive: boolean) =>
 	);
 
 const Profile: FC = () => {
-	const location = useLocation<TAppLocation>();
-	const history = useHistory();
-	const background = location?.state?.background;
 	const { path } = useRouteMatch();
-	console.log(location);
-
 
 	const { isRequested } = useSelector(store => store.user.logout);
-	const ingredients = useSelector(store => store.ingredients.items);
 
 	const dispatch = useDispatch();
 

@@ -7,7 +7,7 @@ import cn from 'classnames';
 import doneImg from '../../images/done.png';
 
 const OrderDetails: FC = () => {
-	const order = useSelector(store => store.order);
+	const order = useSelector(store => store.burger.order);
 
 	return (
 		<div className={ styles.order }>

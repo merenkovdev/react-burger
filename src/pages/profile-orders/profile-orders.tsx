@@ -1,52 +1,50 @@
+import React, { FC } from 'react';
+import { Link, useLocation, useRouteMatch } from 'react-router-dom';
+
 import cn from 'classnames';
 import styles from './profile-orders.module.css';
 
-import { Link, useLocation } from 'react-router-dom';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
-
+import { useSelector, useDispatch } from  '../../services/hooks';
 import OrderItem from '../../components/order-item/order-item';
+import { wsConnectionInit, wsCloseConnetion } from '../../services/actions/ws-orders-user-actions';
 
-const ProfileOrders = () => {
-	let location = useLocation();
+const ProfileOrders: FC = () => {
+	const location = useLocation();
 	const { path } = useRouteMatch();
-	console.log(location);
+	const { orders } = useSelector(store => store.orders.ordersUser);
+	const dispatch = useDispatch();
 
+	React.useEffect(() => {
+		dispatch(wsConnectionInit());
+
+		return () => {
+			dispatch(wsCloseConnetion())
+		};
+	}, [dispatch]);
+
+	if (!orders.length) {
+		return <p className="text text_type_main-medium">Загрузка</p>;
+	}
 
 	return (
-		<div>
-			<div className={ cn(styles.order, "pb-4") }>
-				<Link
-					key="1"
-					to={{
-						pathname: `${ path }/1`,
-						state: { background: location }
-					}}
-				>
-					<OrderItem />
-				</ Link>
-			</div>
-			<div className={ cn(styles.order, "pb-4") }>
-				<Link
-					key="2"
-					to={{
-						pathname: `${ path }/1`,
-						state: { background: location }
-					}}
-				>
-					<OrderItem />
-				</ Link>
-			</div>
-			<div className={ cn(styles.order, "pb-4") }>
-				<Link
-					key="2"
-					to={{
-						pathname: `${ path }/1`,
-						state: { background: location }
-					}}
-				>
-					<OrderItem />
-				</ Link>
-			</div>
+		<div className={ cn(styles.orders, 'custom-scroll') }>
+			{ orders.map(order => {
+				return (
+					<div key={ order._id } className={ cn(styles.order, 'pb-4') }>
+						<Link
+							to={{
+								pathname: `${ path }/${ order._id }`,
+								state: {
+									order,
+									background: location,
+								}
+							}}
+						>
+							<OrderItem order={ order } />
+						</ Link>
+					</div>
+				);
+			}) }
 		</div>
 	);
 };
