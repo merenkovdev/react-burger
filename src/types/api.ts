@@ -1,3 +1,11 @@
+export enum IngredientType {
+	bun = 'bun',
+	main = 'main',
+	sauce = 'sauce',
+};
+
+export type TIngredientTypes = keyof typeof IngredientType;
+
 export type TCalories = {
 	fat: number,
 	calories: number,
@@ -11,10 +19,41 @@ export type TItemShort = {
 	price: number,
 	image: string,
 	image_large: string,
-	type: string,
+	type: TIngredientTypes,
 };
 
 export type TItem = TItemShort & TCalories;
+
+export enum OrderStatus {
+	done = 'done',
+	created = 'created',
+	pending = 'pending',
+};
+
+export enum OrderStatusText {
+	done = 'Выполнен',
+	created = 'Создан',
+	pending = 'Готовится',
+};
+
+export type TOrderStatus = keyof typeof OrderStatus;
+
+export type TOrder = {
+	_id: string;
+	ingredients: string[];
+	status: TOrderStatus;
+	name: string;
+	createdAt: string;
+	updatedAt: string;
+	number: number;
+};
+
+export type TResponseOrders = {
+	orders: TOrder[],
+	total: number,
+	totalToday: number;
+	success?: boolean;
+};
 
 export type TUser = {
 	email: string;
@@ -23,6 +62,11 @@ export type TUser = {
 
 export type TResponseBase = {
 	success: boolean;
+	message?: string;
+};
+
+export type TResponseIngredients = TResponseBase & {
+	data: Array<TItem>;
 };
 
 export type TRequestCreateOrder = {
@@ -54,7 +98,12 @@ export type TRequestLogin = {
 	password: string;
 };
 
-export type TResponseUser = TResponseBase & {
+export type TResponseTokens = TResponseBase & {
+	refreshToken: string;
+	accessToken: string;
+};
+
+export type TResponseUser = TResponseTokens & {
 	user: TUser;
 };
 
@@ -66,9 +115,4 @@ export type TRequestChange = {
 
 export type TResponseLogout = TResponseBase & {
 	message: string;
-};
-
-export type TResponseTokens = TResponseBase & {
-	refreshToken: string;
-	accessToken: string;
 };

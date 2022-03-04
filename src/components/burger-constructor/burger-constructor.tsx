@@ -1,22 +1,21 @@
 import styles from './burger-constructor.module.css';
 
 import React, { FC } from 'react';
-import { isEmpty } from '../../utils/utils';
-
-import {
-	Button,
-	CurrencyIcon,
-} from '@ya.praktikum/react-developer-burger-ui-components';
 import cn from 'classnames';
 import { useHistory } from 'react-router-dom';
 import { useDrop } from 'react-dnd';
+import { isEmpty } from '../../utils/utils';
 
-import { useSelector, useDispatch } from 'react-redux';
+import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
+import Price from '../price/price';
+import ConstructorIngredient, { DraggableConstructorIngredient } from '../ingredient-constructor/ingredient-constructor';
+
+import { useSelector, useDispatch } from  '../../services/hooks';
 import { SHOW_MODAL } from '../../services/actions/modal';
 import {
-	CALC_TOTAL_PRICE,
 	REMOVE_IMGREDIENT,
 	CLEAR_CONSTRUCTOR,
+	calcTotalPrice,
 	addIngredient,
 } from '../../services/actions/burger';
 import {
@@ -24,9 +23,8 @@ import {
 	INCREASE_ADDED_INGREDIENT,
 	CLEAR_ADDED_INGREDIENT,
 } from '../../services/actions/ingredients';
-import ConstructorIngredient, { DraggableConstructorIngredient } from '../ingredient-constructor/ingredient-constructor';
 import { MODAL_ORDER } from '../../utils/constants';
-import { CREATE_ORDER_FAILED, createOrder } from '../../services/actions/order';
+import { CREATE_ORDER_FAILED, createOrder } from '../../services/actions/burger';
 import { TTopping } from '../../types/ingredient';
 import {
 	TItem,
@@ -38,15 +36,13 @@ export type TTotal = {
 };
 
 const Total: FC<TTotal> = ({ price, onOrder }) => {
-	// TODO: Типизация store
-	// @ts-ignore
-	const createOrderRequest = useSelector(store => store.order.isRequested);
+	const createOrderRequest = useSelector(store => store.burger.order.isRequested);
 
 	return (
 		<div className={ cn(styles.total, 'pt-10') }>
-			<span className="text text_type_digits-medium pr-10">
-				{ price } <CurrencyIcon type="primary" />
-			</span>
+			<div className="pr-10">
+				<Price text={ price } size="medium" />
+			</div>
 			<Button type="primary"
 				size="large"
 				onClick={ onOrder }
@@ -68,19 +64,13 @@ const BurgerConstructor = () => {
 		bun,
 		toppings,
 		totalPrice,
-		// TODO: Типизация store
-		// @ts-ignore
 	} = useSelector(store => store.burger);
 
 	const {
 		number,
 		name,
 		success,
-		// TODO: Типизация store
-		// @ts-ignore
-	} = useSelector(store => store.order);
-	// TODO: Типизация store
-	// @ts-ignore
+	} = useSelector(store => store.burger.order);
 	const isAuth = useSelector(store => store.user.isAuth);
 	const history = useHistory();
 
@@ -114,7 +104,10 @@ const BurgerConstructor = () => {
 	};
 
 	React.useEffect(() => {
-		dispatch({ type: CALC_TOTAL_PRICE });
+		dispatch(calcTotalPrice([
+			...toppings,
+			...(bun ? [bun] : []),
+		]));
 	}, [ bun, toppings, dispatch ]);
 
 	React.useEffect(() => {
@@ -138,7 +131,7 @@ const BurgerConstructor = () => {
 
 	return (
 		<section className="col-6" ref={ dropTarget }>
-			{ (isEmpty(bun) && !toppings.length) ?
+			{ (!bun && !toppings.length) ?
 				(
 					<div className={ styles.stub }>
 						<p className="text text_type_main-large">Перетащите сюда ингредиенты</p>
@@ -146,7 +139,7 @@ const BurgerConstructor = () => {
 				) : (
 					<>
 						<ul className={ styles.list }>
-							{ !isEmpty(bun) &&
+							{ bun &&
 								<li>
 									<ConstructorIngredient item={ bun } type="top" />
 								</li>
@@ -167,7 +160,7 @@ const BurgerConstructor = () => {
 									}
 								</ul>
 							</ li>
-							{ !isEmpty(bun) &&
+							{ bun &&
 								<li>
 									<ConstructorIngredient item={ bun } type="bottom" />
 								</li>

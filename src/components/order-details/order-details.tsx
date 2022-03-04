@@ -1,15 +1,13 @@
 import styles from './order-details.module.css';
 
 import { FC } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../services/hooks';
 import cn from 'classnames';
 
 import doneImg from '../../images/done.png';
 
 const OrderDetails: FC = () => {
-	// TODO: Типизация store
-	// @ts-ignore
-	const order = useSelector(store => store.order);
+	const order = useSelector(store => store.burger.order);
 
 	return (
 		<div className={ styles.order }>

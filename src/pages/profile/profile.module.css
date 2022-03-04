@@ -26,8 +26,12 @@ button.link:hover {
 	margin: 0;
 }
 
-.content {
+.form {
 	min-width: 480px;
+}
+
+.orders {
+	flex: auto;
 }
 
 .info {

@@ -6,7 +6,7 @@ import cn from 'classnames';
 
 import ModalOverlay from '../modal-overlay/modal-overlay';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from '../../services/hooks';
 import { HIDE_MODAL } from '../../services/actions/modal';
 
 const modalRoot = document.getElementById('modals');

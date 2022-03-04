@@ -2,9 +2,10 @@ import styles from './ingredient.module.css';
 
 import React from 'react';
 import cn from 'classnames';
-
-import { CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useDrag } from 'react-dnd';
+
+import Price from '../price/price';
+import { Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import { TIngredient } from '../../types/ingredient';
 
@@ -44,11 +45,8 @@ const Ingredient = React.forwardRef<HTMLDivElement, TIngredient>((props, ref) =>
 				}
 			</div>
 			{ price &&
-				<div className={ cn(styles.price, 'text text_type_digits-default pt-1 pb-1') }>
-					<span className="pr-2">
-						{ price }
-					</span>
-					<CurrencyIcon type="primary" />
+				<div className={ cn(styles.price, 'pt-1 pb-1') }>
+					<Price text={ price } />
 				</div>
 			}
 			<div className={ cn(styles.title, `text text_type_main-${ size === 'large' ? 'medium' : 'default' }`) }>

@@ -25,7 +25,7 @@ const Nav: FC = () => (
 				</NavLink>
 			</li>
 			<li>
-				<NavLink className={ getClassesLink } to="/feed" exact={ true }>
+				<NavLink className={ getClassesLink } to="/feed">
 					<ListIcon type="primary" />
 					<span className="pl-2">Лента новостей</span>
 				</NavLink>

@@ -3,7 +3,7 @@ import {
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { FC } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from  '../../services/hooks';
 import { Link, Redirect } from 'react-router-dom';
 import { useForm, Controller  } from 'react-hook-form';
 import { forgot } from '../../services/actions/user';
@@ -20,8 +20,6 @@ const FormForgotPassword: FC = () => {
 	} = useForm<{ email: string }>({
 		defaultValues: defaultValuesForm,
 	});
-	// TODO: Типизация store
-	// @ts-ignore
 	const { isRequested, success } = useSelector(store => store.user.forgot);
 	const dispatch = useDispatch();
 

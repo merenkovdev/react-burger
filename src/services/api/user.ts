@@ -140,7 +140,7 @@ const requestUserData = async (): Promise<TResponseUser> => {
 	}
 };
 
-const requestChangeUserData = async (requestData: TRequestChange) => {
+const requestChangeUserData = async (requestData: TRequestChange): Promise<TResponseUser> => {
 	const {
 		token,
 		authorizationScheme,

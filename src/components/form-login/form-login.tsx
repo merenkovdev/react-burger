@@ -5,7 +5,7 @@ import {
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm, Controller  } from 'react-hook-form';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from  '../../services/hooks';
 
 import { login } from '../../services/actions/user';
 import PasswordInput from '../password-input/password-input';
@@ -30,8 +30,6 @@ const FormLogin: FC = () => {
 	} = useForm<typeof defaultValuesForm>({
 		defaultValues: defaultValuesForm,
 	});
-	// TODO: Типизация store
-	// @ts-ignore
 	const { hasError, error, isRequested }= useSelector(store => store.user.login);
 	const dispatch = useDispatch();
 

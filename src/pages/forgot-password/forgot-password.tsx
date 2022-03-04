@@ -1,13 +1,11 @@
 import FormForgotPassword from '../../components/form-forgot-password/form-forgot-password';
 import { Redirect, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../services/hooks';
 import cn from 'classnames';
 
 import styles from './forgot-password.module.css';
 
 const ForgotPassword = () => {
-	// TODO: Типизация store
-	// @ts-ignore
 	const isAuth = useSelector(store => store.user.isAuth);
 	const { state } = useLocation<{ from?: string }>();
 

@@ -2,26 +2,29 @@ import {
 	GET_INGREDIENTS_REQUEST,
 	GET_INGREDIENTS_SUCCESS,
 	GET_INGREDIENTS_FAILED,
-	SET_INGREDIENTS_DETAILS,
 	SORT_INGREDIENTS,
 	SET_ACTIVE_TAB,
 	INCREASE_ADDED_INGREDIENT,
 	DECREASE_ADDED_INGREDIENT,
 	CLEAR_ADDED_INGREDIENT,
+	TIngredientsActions,
 } from '../actions/ingredients';
 
-const ingredientsInitialState = {
+import type { TIngredientsState } from '../../types/redux';
+import { TItem } from '../../types/api';
+import { TAddedIngredients, TSortIngredients } from '../../types/ingredient';
+
+const ingredientsInitialState: TIngredientsState = {
 	isRequested: false,
 	hasError: false,
 	items: [],
 	sortedItems: {},
-	ingredientDetails: null,
 	activeTab: 'bun',
 	addedIngredients: {},
 };
 
-const sortIngredients = (ingredients) => (
-	ingredients.reduce((acum, current) => {
+const sortIngredients = (ingredients: Array<TItem>) => (
+	ingredients.reduce((acum: TSortIngredients, current) => {
 		if (current.type && !acum[current.type]) {
 			acum[current.type] = [];
 		}
@@ -34,7 +37,7 @@ const sortIngredients = (ingredients) => (
 	}, {})
 );
 
-const changeValue = (value, count) => {
+const changeValue = (value: number, count: number) => {
 	if (Number.isInteger(value)) {
 		return value + count;
 	}
@@ -42,14 +45,21 @@ const changeValue = (value, count) => {
 	return count;
 };
 
-const getAddedIngredients = (items, { item }, count) => {
+const getAddedIngredients = (
+	items: TAddedIngredients,
+	item: TItem,
+	count: number
+): TAddedIngredients => {
 	const copyItems = { ...items };
 
 	switch (item.type) {
 		case 'bun':
 			const key = Object.keys(copyItems)
 				.find(id => copyItems[id]?.type === 'bun');
-			delete copyItems[key];
+
+			if (key && copyItems[key]) {
+				delete copyItems[key];
+			}
 
 			copyItems[item._id] = {
 				type: item.type,
@@ -84,16 +94,11 @@ const getAddedIngredients = (items, { item }, count) => {
 	}
 };
 
-export const ingredientsReducer = (state = ingredientsInitialState, action) => {
+export const ingredientsReducer = (
+	state = ingredientsInitialState,
+	action: TIngredientsActions
+): TIngredientsState => {
 	switch (action.type) {
-		case SET_INGREDIENTS_DETAILS:
-			const ingredientDetails = state.items.find(item => item._id === action.id);
-
-			return {
-				...state,
-				ingredientDetails,
-			};
-
 		case GET_INGREDIENTS_REQUEST:
 			return {
 				...state,
@@ -133,7 +138,7 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
 				...state,
 				addedIngredients: getAddedIngredients(
 					state.addedIngredients,
-					action,
+					action.item,
 					1
 				),
 			};
@@ -143,7 +148,7 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
 				...state,
 				addedIngredients: getAddedIngredients(
 					state.addedIngredients,
-					action,
+					action.item,
 					-1
 				),
 			};

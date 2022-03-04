@@ -24,7 +24,9 @@ import {
 	CHANGE_USER_DATA_FAILED,
 	SET_USER,
 	CLEAR_USER,
+	TUserActions,
 } from '../actions/user';
+import { TUserState } from '../../types/redux';
 
 const defaultRequestState = {
 	isRequested: false,
@@ -32,7 +34,7 @@ const defaultRequestState = {
 	error: '',
 };
 
-const userInitialState = {
+const userInitialState: TUserState = {
 	login: { ...defaultRequestState },
 	register: { ...defaultRequestState },
 	logout: { ...defaultRequestState },
@@ -40,12 +42,18 @@ const userInitialState = {
 	changeUserData: { ...defaultRequestState },
 	reset: { ...defaultRequestState, success: false },
 	forgot: { ...defaultRequestState, success: false },
-	user: {},
+	user: {
+		name: '',
+		email: '',
+	},
 	isAuth: false,
 	authAttemptSucceeded: false,
 };
 
-export const userReducer = (state = userInitialState, action) => {
+export const userReducer = (
+	state = userInitialState,
+	action: TUserActions
+): TUserState => {
 	switch (action.type) {
 		case FORGOT_REQUEST:
 			return {
@@ -169,7 +177,6 @@ export const userReducer = (state = userInitialState, action) => {
 			};
 
 		case LOGIN_SUCCESS:
-
 			return {
 				...state,
 				login: {
@@ -203,7 +210,6 @@ export const userReducer = (state = userInitialState, action) => {
 			};
 
 		case USER_DATA_SUCCESS:
-
 			return {
 				...state,
 				fetchUser: {
@@ -227,6 +233,7 @@ export const userReducer = (state = userInitialState, action) => {
 				authAttemptSucceeded: true,
 			};
 		};
+
 		case CHANGE_USER_DATA_REQUEST:
 			return {
 				...state,
@@ -271,7 +278,6 @@ export const userReducer = (state = userInitialState, action) => {
 			};
 
 		case LOGOUT_SUCCESS:
-
 			return {
 				...state,
 				logout: {
@@ -307,7 +313,7 @@ export const userReducer = (state = userInitialState, action) => {
 		case CLEAR_USER:
 			return {
 				...state,
-				user: {},
+				user: userInitialState.user,
 				isAuth: false,
 			};
 

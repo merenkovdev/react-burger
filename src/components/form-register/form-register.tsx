@@ -5,7 +5,7 @@ import {
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm, Controller  } from 'react-hook-form';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from  '../../services/hooks';
 
 import PasswordInput from '../password-input/password-input';
 import { register } from '../../services/actions/user';
@@ -24,8 +24,6 @@ const FormRegister: FC = () => {
 	} = useForm<typeof defaultValuesForm>({
 		defaultValues: defaultValuesForm,
 	});
-	// TODO: Типизация store
-	// @ts-ignore
 	const { hasError, error, isRequested } = useSelector(store => store.user.register);
 	const dispatch = useDispatch();
 

@@ -32,8 +32,34 @@ const throttle = (func: Function, timeFrame: number) => {
 	};
 };
 
+const getErrorMessage = (error: any) => {
+	if (error instanceof Error) {
+		return error.message;
+	}
+
+	if (typeof error === 'string') {
+		return error;
+	}
+
+	return 'Произошла неизвестная ошибка';
+};
+
+const formatDate = (dateString: string) => {
+	const date = new Date(dateString);
+
+	return date.toLocaleString('ru-RU', {
+		weekday: 'long',
+		hour: 'numeric',
+		minute: 'numeric',
+		month: 'long',
+		day: 'numeric',
+	});
+};
+
 export {
 	isEmpty,
 	throttle,
 	checkResponse,
+	getErrorMessage,
+	formatDate,
 };

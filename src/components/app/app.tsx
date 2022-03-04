@@ -3,7 +3,7 @@ import styles from './app.module.css';
 import { FC, useEffect } from 'react';
 
 import { Route, Switch, useLocation } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from '../../services/hooks';
 import cn from 'classnames';
 
 import AppHeader from '../app-header/app-header';
@@ -11,9 +11,13 @@ import OrderDetails from '../order-details/order-details';
 import Modal from '../modal/modal';
 import ModalDetails from '../modal-details/modal-details';
 import ProtectedRoute from '../protected-route/protected-route';
+import ModalOrder from '../modal-order/modal-order';
 
 import {
 	Home,
+	OrderFeed,
+	OrderPageUser,
+	OrderPageAll,
 	LoginPage,
 	RegisterPage,
 	ForgotPasswordPage,
@@ -27,31 +31,16 @@ import { MODAL_ORDER } from '../../utils/constants';
 
 import { getUser } from '../../services/actions/user';
 import { getIngredients } from '../../services/actions/ingredients';
-
-type TAppLocation = {
-	background?: {
-		key: string,
-		pathname: string,
-		search: string,
-		hash: string,
-		state: unknown,
-	};
-};
+import { TAppLocation } from '../../types'
 
 const App: FC = () => {
-	let location = useLocation<TAppLocation>();
-	let background = location?.state?.background;
-	// TODO: Типизация store
-	// @ts-ignore
+	const location = useLocation<TAppLocation>();
+	const background = location?.state?.background;
 	const activeModal = useSelector(store => store.modal.active);
 	const {
 		items: ingredients,
 		isRequested: isRequestedIngredients,
-		// TODO: Типизация store
-		// @ts-ignore
 	} = useSelector(store => store.ingredients);
-	// TODO: Типизация store
-	// @ts-ignore
 	const { authAttemptSucceeded } = useSelector(store => store.user);
 
 	const dispatch = useDispatch();
@@ -76,9 +65,18 @@ const App: FC = () => {
 					<Route path="/" exact={true}>
 						<Home />
 					</Route>
+					<Route path="/feed" exact={true}>
+						<OrderFeed />
+					</Route>
+					<Route path="/feed/:id" exact={true}>
+						<OrderPageAll />
+					</Route>
 					<Route path="/ingredients/:id" exact={true}>
 						<IngredientPage />
 					</Route>
+					<ProtectedRoute path="/profile/orders/:id" exact={true}>
+						<OrderPageUser />
+					</ProtectedRoute>
 					<ProtectedRoute path="/profile">
 						<ProfilePage />
 					</ProtectedRoute>
@@ -107,9 +105,17 @@ const App: FC = () => {
 			}
 
 			{ background && Boolean(ingredients.length) &&
-				<Route path="/ingredients/:id" >
-					<ModalDetails />
-				</Route>
+				<>
+					<Route path="/ingredients/:id" >
+						<ModalDetails />
+					</Route>
+					<Route path="/feed/:id" >
+						<ModalOrder />
+					</Route>
+					<Route path="/profile/orders/:id">
+						<ModalOrder />
+					</Route>
+				</>
 			}
 		</div>
 	)
