@@ -6,7 +6,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import type { XYCoord, Identifier } from 'dnd-core'
 import cn from 'classnames';
 
-import { MOVE_INGREDIENT } from '../../services/actions/burger';
+import { moveIngredientAction } from '../../services/actions/burger';
 
 import { DragIcon, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
 
@@ -117,11 +117,7 @@ export const DraggableConstructorIngredient: FC<TDraggableConstructorIngredient>
 				return;
 			}
 
-			dispatch({
-				type: MOVE_INGREDIENT,
-				movedTo: hoverIndex,
-				movedFrom: dragIndex,
-			});
+			dispatch(moveIngredientAction(hoverIndex, dragIndex));
 
 			item.index = hoverIndex;
 		},

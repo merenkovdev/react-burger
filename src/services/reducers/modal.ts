@@ -1,12 +1,15 @@
 import {
-	SHOW_MODAL,
-	HIDE_MODAL,
 	TModalActions,
 } from '../actions/modal';
 
+import {
+	SHOW_MODAL,
+	HIDE_MODAL,
+} from '../constants/modal';
+
 import type { TModalState } from '../../types/redux';
 
-const modalInitialState: TModalState = {
+export const modalInitialState: TModalState = {
 	active: '',
 };
 

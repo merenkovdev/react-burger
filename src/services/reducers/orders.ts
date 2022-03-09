@@ -13,7 +13,7 @@ import { TWSOrdersAllActions } from '../actions/ws-orders-all-actions';
 
 import { TOrdersState } from '../../types/redux';
 
-const initialState: TOrdersState = {
+export const ordersInitialState: TOrdersState = {
 	ordersAll: {
 		wsConnected: false,
 		orders: [],
@@ -29,7 +29,7 @@ const initialState: TOrdersState = {
 };
 
 export const ordersReducer = (
-	state = initialState,
+	state = ordersInitialState,
 	action: TWSOrdersAllActions | TWSOrdersUserActions,
 ): TOrdersState => {
 	switch (action.type) {

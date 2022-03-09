@@ -11,8 +11,8 @@ import { DraggableIngredient } from '../ingredient/ingredient';
 import { throttle } from '../../utils/utils';
 
 import {
-	SORT_INGREDIENTS,
-	SET_ACTIVE_TAB,
+	sortIngredientsAction,
+	setActiveTabAction,
 } from '../../services/actions/ingredients';
 import { TSortIngredients } from '../../types/ingredient';
 
@@ -154,7 +154,7 @@ const BurgerIngredients = () => {
 		const active = titleOffsets[minDistance];
 
 		if (active !== activeTab) {
-			dispatch({ type: SET_ACTIVE_TAB, tab: active });
+			dispatch(setActiveTabAction(active));
 		}
 	}, 50);
 
@@ -164,7 +164,7 @@ const BurgerIngredients = () => {
 	);
 
 	React.useEffect(() => {
-		dispatch({ type: SORT_INGREDIENTS });
+		dispatch(sortIngredientsAction());
 	}, [ dispatch ]);
 
 	if (ingredientsRequest) {

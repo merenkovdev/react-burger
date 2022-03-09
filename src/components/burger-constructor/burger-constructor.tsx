@@ -11,20 +11,20 @@ import Price from '../price/price';
 import ConstructorIngredient, { DraggableConstructorIngredient } from '../ingredient-constructor/ingredient-constructor';
 
 import { useSelector, useDispatch } from  '../../services/hooks';
-import { SHOW_MODAL } from '../../services/actions/modal';
+import { showModalAction } from '../../services/actions/modal';
 import {
-	REMOVE_IMGREDIENT,
-	CLEAR_CONSTRUCTOR,
+	clearConstructorAction,
+	removeIngredientAction,
 	calcTotalPrice,
 	addIngredient,
 } from '../../services/actions/burger';
 import {
-	DECREASE_ADDED_INGREDIENT,
-	INCREASE_ADDED_INGREDIENT,
-	CLEAR_ADDED_INGREDIENT,
+	decreaseAddedIngredientAction,
+	increaseAddedIngredientAction,
+	clearAddedIngredientAction,
 } from '../../services/actions/ingredients';
 import { MODAL_ORDER } from '../../utils/constants';
-import { CREATE_ORDER_FAILED, createOrder } from '../../services/actions/burger';
+import { createOrderFailedAction, createOrder } from '../../services/actions/burger';
 import { TTopping } from '../../types/ingredient';
 import {
 	TItem,
@@ -83,11 +83,8 @@ const BurgerConstructor = () => {
 		}
 
 		if (isEmpty(bun)) {
-			dispatch({
-				textError: 'Пожалуйста, добавьте булку',
-				type: CREATE_ORDER_FAILED,
-			});
-			dispatch({ type: SHOW_MODAL, name: MODAL_ORDER });
+			dispatch(createOrderFailedAction());
+			dispatch(showModalAction(MODAL_ORDER));
 
 			return;
 		}
@@ -96,11 +93,8 @@ const BurgerConstructor = () => {
 	};
 
 	const handleRemoveTopping = (item: TTopping) => {
-		dispatch({ type: REMOVE_IMGREDIENT, uid: item.uid });
-		dispatch({
-			type: DECREASE_ADDED_INGREDIENT,
-			item,
-		});
+		dispatch(removeIngredientAction(item.uid));
+		dispatch(decreaseAddedIngredientAction(item));
 	};
 
 	React.useEffect(() => {
@@ -112,9 +106,9 @@ const BurgerConstructor = () => {
 
 	React.useEffect(() => {
 		if (success) {
-			dispatch({ type: CLEAR_CONSTRUCTOR });
-			dispatch({ type: CLEAR_ADDED_INGREDIENT });
-			dispatch({ type: SHOW_MODAL, name: MODAL_ORDER });
+			dispatch(clearConstructorAction());
+			dispatch(clearAddedIngredientAction());
+			dispatch(showModalAction(MODAL_ORDER));
 		}
 	}, [ number, name, success, dispatch ]);
 
@@ -122,10 +116,7 @@ const BurgerConstructor = () => {
 		accept: 'ingredient',
 		drop(item: TItem) {
 			dispatch(addIngredient(item._id));
-			dispatch({
-				type: INCREASE_ADDED_INGREDIENT,
-				item,
-			});
+			dispatch(increaseAddedIngredientAction(item));
 		},
 	});
 

@@ -7,7 +7,7 @@ import cn from 'classnames';
 import ModalOverlay from '../modal-overlay/modal-overlay';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useDispatch } from '../../services/hooks';
-import { HIDE_MODAL } from '../../services/actions/modal';
+import { hideModalAction } from '../../services/actions/modal';
 
 const modalRoot = document.getElementById('modals');
 
@@ -45,7 +45,7 @@ const Modal: FC<TModal> = (props) => {
 
 	const dispatch = useDispatch();
 	const closeModal = React.useCallback(() => {
-		dispatch({ type: HIDE_MODAL });
+		dispatch(hideModalAction());
 		if (typeof onClose === 'function') {
 			onClose();
 		}

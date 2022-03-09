@@ -19,38 +19,33 @@ import {
 	requestChangeUserData,
 } from '../api/user';
 
-export const FORGOT_REQUEST: 'FORGOT_REQUEST' = 'FORGOT_REQUEST';
-export const FORGOT_SUCCESS: 'FORGOT_SUCCESS' = 'FORGOT_SUCCESS';
-export const FORGOT_INITIAL: 'FORGOT_INITIAL' = 'FORGOT_INITIAL';
-export const FORGOT_FAILED: 'FORGOT_FAILED' = 'FORGOT_FAILED';
-
-export const RESET_REQUEST: 'RESET_REQUEST' = 'RESET_REQUEST';
-export const RESET_SUCCESS: 'RESET_SUCCESS' = 'RESET_SUCCESS';
-export const RESET_INITIAL: 'RESET_INITIAL' = 'RESET_INITIAL';
-export const RESET_FAILED: 'RESET_FAILED' = 'RESET_FAILED';
-
-export const REGISTER_REQUEST: 'REGISTER_REQUEST' = 'REGISTER_REQUEST';
-export const REGISTER_SUCCESS: 'REGISTER_SUCCESS' = 'REGISTER_SUCCESS';
-export const REGISTER_FAILED: 'REGISTER_FAILED' = 'REGISTER_FAILED';
-
-export const LOGIN_REQUEST: 'LOGIN_REQUEST' = 'LOGIN_REQUEST';
-export const LOGIN_SUCCESS: 'LOGIN_SUCCESS' = 'LOGIN_SUCCESS';
-export const LOGIN_FAILED: 'LOGIN_FAILED' = 'LOGIN_FAILED';
-
-export const LOGOUT_REQUEST: 'LOGOUT_REQUEST' = 'LOGOUT_REQUEST';
-export const LOGOUT_SUCCESS: 'LOGOUT_SUCCESS' = 'LOGOUT_SUCCESS';
-export const LOGOUT_FAILED: 'LOGOUT_FAILED' = 'LOGOUT_FAILED';
-
-export const USER_DATA_REQUEST: 'USER_DATA_REQUEST' = 'USER_DATA_REQUEST';
-export const USER_DATA_SUCCESS: 'USER_DATA_SUCCESS' = 'USER_DATA_SUCCESS';
-export const USER_DATA_FAILED: 'USER_DATA_FAILED' = 'USER_DATA_FAILED';
-
-export const CHANGE_USER_DATA_REQUEST: 'CHANGE_USER_DATA_REQUEST' = 'CHANGE_USER_DATA_REQUEST';
-export const CHANGE_USER_DATA_SUCCESS: 'CHANGE_USER_DATA_SUCCESS' = 'CHANGE_USER_DATA_SUCCESS';
-export const CHANGE_USER_DATA_FAILED: 'CHANGE_USER_DATA_FAILED' = 'CHANGE_USER_DATA_FAILED';
-
-export const SET_USER: 'SET_USER' = 'SET_USER';
-export const CLEAR_USER: 'CLEAR_USER' = 'CLEAR_USER';
+import {
+	FORGOT_REQUEST,
+	FORGOT_SUCCESS,
+	FORGOT_INITIAL,
+	FORGOT_FAILED,
+	RESET_REQUEST,
+	RESET_SUCCESS,
+	RESET_INITIAL,
+	RESET_FAILED,
+	REGISTER_REQUEST,
+	REGISTER_SUCCESS,
+	REGISTER_FAILED,
+	LOGIN_REQUEST,
+	LOGIN_SUCCESS,
+	LOGIN_FAILED,
+	LOGOUT_REQUEST,
+	LOGOUT_SUCCESS,
+	LOGOUT_FAILED,
+	USER_DATA_REQUEST,
+	USER_DATA_SUCCESS,
+	USER_DATA_FAILED,
+	CHANGE_USER_DATA_REQUEST,
+	CHANGE_USER_DATA_SUCCESS,
+	CHANGE_USER_DATA_FAILED,
+	SET_USER,
+	CLEAR_USER,
+} from '../constants/user';
 
 export type TForgotRequestAction = {
 	readonly type: typeof FORGOT_REQUEST;
@@ -188,9 +183,118 @@ export type TUserActions =
 	| TClearUserAction
 ;
 
+// Action Creators
+export const forgotRequestAction = (): TForgotRequestAction => ({
+	type: FORGOT_REQUEST,
+});
+
+export const forgotSuccessAction = (): TForgotSuccessAction => ({
+	type: FORGOT_SUCCESS,
+});
+
+export const forgotInitialAction = (): TForgotInitialAction => ({
+	type: FORGOT_INITIAL,
+});
+
+export const forgotFailedAction = (error: string): TForgotFailedAction => ({
+	type: FORGOT_FAILED,
+	error,
+});
+
+export const resetRequestAction = (): TResetRequestAction => ({
+	type: RESET_REQUEST,
+});
+
+export const resetInitialAction = (): TResetInitialAction => ({
+	type: RESET_INITIAL,
+});
+
+export const resetSuccessAction = (): TResetSuccessAction => ({
+	type: RESET_SUCCESS,
+});
+
+export const resetFailedAction = (error: string): TResetFailedAction => ({
+	type: RESET_FAILED,
+	error,
+});
+
+export const registerRequestAction = (): TRegisterRequestAction => ({
+	type: REGISTER_REQUEST,
+});
+
+export const registerSuccessAction = (): TRegisterSuccessAction => ({
+	type: REGISTER_SUCCESS,
+});
+
+export const registerFailedAction = (error: string): TRegisterFailedAction => ({
+	type: REGISTER_FAILED,
+	error,
+});
+
+export const loginRequestAction = (): TLoginRequestAction => ({
+	type: LOGIN_REQUEST,
+});
+
+export const loginSuccessAction = (): TLoginSuccessAction => ({
+	type: LOGIN_SUCCESS,
+});
+
+export const loginFailedAction = (error: string): TLoginFailedAction => ({
+	type: LOGIN_FAILED,
+	error,
+});
+
+export const logoutRequestAction = (): TLogoutRequestAction => ({
+	type: LOGOUT_REQUEST,
+});
+
+export const logoutSuccessAction = (): TLogoutSuccessAction => ({
+	type: LOGOUT_SUCCESS,
+});
+
+export const logoutFailedAction = (error: string): TLogoutFailedAction => ({
+	type: LOGOUT_FAILED,
+	error,
+});
+
+export const userDataRequestAction = (): TUserDataRequestAction => ({
+	type: USER_DATA_REQUEST,
+});
+
+export const userDataSuccessAction = (): TUserDataSuccessAction => ({
+	type: USER_DATA_SUCCESS,
+});
+
+export const userDataFailedAction = (error: string): TUserDataFailedAction => ({
+	type: USER_DATA_FAILED,
+	error,
+});
+
+export const changeUserDataRequestAction = (): TChangeUserDataRequestAction => ({
+	type: CHANGE_USER_DATA_REQUEST,
+});
+
+export const changeUserDataSuccessAction = (): TChangeUserDataSuccessAction => ({
+	type: CHANGE_USER_DATA_SUCCESS,
+});
+
+export const changeUserDataFailedAction = (error: string): TChangeUserDataFailedAction => ({
+	type: CHANGE_USER_DATA_FAILED,
+	error,
+});
+
+export const setUserAction = (user: TUser): TSetUserAction => ({
+	type: SET_USER,
+	user,
+});
+
+export const clearUserAction = (): TClearUserAction => ({
+	type: CLEAR_USER,
+});
+
 // forgot
 export const forgot: AppThunk = (requestData) => (dispatch) => {
-	dispatch({ type: FORGOT_REQUEST });
+	dispatch(forgotRequestAction());
 
 	requestForgot(requestData)
 		.then(response => {
@@ -198,14 +302,14 @@ export const forgot: AppThunk = (requestData) => (dispatch) => {
 				throw new Error(response.message);
 			}
 
-			dispatch({ type: FORGOT_SUCCESS });
+			dispatch(forgotSuccessAction());
 		})
-		.catch(error => dispatch({ type: FORGOT_FAILED, error }));
+		.catch(error => dispatch(forgotFailedAction(error)));
 };
 
 // reset
 export const reset: AppThunk = (requestData) => (dispatch) => {
-	dispatch({ type: RESET_REQUEST });
+	dispatch(resetRequestAction());
 
 	requestReset(requestData)
 		.then(response => {
@@ -213,19 +317,19 @@ export const reset: AppThunk = (requestData) => (dispatch) => {
 				throw new Error(response.message);
 			}
 
-			dispatch({ type: RESET_SUCCESS });
+			dispatch(resetSuccessAction());
 		})
-		.catch(error => dispatch({ type: RESET_FAILED, error }));
+		.catch(error => dispatch(resetFailedAction(error)));
 };
 
 export const returnResetInitialState = (dispatch: AppDispatch) => {
-	dispatch({ type: FORGOT_INITIAL });
-	dispatch({ type: RESET_INITIAL });
+	dispatch(forgotInitialAction());
+	dispatch(resetInitialAction());
 };
 
 // register
 export const register: AppThunk = (requestData: TRequestRegistration) => (dispatch) => {
-	dispatch({ type: REGISTER_REQUEST });
+	dispatch(registerRequestAction());
 
 	requestRegistration(requestData)
 		.then(response => {
@@ -240,15 +344,15 @@ export const register: AppThunk = (requestData: TRequestRegistration) => (dispat
 			}
 
 			setTokens(accessToken, refreshToken);
-			dispatch({ type: REGISTER_SUCCESS });
-			dispatch({ type: SET_USER, user });
+			dispatch(registerSuccessAction());
+			dispatch(setUserAction(user));
 		})
-		.catch((error) => dispatch({ type: REGISTER_FAILED, error }));
+		.catch((error) => dispatch(registerFailedAction(error)));
 };
 
 // login
 export const login: AppThunk = (requestData: TRequestLogin) => (dispatch) => {
-	dispatch({ type: LOGIN_REQUEST });
+	dispatch(loginRequestAction());
 
 	requestLogin(requestData)
 		.then(response => {
@@ -263,15 +367,15 @@ export const login: AppThunk = (requestData: TRequestLogin) => (dispatch) => {
 			}
 
 			setTokens(accessToken, refreshToken);
-			dispatch({ type: LOGIN_SUCCESS });
-			dispatch({ type: SET_USER, user });
+			dispatch(loginSuccessAction());
+			dispatch(setUserAction(user));
 		})
-		.catch(error => dispatch({ type: LOGIN_FAILED, error }));
+		.catch(error => dispatch(loginFailedAction(error)));
 };
 
 //logout
 export const logout: AppThunk = () => (dispatch) => {
-	dispatch({ type: LOGOUT_REQUEST });
+	dispatch(logoutRequestAction());
 
 	requestLogout()
 		.then(response => {
@@ -281,24 +385,22 @@ export const logout: AppThunk = () => (dispatch) => {
 				throw new Error(message);
 			}
 			clearTokens();
-			dispatch({ type: CLEAR_USER });
-			dispatch({ type: LOGOUT_SUCCESS });
+			dispatch(clearUserAction());
+			dispatch(logoutSuccessAction());
 		})
-		.catch(error => {
-			dispatch({ type: LOGOUT_REQUEST, error });
-		});
+		.catch(error => dispatch(loginFailedAction(error)));
 };
 
 //
 export const getUser: AppThunk = () => async (dispatch) => {
-	dispatch({ type: USER_DATA_REQUEST });
+	dispatch(userDataRequestAction());
 
 	try {
 		const responseUser = await requestUserData();
 
 		if (responseUser.success) {
-			dispatch({ type: SET_USER, user: responseUser.user });
-			dispatch({ type: USER_DATA_SUCCESS });
+			dispatch(setUserAction(responseUser.user));
+			dispatch(userDataSuccessAction());
 		}
 	} catch (error) {
 		if (error !== 'jwt expired') {
@@ -317,26 +419,26 @@ export const getUser: AppThunk = () => async (dispatch) => {
 			const responseUser = await requestUserData();
 
 			if (responseUser.success) {
-				dispatch({ type: SET_USER, user: responseUser.user });
-				dispatch({ type: USER_DATA_SUCCESS });
+				dispatch(setUserAction(responseUser.user));
+				dispatch(userDataSuccessAction());
 			}
 		} catch (error) {
-			dispatch({ type: USER_DATA_FAILED, error: getErrorMessage(error) });
-			dispatch({ type: CLEAR_USER });
+			dispatch(userDataFailedAction(getErrorMessage(error)));
+			dispatch(clearUserAction());
 			console.warn(error);
 		}
 	}
 };
 
 export const changeUserData: AppThunk = (data: TRequestChange) => async (dispatch) => {
-	dispatch({ type: CHANGE_USER_DATA_REQUEST });
+	dispatch(changeUserDataRequestAction());
 
 	try {
 		const responseUser = await requestChangeUserData(data);
 
 		if (responseUser.success) {
-			dispatch({ type: SET_USER, user: responseUser.user });
-			dispatch({ type: CHANGE_USER_DATA_SUCCESS });
+			dispatch(setUserAction(responseUser.user));
+			dispatch(changeUserDataSuccessAction());
 		}
 	} catch (error) {
 		if (error !== 'jwt expired') {
@@ -355,11 +457,11 @@ export const changeUserData: AppThunk = (data: TRequestChange) => async (dispatc
 			const responseUser = await requestChangeUserData(data);
 
 			if (responseUser.success) {
-				dispatch({ type: SET_USER, user: responseUser.user });
-				dispatch({ type: CHANGE_USER_DATA_SUCCESS });
+				dispatch(setUserAction(responseUser.user));
+				dispatch(changeUserData());
 			}
 		} catch (error) {
-			dispatch({ type: CHANGE_USER_DATA_FAILED, error: getErrorMessage(error) });
+			dispatch(changeUserData(getErrorMessage(error)));
 			console.warn(error);
 		}
 	}

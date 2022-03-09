@@ -24,8 +24,8 @@ import {
 	CHANGE_USER_DATA_FAILED,
 	SET_USER,
 	CLEAR_USER,
-	TUserActions,
-} from '../actions/user';
+} from '../constants/user';
+import { TUserActions } from '../actions/user';
 import { TUserState } from '../../types/redux';
 
 const defaultRequestState = {
