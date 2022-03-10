@@ -13,7 +13,6 @@ import ConstructorIngredient, { DraggableConstructorIngredient } from '../ingred
 import { useSelector, useDispatch } from  '../../services/hooks';
 import { showModalAction } from '../../services/actions/modal';
 import {
-	clearConstructorAction,
 	removeIngredientAction,
 	calcTotalPrice,
 	addIngredient,
@@ -21,7 +20,6 @@ import {
 import {
 	decreaseAddedIngredientAction,
 	increaseAddedIngredientAction,
-	clearAddedIngredientAction,
 } from '../../services/actions/ingredients';
 import { MODAL_ORDER } from '../../utils/constants';
 import { createOrderFailedAction, createOrder } from '../../services/actions/burger';
@@ -66,11 +64,6 @@ const BurgerConstructor = () => {
 		totalPrice,
 	} = useSelector(store => store.burger);
 
-	const {
-		number,
-		name,
-		success,
-	} = useSelector(store => store.burger.order);
 	const isAuth = useSelector(store => store.user.isAuth);
 	const history = useHistory();
 
@@ -103,14 +96,6 @@ const BurgerConstructor = () => {
 			...(bun ? [bun] : []),
 		]));
 	}, [ bun, toppings, dispatch ]);
-
-	React.useEffect(() => {
-		if (success) {
-			dispatch(clearConstructorAction());
-			dispatch(clearAddedIngredientAction());
-			dispatch(showModalAction(MODAL_ORDER));
-		}
-	}, [ number, name, success, dispatch ]);
 
 	const [, dropTarget] = useDrop({
 		accept: 'ingredient',

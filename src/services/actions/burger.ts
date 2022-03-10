@@ -15,8 +15,12 @@ import {
 	CREATE_ORDER_FAILED,
 } from '../constants/burger';
 
+import { MODAL_ORDER } from '../../utils/constants';
 import { getTotalPrice } from '../helpers';
 import { requestCreateOrder } from '../api/order';
+
+import { showModalAction } from './modal';
+import { clearAddedIngredientAction } from './ingredients';
 
 export type TAddBunAction = {
 	readonly type: typeof ADD_BUN;
@@ -189,6 +193,9 @@ export const createOrder: AppThunk = () => async (dispatch, getState) => {
 			} = response;
 
 			dispatch(createOrderSuccessAction(name, number));
+			dispatch(clearConstructorAction());
+			dispatch(clearAddedIngredientAction());
+			dispatch(showModalAction(MODAL_ORDER));
 		})
 		.catch(() => dispatch(createOrderFailedAction()));
 };
