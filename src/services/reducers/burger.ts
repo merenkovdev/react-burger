@@ -25,7 +25,7 @@ export const burgerInitialState: TBurgerState = {
 		success: false,
 		isRequested: false,
 		hasError: false,
-		textError: '',
+		textError: undefined,
 	},
 };
 
@@ -120,6 +120,7 @@ export const burgerReducer = (
 				...state,
 				order: {
 					...state.order,
+					textError: action.error,
 					success: false,
 					isRequested: false,
 					hasError: true,

@@ -61,6 +61,7 @@ export type TCreateOrderSuccessAction = {
 
 export type TCreateOrderFailedAction = {
 	readonly type: typeof CREATE_ORDER_FAILED;
+	readonly error?: string;
 };
 
 export type TBurgerActions =
@@ -121,8 +122,9 @@ export const createOrderSuccessAction = (
 	number,
 });
 
-export const createOrderFailedAction = (): TCreateOrderFailedAction => ({
+export const createOrderFailedAction = (error?: string): TCreateOrderFailedAction => ({
 	type: CREATE_ORDER_FAILED,
+	error,
 });
 
 export const addIngredient: AppThunk = (id: string) => (dispatch, getState) => {

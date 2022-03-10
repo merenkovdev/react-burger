@@ -83,7 +83,7 @@ const BurgerConstructor = () => {
 		}
 
 		if (isEmpty(bun)) {
-			dispatch(createOrderFailedAction());
+			dispatch(createOrderFailedAction('Пожалуйста, добавьте булку'));
 			dispatch(showModalAction(MODAL_ORDER));
 
 			return;
