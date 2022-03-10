@@ -61,7 +61,6 @@ export type TForgotInitialAction = {
 
 export type TForgotFailedAction = {
 	readonly type: typeof FORGOT_FAILED;
-	readonly error: string;
 };
 
 export type TResetRequestAction = {
@@ -78,7 +77,6 @@ export type TResetSuccessAction = {
 
 export type TResetFailedAction = {
 	readonly type: typeof RESET_FAILED;
-	readonly error: string;
 };
 
 export type TRegisterRequestAction = {
@@ -196,9 +194,8 @@ export const forgotInitialAction = (): TForgotInitialAction => ({
 	type: FORGOT_INITIAL,
 });
 
-export const forgotFailedAction = (error: string): TForgotFailedAction => ({
+export const forgotFailedAction = (): TForgotFailedAction => ({
 	type: FORGOT_FAILED,
-	error,
 });
 
 export const resetRequestAction = (): TResetRequestAction => ({
@@ -213,9 +210,8 @@ export const resetSuccessAction = (): TResetSuccessAction => ({
 	type: RESET_SUCCESS,
 });
 
-export const resetFailedAction = (error: string): TResetFailedAction => ({
+export const resetFailedAction = (): TResetFailedAction => ({
 	type: RESET_FAILED,
-	error,
 });
 
 export const registerRequestAction = (): TRegisterRequestAction => ({
@@ -304,7 +300,7 @@ export const forgot: AppThunk = (requestData) => (dispatch) => {
 
 			dispatch(forgotSuccessAction());
 		})
-		.catch(error => dispatch(forgotFailedAction(error)));
+		.catch(error => dispatch(forgotFailedAction()));
 };
 
 // reset
@@ -319,7 +315,7 @@ export const reset: AppThunk = (requestData) => (dispatch) => {
 
 			dispatch(resetSuccessAction());
 		})
-		.catch(error => dispatch(resetFailedAction(error)));
+		.catch(error => dispatch(resetFailedAction()));
 };
 
 export const returnResetInitialState = (dispatch: AppDispatch) => {

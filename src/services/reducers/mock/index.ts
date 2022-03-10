@@ -1,4 +1,4 @@
-import { TOrder } from './../../../types/api';
+import { TOrder, TUser } from './../../../types/api';
 import { TTopping } from '../../../types/ingredient';
 import { TItem } from '../../../types/api';
 
@@ -73,6 +73,11 @@ const mockOrder2: TOrder = {
 	_id: "622906bc25b9a4001b6e3ca2",
 };
 
+const mockUser: TUser = {
+	name: 'test777',
+	email: 'test777@gmail.com',
+};
+
 export {
 	bunMock,
 	toppingMock,
@@ -82,4 +87,5 @@ export {
 	sortedItems,
 	mockOrder1,
 	mockOrder2,
+	mockUser,
 };

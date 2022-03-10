@@ -34,7 +34,7 @@ const defaultRequestState = {
 	error: '',
 };
 
-const userInitialState: TUserState = {
+export const userInitialState: TUserState = {
 	login: { ...defaultRequestState },
 	register: { ...defaultRequestState },
 	logout: { ...defaultRequestState },
@@ -47,7 +47,7 @@ const userInitialState: TUserState = {
 		email: '',
 	},
 	isAuth: false,
-	authAttemptSucceeded: false,
+	authAttemptСompleted: false,
 };
 
 export const userReducer = (
@@ -217,7 +217,7 @@ export const userReducer = (
 					isRequested: false,
 					hasError: false,
 				},
-				authAttemptSucceeded: true,
+				authAttemptСompleted: true,
 			};
 
 		case USER_DATA_FAILED: {
@@ -230,7 +230,7 @@ export const userReducer = (
 					isRequested: false,
 					hasError: true,
 				},
-				authAttemptSucceeded: true,
+				authAttemptСompleted: true,
 			};
 		};
 

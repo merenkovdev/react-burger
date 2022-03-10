@@ -41,7 +41,7 @@ const App: FC = () => {
 		items: ingredients,
 		isRequested: isRequestedIngredients,
 	} = useSelector(store => store.ingredients);
-	const { authAttemptSucceeded } = useSelector(store => store.user);
+	const { authAttemptСompleted } = useSelector(store => store.user);
 
 	const dispatch = useDispatch();
 
@@ -53,7 +53,7 @@ const App: FC = () => {
 		dispatch(getUser());
 	}, [dispatch]);
 
-	if (!authAttemptSucceeded || !ingredients.length || isRequestedIngredients) {
+	if (!authAttemptСompleted || !ingredients.length || isRequestedIngredients) {
 		return null;
 	}
 
