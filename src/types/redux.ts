@@ -27,7 +27,7 @@ export type TOrderBurger = {
 	success: boolean;
 	isRequested: boolean;
 	hasError: boolean;
-	textError: string;
+	textError?: string;
 };
 
 export type TBurgerState = {
@@ -62,7 +62,7 @@ export type TUserState = {
 	forgot: TRequestState & { success: boolean };
 	user: TUser;
 	isAuth: boolean;
-	authAttemptSucceeded: boolean;
+	authAttemptСompleted: boolean;
 };
 
 export type TOrdersState = {
