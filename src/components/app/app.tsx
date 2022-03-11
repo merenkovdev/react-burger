@@ -99,7 +99,7 @@ const App: FC = () => {
 			</main>
 
 			{ activeModal === MODAL_ORDER &&
-				<Modal open={ true }>
+				<Modal open={ true } name={ MODAL_ORDER }>
 					<OrderDetails />
 				</Modal>
 			}

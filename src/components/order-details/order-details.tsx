@@ -10,7 +10,7 @@ const OrderDetails: FC = () => {
 	const order = useSelector(store => store.burger.order);
 
 	return (
-		<div className={ styles.order } data-test-id="modal-order">
+		<div className={ styles.order }>
 			{ order.hasError &&
 				<p className={ cn('text text_type_main-large', 'pt-8') }>
 					{ order.textError ?

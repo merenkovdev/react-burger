@@ -12,9 +12,10 @@ import { hideModalAction } from '../../services/actions/modal';
 const modalRoot = document.getElementById('modals');
 
 type TModal = {
-	open?: boolean,
-	header?: ReactNode,
-	onClose?: () => void,
+	open?: boolean;
+	name?: string;
+	header?: ReactNode;
+	onClose?: () => void;
 };
 
 const ModalHeader: FC<{ closeModal: () => void }> = (props) => {
@@ -40,6 +41,7 @@ const Modal: FC<TModal> = (props) => {
 		children,
 		header,
 		open,
+		name,
 		onClose,
 	} = props;
 
@@ -68,7 +70,11 @@ const Modal: FC<TModal> = (props) => {
 	return (modalRoot &&
 		ReactDOM.createPortal(
 		<>
-			<div className={ styles.dialog }>
+			<div className={ styles.dialog }
+				{...(name ? {
+					'data-test-id': name,
+				} : {})}
+			>
 				<ModalOverlay onClose={ closeModal } />
 				<div className={ styles.modalContainer }>
 					<div className={ cn(styles.modal, 'p-10') }>

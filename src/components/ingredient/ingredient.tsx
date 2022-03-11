@@ -49,7 +49,11 @@ const Ingredient = React.forwardRef<HTMLDivElement, TIngredient>((props, ref) =>
 					<Price text={ price } />
 				</div>
 			}
-			<div className={ cn(styles.title, `text text_type_main-${ size === 'large' ? 'medium' : 'default' }`) }>
+			<div className={
+					cn(styles.title, `text text_type_main-${ size === 'large' ? 'medium' : 'default' }`)
+				}
+				data-test-id="ingredient-name"
+			>
 				{ name }
 			</div>
 		</div>

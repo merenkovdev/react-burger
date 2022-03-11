@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { useHistory } from 'react-router-dom';
 
+import { MODAL_DETAILS } from '../../utils/constants';
 import IngredientDetails from '../ingredient-details/ingredient-details';
 import Modal from '../modal/modal';
 
@@ -13,6 +14,7 @@ const ModalDetails: FC = () => {
 
 	return (
 		<Modal open={ true }
+			name={ MODAL_DETAILS }
 			header='Детали ингредиента'
 			onClose={ clearDetailIngredients }
 		>
