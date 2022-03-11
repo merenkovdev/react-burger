@@ -85,7 +85,7 @@ const TabContent = React.memo(React.forwardRef<HTMLDivElement, TTabContent>(
 						>
 							{ tabNames[type] }
 						</h2>
-						<ul className={ cn(styles.ingredients, ' pb-10') }>
+						<ul className={ cn(styles.ingredients, ' pb-10') } data-test-id={`list-${type}`}>
 							{ ingredients[type].map(item => (
 								<li className={ cn(styles.ingredient, 'p-3') } key={ item._id }>
 									<Link

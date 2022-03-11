@@ -37,7 +37,9 @@ const Total: FC<TTotal> = ({ price, onOrder }) => {
 	const createOrderRequest = useSelector(store => store.burger.order.isRequested);
 
 	return (
-		<div className={ cn(styles.total, 'pt-10') }>
+		<div className={ cn(styles.total, 'pt-10') }
+			data-test-id="total-order"
+		>
 			<div className="pr-10">
 				<Price text={ price } size="medium" />
 			</div>
@@ -106,7 +108,7 @@ const BurgerConstructor = () => {
 	});
 
 	return (
-		<section className="col-6" ref={ dropTarget }>
+		<section className="col-6" ref={ dropTarget } data-test-id="burger-constructor">
 			{ (!bun && !toppings.length) ?
 				(
 					<div className={ styles.stub }>
@@ -114,7 +116,7 @@ const BurgerConstructor = () => {
 					</div>
 				) : (
 					<>
-						<ul className={ styles.list }>
+						<ul className={ styles.list } data-test-id="constructor-list">
 							{ bun &&
 								<li>
 									<ConstructorIngredient item={ bun } type="top" />

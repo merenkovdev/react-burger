@@ -38,7 +38,7 @@ const FormLogin: FC = () => {
 	};
 
 	return (
-		<form className={ styles.form } onSubmit={handleSubmit(onSubmit)}>
+		<form className={ styles.form } onSubmit={handleSubmit(onSubmit)} data-test-id="form-login">
 			<div className="pb-6">
 				<Controller
 					name={'email'}
