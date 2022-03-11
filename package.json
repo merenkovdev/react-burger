@@ -28,13 +28,16 @@
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
     "@types/react-router-dom": "^5.3.3",
+    "cypress": "^9.5.1",
     "typescript": "^4.5.2"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "cypress:open": "./node_modules/.bin/cypress open",
+    "deploy-script": "npm run build && scp -r /Users/smerenkov/projects/ya-projects/react-burger/build/* merenkovdev@51.250.3.1:/home/merenkovdev/stellar-frontend"
   },
   "eslintConfig": {
     "extends": [
