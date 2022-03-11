@@ -15,6 +15,23 @@ describe('Tests burger constructor', function() {
 		cy.get('@burgerConstructor').should('have.length.above', 0);
 	});
 
+	it('modal window showing description of ingredients', () => {
+		cy.get('@listBun').find('li').eq(0).click();
+
+		cy.get('[data-test-id="modal-details"]')
+			.as('modalDetails')
+			.should('exist');
+		cy.get('@modalDetails')
+			.find('[data-test-id="ingredient-name"]')
+			.should('exist');
+		cy.get('@modalDetails')
+			.find('[data-test-id="ingredient-calorie"]')
+			.should('exist');
+
+		cy.get('@modalDetails').find('.btn-clear').click();
+		cy.get('@modalDetails').should('not.exist');
+	});
+
 	it('order must be created', () => {
 		cy.get('@listBun').find('li').eq(0).trigger('dragstart');
 		cy.get('@burgerConstructor').trigger('drop');
@@ -40,5 +57,7 @@ describe('Tests burger constructor', function() {
 		cy.get('[data-test-id="modal-order"]').as('modalOrder').should('have.length.above', 0);
 		cy.get('[data-test-id="modal-order"]').as('modalOrder').should('have.length.above', 0)
 		cy.get('@modalOrder').find('[data-test-id="order-number"]').should('exist');
+		cy.get('@modalOrder').find('.btn-clear').click();
+		cy.get('@modalOrder').should('not.exist');
 	});
 });
