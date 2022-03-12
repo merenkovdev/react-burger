@@ -21,7 +21,9 @@ const classesTextDigits = 'text text_type_digits-default text_color_inactive';
 
 const СalorieСontent: FC<TCalories> = (props) => {
 	return (
-		<ul className={ cn(styles.list, 'pt-4') }>
+		<ul className={ cn(styles.list, 'pt-4') }
+			data-test-id="ingredient-calorie"
+		>
 			{ keysCaloriesContent.map(([ key, name ]) => (
 				<li className={ styles.item } key={ key }>
 					<div className={ classesText }>{ name }</div>

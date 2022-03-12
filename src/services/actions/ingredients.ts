@@ -1,15 +1,16 @@
 import { TItem } from '../../types/api';
 import { requestIngredients } from '../api/ingredients';
 import { AppThunk } from '../../types/redux';
-
-export const GET_INGREDIENTS_REQUEST: 'GET_INGREDIENTS_REQUEST' = 'GET_INGREDIENTS_REQUEST';
-export const GET_INGREDIENTS_SUCCESS: 'GET_INGREDIENTS_SUCCESS' = 'GET_INGREDIENTS_SUCCESS';
-export const GET_INGREDIENTS_FAILED: 'GET_INGREDIENTS_FAILED' = 'GET_INGREDIENTS_FAILED';
-export const SORT_INGREDIENTS: 'SORT_INGREDIENTS' = 'SORT_INGREDIENTS';
-export const SET_ACTIVE_TAB: 'SET_ACTIVE_TAB' = 'SET_ACTIVE_TAB';
-export const INCREASE_ADDED_INGREDIENT: 'INCREASE_ADDED_INGREDIENT' = 'INCREASE_ADDED_INGREDIENT';
-export const DECREASE_ADDED_INGREDIENT: 'DECREASE_ADDED_INGREDIENT' = 'DECREASE_ADDED_INGREDIENT';
-export const CLEAR_ADDED_INGREDIENT: 'CLEAR_ADDED_INGREDIENT' = 'CLEAR_ADDED_INGREDIENT';
+import {
+	GET_INGREDIENTS_REQUEST,
+	GET_INGREDIENTS_SUCCESS,
+	GET_INGREDIENTS_FAILED,
+	SORT_INGREDIENTS,
+	SET_ACTIVE_TAB,
+	INCREASE_ADDED_INGREDIENT,
+	DECREASE_ADDED_INGREDIENT,
+	CLEAR_ADDED_INGREDIENT,
+} from '../constants/ingredients';
 
 export type TGetIngredientsRequestAction = {
 	readonly type: typeof GET_INGREDIENTS_REQUEST;
@@ -58,15 +59,49 @@ export type TIngredientsActions =
 	| TClearAddedIngredientAction
 ;
 
+export const getIngredientsRequestAction = (): TGetIngredientsRequestAction => ({
+	type: GET_INGREDIENTS_REQUEST,
+});
+
+export const getIngredientsSuccessAction = (items: Array<TItem>): TGetIngredientsSuccessAction => ({
+	type: GET_INGREDIENTS_SUCCESS,
+	items,
+});
+
+export const getIngredientsFailedAction = (): TGetIngredientsFailedAction => ({
+	type: GET_INGREDIENTS_FAILED,
+});
+
+export const sortIngredientsAction = (): TSortIngredientsAction => ({
+	type: SORT_INGREDIENTS,
+});
+
+export const setActiveTabAction = (tab: string): TSetActiveTabAction => ({
+	type: SET_ACTIVE_TAB,
+	tab,
+});
+
+export const increaseAddedIngredientAction = (item: TItem): TIncreaseAddedIngredientAction => ({
+	type: INCREASE_ADDED_INGREDIENT,
+	item,
+});
+
+export const decreaseAddedIngredientAction = (item: TItem): TDecreaseAddedIngredientAction => ({
+	type: DECREASE_ADDED_INGREDIENT,
+	item,
+});
+
+export const clearAddedIngredientAction = (): TClearAddedIngredientAction => ({
+	type: CLEAR_ADDED_INGREDIENT,
+});
+
 export const getIngredients: AppThunk = () => dispatch => {
+	dispatch(getIngredientsRequestAction());
 	requestIngredients()
 		.then(response => {
-			dispatch({
-				type: GET_INGREDIENTS_SUCCESS,
-				items: response.data,
-			});
+			dispatch(getIngredientsSuccessAction(response.data));
 		})
 		.catch(() => {
-			dispatch({ type: GET_INGREDIENTS_FAILED });
+			dispatch(getIngredientsFailedAction());
 		});
 };

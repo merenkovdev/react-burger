@@ -11,20 +11,18 @@ import Price from '../price/price';
 import ConstructorIngredient, { DraggableConstructorIngredient } from '../ingredient-constructor/ingredient-constructor';
 
 import { useSelector, useDispatch } from  '../../services/hooks';
-import { SHOW_MODAL } from '../../services/actions/modal';
+import { showModalAction } from '../../services/actions/modal';
 import {
-	REMOVE_IMGREDIENT,
-	CLEAR_CONSTRUCTOR,
+	removeIngredientAction,
 	calcTotalPrice,
 	addIngredient,
 } from '../../services/actions/burger';
 import {
-	DECREASE_ADDED_INGREDIENT,
-	INCREASE_ADDED_INGREDIENT,
-	CLEAR_ADDED_INGREDIENT,
+	decreaseAddedIngredientAction,
+	increaseAddedIngredientAction,
 } from '../../services/actions/ingredients';
 import { MODAL_ORDER } from '../../utils/constants';
-import { CREATE_ORDER_FAILED, createOrder } from '../../services/actions/burger';
+import { createOrderFailedAction, createOrder } from '../../services/actions/burger';
 import { TTopping } from '../../types/ingredient';
 import {
 	TItem,
@@ -39,7 +37,9 @@ const Total: FC<TTotal> = ({ price, onOrder }) => {
 	const createOrderRequest = useSelector(store => store.burger.order.isRequested);
 
 	return (
-		<div className={ cn(styles.total, 'pt-10') }>
+		<div className={ cn(styles.total, 'pt-10') }
+			data-test-id="total-order"
+		>
 			<div className="pr-10">
 				<Price text={ price } size="medium" />
 			</div>
@@ -66,11 +66,6 @@ const BurgerConstructor = () => {
 		totalPrice,
 	} = useSelector(store => store.burger);
 
-	const {
-		number,
-		name,
-		success,
-	} = useSelector(store => store.burger.order);
 	const isAuth = useSelector(store => store.user.isAuth);
 	const history = useHistory();
 
@@ -83,11 +78,8 @@ const BurgerConstructor = () => {
 		}
 
 		if (isEmpty(bun)) {
-			dispatch({
-				textError: 'Пожалуйста, добавьте булку',
-				type: CREATE_ORDER_FAILED,
-			});
-			dispatch({ type: SHOW_MODAL, name: MODAL_ORDER });
+			dispatch(createOrderFailedAction('Пожалуйста, добавьте булку'));
+			dispatch(showModalAction(MODAL_ORDER));
 
 			return;
 		}
@@ -96,11 +88,8 @@ const BurgerConstructor = () => {
 	};
 
 	const handleRemoveTopping = (item: TTopping) => {
-		dispatch({ type: REMOVE_IMGREDIENT, uid: item.uid });
-		dispatch({
-			type: DECREASE_ADDED_INGREDIENT,
-			item,
-		});
+		dispatch(removeIngredientAction(item.uid));
+		dispatch(decreaseAddedIngredientAction(item));
 	};
 
 	React.useEffect(() => {
@@ -110,27 +99,16 @@ const BurgerConstructor = () => {
 		]));
 	}, [ bun, toppings, dispatch ]);
 
-	React.useEffect(() => {
-		if (success) {
-			dispatch({ type: CLEAR_CONSTRUCTOR });
-			dispatch({ type: CLEAR_ADDED_INGREDIENT });
-			dispatch({ type: SHOW_MODAL, name: MODAL_ORDER });
-		}
-	}, [ number, name, success, dispatch ]);
-
 	const [, dropTarget] = useDrop({
 		accept: 'ingredient',
 		drop(item: TItem) {
 			dispatch(addIngredient(item._id));
-			dispatch({
-				type: INCREASE_ADDED_INGREDIENT,
-				item,
-			});
+			dispatch(increaseAddedIngredientAction(item));
 		},
 	});
 
 	return (
-		<section className="col-6" ref={ dropTarget }>
+		<section className="col-6" ref={ dropTarget } data-test-id="burger-constructor">
 			{ (!bun && !toppings.length) ?
 				(
 					<div className={ styles.stub }>
@@ -138,7 +116,7 @@ const BurgerConstructor = () => {
 					</div>
 				) : (
 					<>
-						<ul className={ styles.list }>
+						<ul className={ styles.list } data-test-id="constructor-list">
 							{ bun &&
 								<li>
 									<ConstructorIngredient item={ bun } type="top" />

@@ -3,19 +3,24 @@ import { TItem } from '../../types/api';
 import { TTopping } from './../../types/ingredient';
 import { AppThunk } from '../../types/redux';
 
+import {
+	ADD_BUN,
+	ADD_TOPPING,
+	REMOVE_IMGREDIENT,
+	MOVE_INGREDIENT,
+	CLEAR_CONSTRUCTOR,
+	CALC_TOTAL_PRICE,
+	CREATE_ORDER_REQUEST,
+	CREATE_ORDER_SUCCESS,
+	CREATE_ORDER_FAILED,
+} from '../constants/burger';
+
+import { MODAL_ORDER } from '../../utils/constants';
 import { getTotalPrice } from '../helpers';
 import { requestCreateOrder } from '../api/order';
 
-export const ADD_BUN: 'ADD_BUN' = 'ADD_BUN';
-export const ADD_TOPPING: 'ADD_TOPPING' = 'ADD_TOPPING';
-export const REMOVE_IMGREDIENT: 'REMOVE_IMGREDIENT' = 'REMOVE_IMGREDIENT';
-export const MOVE_INGREDIENT: 'MOVE_INGREDIENT' = 'MOVE_INGREDIENT';
-export const CLEAR_CONSTRUCTOR: 'CLEAR_CONSTRUCTOR' = 'CLEAR_CONSTRUCTOR';
-export const CALC_TOTAL_PRICE: 'CALC_TOTAL_PRICE' = 'CALC_TOTAL_PRICE';
-
-export const CREATE_ORDER_REQUEST: 'CREATE_ORDER_REQUEST' = 'CREATE_ORDER_REQUEST';
-export const CREATE_ORDER_SUCCESS: 'CREATE_ORDER_SUCCESS' = 'CREATE_ORDER_SUCCESS';
-export const CREATE_ORDER_FAILED: 'CREATE_ORDER_FAILED' = 'CREATE_ORDER_FAILED';
+import { showModalAction } from './modal';
+import { clearAddedIngredientAction } from './ingredients';
 
 export type TAddBunAction = {
 	readonly type: typeof ADD_BUN;
@@ -60,6 +65,7 @@ export type TCreateOrderSuccessAction = {
 
 export type TCreateOrderFailedAction = {
 	readonly type: typeof CREATE_ORDER_FAILED;
+	readonly error?: string;
 };
 
 export type TBurgerActions =
@@ -74,12 +80,56 @@ export type TBurgerActions =
 	| TCreateOrderFailedAction
 ;
 
+export const addBunAction = (ingredient: TItem): TAddBunAction => ({
+	type: ADD_BUN,
+	ingredient,
+});
+
+export const addToppingAction = (ingredient: TItem, uid: string): TAddToppingAction => ({
+	type: ADD_TOPPING,
+	ingredient,
+	uid,
+});
+
+export const removeIngredientAction = (uid: string): TRemoveIngredientAction => ({
+	type: REMOVE_IMGREDIENT,
+	uid,
+});
+
+export const moveIngredientAction = (movedTo: number, movedFrom: number): TMoveIngredientAction => ({
+	type: MOVE_INGREDIENT,
+	movedTo,
+	movedFrom,
+});
+
+export const clearConstructorAction = (): TClearConstructorAction => ({
+	type: CLEAR_CONSTRUCTOR,
+});
+
 export const calcTotalPrice = (ingredients: TItem[]): TCalcTotalPriceAction => {
 	return {
 		type: CALC_TOTAL_PRICE,
 		payload: getTotalPrice(ingredients),
 	};
 };
+
+export const createOrderRequestAction = (): TCreateOrderRequestAction => ({
+	type: CREATE_ORDER_REQUEST,
+});
+
+export const createOrderSuccessAction = (
+	name: string,
+	number: number
+): TCreateOrderSuccessAction => ({
+	type: CREATE_ORDER_SUCCESS,
+	name,
+	number,
+});
+
+export const createOrderFailedAction = (error?: string): TCreateOrderFailedAction => ({
+	type: CREATE_ORDER_FAILED,
+	error,
+});
 
 export const addIngredient: AppThunk = (id: string) => (dispatch, getState) => {
 	const {
@@ -97,12 +147,12 @@ export const addIngredient: AppThunk = (id: string) => (dispatch, getState) => {
 
 	switch (ingredient.type) {
 		case 'bun':
-			dispatch({ type: ADD_BUN, ingredient });
+			dispatch(addBunAction(ingredient));
 			break;
 
 		case 'main':
 		case 'sauce':
-			dispatch({ type: ADD_TOPPING, ingredient, uid });
+			dispatch(addToppingAction(ingredient, uid));
 			break;
 
 		default:
@@ -124,12 +174,12 @@ export const createOrder: AppThunk = () => async (dispatch, getState) => {
 	} = getState();
 
 	if (!bun) {
-		dispatch({ type: CREATE_ORDER_FAILED });
+		dispatch(createOrderFailedAction());
 
 		return;
 	}
 
-	dispatch({ type: CREATE_ORDER_REQUEST });
+	dispatch(createOrderRequestAction());
 
 	requestCreateOrder({
 		ingredients: getIngredientsIds(bun, toppings),
@@ -141,7 +191,11 @@ export const createOrder: AppThunk = () => async (dispatch, getState) => {
 					number,
 				},
 			} = response;
-			dispatch({ type: CREATE_ORDER_SUCCESS, name, number });
+
+			dispatch(createOrderSuccessAction(name, number));
+			dispatch(clearConstructorAction());
+			dispatch(clearAddedIngredientAction());
+			dispatch(showModalAction(MODAL_ORDER));
 		})
-		.catch(() => dispatch({ type: CREATE_ORDER_FAILED }));
+		.catch(() => dispatch(createOrderFailedAction()));
 };

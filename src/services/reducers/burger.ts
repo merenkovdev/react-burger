@@ -1,20 +1,21 @@
+import { TBurgerActions } from '../actions/burger';
+
 import {
 	ADD_BUN,
 	ADD_TOPPING,
 	REMOVE_IMGREDIENT,
-	CALC_TOTAL_PRICE,
 	MOVE_INGREDIENT,
 	CLEAR_CONSTRUCTOR,
+	CALC_TOTAL_PRICE,
 	CREATE_ORDER_REQUEST,
 	CREATE_ORDER_SUCCESS,
 	CREATE_ORDER_FAILED,
-	TBurgerActions,
-} from '../actions/burger';
+} from '../constants/burger'
 
 import { TTopping } from '../../types/ingredient';
 import { TBurgerState } from '../../types/redux';
 
-const burgerInitialState: TBurgerState = {
+export const burgerInitialState: TBurgerState = {
 	bun: null,
 	toppings: [],
 	totalPrice: 0,
@@ -24,7 +25,7 @@ const burgerInitialState: TBurgerState = {
 		success: false,
 		isRequested: false,
 		hasError: false,
-		textError: '',
+		textError: undefined,
 	},
 };
 
@@ -119,6 +120,7 @@ export const burgerReducer = (
 				...state,
 				order: {
 					...state.order,
+					textError: action.error,
 					success: false,
 					isRequested: false,
 					hasError: true,

@@ -1,4 +1,8 @@
 import {
+	TIngredientsActions,
+} from '../actions/ingredients';
+
+import {
 	GET_INGREDIENTS_REQUEST,
 	GET_INGREDIENTS_SUCCESS,
 	GET_INGREDIENTS_FAILED,
@@ -7,14 +11,13 @@ import {
 	INCREASE_ADDED_INGREDIENT,
 	DECREASE_ADDED_INGREDIENT,
 	CLEAR_ADDED_INGREDIENT,
-	TIngredientsActions,
-} from '../actions/ingredients';
+} from '../constants/ingredients';
 
 import type { TIngredientsState } from '../../types/redux';
 import { TItem } from '../../types/api';
 import { TAddedIngredients, TSortIngredients } from '../../types/ingredient';
 
-const ingredientsInitialState: TIngredientsState = {
+export const ingredientsInitialState: TIngredientsState = {
 	isRequested: false,
 	hasError: false,
 	items: [],

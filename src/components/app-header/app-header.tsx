@@ -2,7 +2,7 @@ import styles from './app-header.module.css';
 
 import { FC } from 'react';
 
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import {
 	Logo,
 	ProfileIcon,
@@ -24,7 +24,9 @@ const AppHeader: FC = () => {
 			<div className={ cn(styles.header, 'container') }>
 				<Nav />
 				<div className={ styles.headerLogo }>
-					<Logo />
+					<Link to="/">
+						<Logo />
+					</ Link>
 				</div>
 
 				<div className={ styles.headerUser }>

@@ -22,7 +22,7 @@ const OrderDetails: FC = () => {
 
 			{ !order.hasError &&
 				<>
-					<p className="text text_type_digits-large">{ order.number }</p>
+					<p className="text text_type_digits-large" data-test-id="order-number">{ order.number }</p>
 					<p className={ cn('text text_type_main-large', 'pt-8') }>идентификатор заказа</p>
 					<div className="pt-15 pb-15">
 						<img src={ doneImg } alt="" />
